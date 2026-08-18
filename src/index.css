@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply antialiased bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-emerald-600 selection:text-white font-sans;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+/* Clean, modern card and pill utility classes */
+.app-card {
+  @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/80 dark:border-stone-800 shadow-xs transition-all duration-200;
+}
+
+.app-pill {
+  @apply px-3 py-1 bg-stone-100 dark:bg-stone-800 text-[11px] font-semibold rounded-full text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 inline-flex items-center gap-1.5;
+}
+
+/* Custom scrollbars for dense POS & KDS dashboards */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 162, 158, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 162, 158, 0.6);
+}
+
+/* Thermal printer print media rules for 80mm roll POS tickets */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .thermal-receipt, .thermal-receipt * {
+    visibility: visible;
+  }
+  .thermal-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    padding: 2mm !important;
+    margin: 0 !important;
+  }
+}
+
+

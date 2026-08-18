@@ -1,0 +1,6 @@
+{
+  "name": "Dastanay - Restaurant Platform",
+  "description": "Complete Pakistani restaurant ecosystem with real-time table reservations, mobile ordering, kitchen display system, stock management, staff attendance, loyalty points, and manager analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
