@@ -33,6 +33,7 @@ import {
   Edit,
   DollarSign,
 } from 'lucide-react';
+import { DastnayLogo } from '../common/DastnayLogo';
 
 export const ManagerPortal: React.FC = () => {
   const {
@@ -139,19 +140,17 @@ export const ManagerPortal: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6">
       {/* Branch Header Bento Banner */}
-      <div className="bento-card p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="app-card p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-md">
-            M
-          </div>
+          <DastnayLogo variant="tile" size="lg" rounded="2xl" />
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-slate-100">
+              <h2 className="text-lg sm:text-xl font-extrabold text-stone-900 dark:text-stone-100">
                 {currentRestaurant.name}
               </h2>
-              <span className="bento-pill">{currentBranch.name}</span>
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-[#9A2D22] dark:text-[#FEE248] border border-amber-300 dark:border-amber-800">{currentBranch.name}</span>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-stone-500 mt-0.5">
               Working Hours: {currentBranch.openingHours} • Tax Rate: {currentBranch.taxRatePercent}%
             </p>
           </div>
@@ -159,13 +158,13 @@ export const ManagerPortal: React.FC = () => {
 
         {/* Branch Open/Close Toggle Control */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
             <span
               className={`w-2.5 h-2.5 rounded-full ${
                 currentBranch.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
               }`}
             ></span>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+            <span className="text-xs font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200">
               {currentBranch.isOpen ? 'Branch OPEN' : 'Branch CLOSED'}
             </span>
           </div>
@@ -180,8 +179,8 @@ export const ManagerPortal: React.FC = () => {
             }}
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
               currentBranch.isOpen
-                ? 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-2 border-rose-200 dark:border-rose-800'
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
+                ? 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                : 'bg-[#9A2D22] hover:bg-[#83241A] text-white shadow-xs'
             }`}
           >
             <Power className="w-3.5 h-3.5" />
@@ -191,7 +190,7 @@ export const ManagerPortal: React.FC = () => {
       </div>
 
       {/* Navigation Sub-Tabs in Bento Style */}
-      <div className="flex items-center gap-2 p-1.5 bg-slate-200/60 dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 overflow-x-auto text-xs font-bold">
+      <div className="flex items-center gap-1.5 p-1.5 bg-stone-200/70 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-x-auto text-xs font-bold">
         {[
           { id: 'overview', label: 'Live Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
           { id: 'tables', label: 'Tables & QR', icon: <Layers className="w-4 h-4" /> },
@@ -208,8 +207,8 @@ export const ManagerPortal: React.FC = () => {
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
               activeTab === tab.id
-                ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-white dark:bg-stone-800 text-[#9A2D22] dark:text-[#FEE248] shadow-sm font-extrabold'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
             }`}
           >
             {tab.icon}

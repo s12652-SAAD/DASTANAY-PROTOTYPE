@@ -18,6 +18,7 @@ import {
   Store,
   Layers,
 } from 'lucide-react';
+import { DastnayLogo } from '../common/DastnayLogo';
 
 export const AdminPortal: React.FC = () => {
   const {
@@ -69,21 +70,19 @@ export const AdminPortal: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {/* Super Admin Top Header */}
-      <div className="bg-zinc-950 text-white rounded-3xl p-6 border border-zinc-800 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-stone-950 text-white rounded-3xl p-6 border border-stone-800 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500 text-zinc-950 flex items-center justify-center font-extrabold text-xl shadow-lg">
-            <ShieldAlert className="w-6 h-6" />
-          </div>
+          <DastnayLogo variant="tile" size="lg" rounded="2xl" />
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg sm:text-xl font-extrabold">
-                Dastanay Platform Super Admin
+                dastnay Platform Super Admin
               </h2>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#E5A324]/20 text-[#FEE248] border border-[#E5A324]/30">
                 HQ Governance
               </span>
             </div>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-stone-400 mt-0.5">
               Nationwide Multi-Tenant Governance • Karachi, Lahore, Islamabad, Rawalpindi
             </p>
           </div>
@@ -91,7 +90,7 @@ export const AdminPortal: React.FC = () => {
 
         <button
           onClick={() => setShowAddRestaurantModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg transition-all cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs shadow-lg transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Onboard Restaurant Brand</span>
@@ -100,41 +99,41 @@ export const AdminPortal: React.FC = () => {
 
       {/* KPI Platform Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-zinc-900 p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
-          <span className="text-xs text-zinc-500 block">Total Platform GMV</span>
-          <span className="font-mono text-2xl font-black text-zinc-900 dark:text-zinc-100 mt-1 block">
+        <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
+          <span className="text-xs text-stone-500 block">Total Platform GMV</span>
+          <span className="font-mono text-2xl font-black text-stone-900 dark:text-stone-100 mt-1 block">
             Rs. {totalGMV.toLocaleString()}
           </span>
           <span className="text-[10px] text-emerald-600 font-bold">Across all merchant orders</span>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
-          <span className="text-xs text-zinc-500 block">Platform Commission (5%)</span>
-          <span className="font-mono text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 block">
+        <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
+          <span className="text-xs text-stone-500 block">Platform Commission (5%)</span>
+          <span className="font-mono text-2xl font-black text-[#9A2D22] dark:text-[#FEE248] mt-1 block">
             Rs. {platformCommissionEarned.toLocaleString()}
           </span>
-          <span className="text-[10px] text-zinc-500">Net platform take-rate</span>
+          <span className="text-[10px] text-stone-500">Net platform take-rate</span>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
-          <span className="text-xs text-zinc-500 block">Active Brands</span>
-          <span className="font-mono text-2xl font-black text-zinc-900 dark:text-zinc-100 mt-1 block">
+        <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
+          <span className="text-xs text-stone-500 block">Active Brands</span>
+          <span className="font-mono text-2xl font-black text-stone-900 dark:text-stone-100 mt-1 block">
             {restaurants.filter((r) => r.status === 'active').length} / {restaurants.length}
           </span>
-          <span className="text-[10px] text-zinc-500">Approved enterprises</span>
+          <span className="text-[10px] text-stone-500">Approved enterprises</span>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs">
-          <span className="text-xs text-zinc-500 block">Total Active Branches</span>
-          <span className="font-mono text-2xl font-black text-zinc-900 dark:text-zinc-100 mt-1 block">
+        <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
+          <span className="text-xs text-stone-500 block">Total Active Branches</span>
+          <span className="font-mono text-2xl font-black text-stone-900 dark:text-stone-100 mt-1 block">
             {branches.length}
           </span>
-          <span className="text-[10px] text-zinc-500">Live POS & KDS endpoints</span>
+          <span className="text-[10px] text-stone-500">Live POS & KDS endpoints</span>
         </div>
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-2 overflow-x-auto text-xs font-bold">
+      <div className="flex items-center gap-2 border-b border-stone-200 dark:border-stone-800 pb-2 overflow-x-auto text-xs font-bold">
         {[
           { id: 'restaurants', label: 'Restaurant Directory & Verification', icon: <Building2 className="w-4 h-4" /> },
           { id: 'commissions', label: 'Commission & Payout Engine', icon: <DollarSign className="w-4 h-4" /> },
@@ -146,8 +145,8 @@ export const AdminPortal: React.FC = () => {
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
               activeTab === tab.id
-                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-xs'
-                : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                ? 'bg-[#9A2D22] text-white shadow-xs'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
             }`}
           >
             {tab.icon}

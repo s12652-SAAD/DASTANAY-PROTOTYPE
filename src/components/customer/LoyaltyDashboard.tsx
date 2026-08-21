@@ -3,17 +3,14 @@ import { useDastanay } from '../../context/DastanayContext';
 import { dictionary } from '../../utils/translations';
 import {
   Sparkles,
-  Gift,
-  History,
   ShoppingBag,
   RotateCcw,
   CheckCircle2,
   Award,
-  CreditCard,
-  User,
-  Calendar,
 } from 'lucide-react';
 import { Order } from '../../types';
+import { motion } from 'motion/react';
+import { DastnayLogo } from '../common/DastnayLogo';
 
 interface LoyaltyDashboardProps {
   onReorder: (order: Order) => void;
@@ -21,107 +18,111 @@ interface LoyaltyDashboardProps {
 }
 
 export const LoyaltyDashboard: React.FC<LoyaltyDashboardProps> = ({ onReorder, onTrackOrder }) => {
-  const { loyalty, loyaltyHistory, orders, reservations, language } = useDastanay();
+  const { loyalty, loyaltyHistory, orders, language } = useDastanay();
   const t = dictionary[language];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12 animate-in fade-in">
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-4xl mx-auto space-y-6 pb-12"
+    >
       {/* Customer Profile & Loyalty Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Tier Card */}
-        <div className="md:col-span-2 relative rounded-3xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-zinc-900 text-white p-6 sm:p-8 shadow-xl">
+        <div className="md:col-span-2 relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#83241A] via-[#9A2D22] to-stone-900 text-white p-6 sm:p-7 shadow-md">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-300" />
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-200">
-                  Dastanay Dine Club
+                <Award className="w-5 h-5 text-[#FEE248]" />
+                <span className="text-xs font-bold uppercase tracking-wider text-[#FEE248]">
+                  dastnay Dine Club
                 </span>
               </div>
               <h2 className="text-2xl font-extrabold">{loyalty.tier} Member</h2>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center font-mono font-extrabold text-xl">
-              PK
+            <div className="w-11 h-11 shrink-0">
+              <DastnayLogo variant="tile" size="sm" rounded="xl" />
             </div>
           </div>
 
-          <div className="pt-8 pb-4">
-            <span className="text-xs text-amber-200 block">Available Points Balance</span>
+          <div className="pt-6 pb-3">
+            <span className="text-xs text-amber-200/90 block">Available Points Balance</span>
             <div className="flex items-baseline gap-2 mt-0.5">
               <span className="font-mono text-4xl sm:text-5xl font-black text-white">
                 {loyalty.pointsBalance.toLocaleString()}
               </span>
-              <span className="text-sm font-semibold text-amber-200">pts</span>
+              <span className="text-sm font-semibold text-[#FEE248]">pts</span>
             </div>
             <p className="text-[11px] text-amber-100/80 mt-1">
               Worth <span className="font-bold">Rs. {((loyalty.pointsBalance / 100) * 50).toFixed(0)}</span> in checkout discounts (100 pts = Rs. 50 off)
             </p>
           </div>
 
-          <div className="pt-4 border-t border-white/20 flex items-center justify-between text-xs text-amber-100">
+          <div className="pt-3 border-t border-white/20 flex items-center justify-between text-xs text-amber-100/90">
             <span>Total Points Earned: {loyalty.totalEarned}</span>
             <span>Redeemed: {loyalty.totalRedeemed}</span>
           </div>
         </div>
 
         {/* Customer Account Info */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col justify-between space-y-4">
+        <div className="app-card p-5 flex flex-col justify-between space-y-4">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-lg">
+              <div className="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-[#9A2D22] dark:text-[#FEE248] flex items-center justify-center font-bold text-base">
                 HA
               </div>
               <div>
-                <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">Hamza Ali</h3>
-                <span className="text-xs text-zinc-500">+92 300 8291029</span>
+                <h3 className="font-bold text-sm text-stone-900 dark:text-stone-100">Hamza Ali</h3>
+                <span className="text-xs text-stone-500">+92 300 8291029</span>
               </div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-700 text-xs space-y-1">
+            <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/60 dark:border-stone-700 text-xs space-y-1">
               <div className="flex justify-between">
-                <span className="text-zinc-500">Account Verification:</span>
-                <span className="text-emerald-600 font-bold flex items-center gap-1">
+                <span className="text-stone-500">Account Verification:</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> OTP Verified
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">City / Region:</span>
-                <span className="font-medium">Karachi, PK</span>
+                <span className="text-stone-500">City / Region:</span>
+                <span className="font-medium text-stone-800 dark:text-stone-200">Karachi, PK</span>
               </div>
             </div>
           </div>
 
-          <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-[11px] text-emerald-800 dark:text-emerald-300">
+          <div className="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-[11px] text-amber-900 dark:text-amber-200">
             <span className="font-bold block">Earn 10% back on every order:</span>
-            <span>Every Rs. 10 spent awards 1 Dastanay loyalty point automatically upon payment.</span>
+            <span>Every Rs. 10 spent awards 1 Dastnay point automatically upon payment.</span>
           </div>
         </div>
       </div>
 
-      {/* Points Activity History & Past Orders Tabs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Points Activity History & Past Orders */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Past Orders with 1-Click Reorder */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="app-card p-5 space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-4 h-4 text-emerald-600" />
-              <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">My Orders History</h3>
+              <ShoppingBag className="w-4 h-4 text-[#9A2D22] dark:text-[#E5A324]" />
+              <h3 className="font-bold text-sm text-stone-900 dark:text-stone-100">My Orders History</h3>
             </div>
-            <span className="text-xs text-zinc-500">{orders.length} orders</span>
+            <span className="text-xs text-stone-500">{orders.length} orders</span>
           </div>
 
           <div className="space-y-3">
             {orders.map((ord) => (
               <div
                 key={ord.id}
-                className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-700 text-xs space-y-3"
+                className="p-3.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/60 dark:border-stone-700 text-xs space-y-2.5"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100 block">
+                    <span className="font-mono font-bold text-stone-900 dark:text-stone-100 block">
                       {ord.id}
                     </span>
-                    <span className="text-[11px] text-zinc-500">
+                    <span className="text-[11px] text-stone-500">
                       {ord.createdAt} • {ord.tableNumber}
                     </span>
                   </div>
@@ -130,36 +131,38 @@ export const LoyaltyDashboard: React.FC<LoyaltyDashboardProps> = ({ onReorder, o
                     className={`font-bold px-2 py-0.5 rounded-full text-[10px] uppercase ${
                       ord.status === 'completed' || ord.status === 'served'
                         ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                        : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                        : 'bg-stone-200 text-stone-800 dark:bg-stone-700 dark:text-stone-300'
                     }`}
                   >
                     {ord.status}
                   </span>
                 </div>
 
-                <div className="text-[11px] text-zinc-600 dark:text-zinc-400">
+                <div className="text-[11px] text-stone-600 dark:text-stone-400">
                   {ord.items.map((it) => `${it.quantity}x ${it.name}`).join(', ')}
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-zinc-200 dark:border-zinc-700">
-                  <span className="font-mono font-extrabold text-xs text-zinc-900 dark:text-zinc-100">
+                <div className="flex items-center justify-between pt-2 border-t border-stone-200 dark:border-stone-700">
+                  <span className="font-mono font-extrabold text-xs text-stone-900 dark:text-stone-100">
                     Rs. {ord.total.toFixed(0)} ({ord.paymentMethod.toUpperCase()})
                   </span>
 
                   <div className="flex gap-2">
-                    <button
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => onTrackOrder(ord.id)}
-                      className="px-3 py-1.5 rounded-xl bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 font-bold cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 font-bold cursor-pointer transition-colors"
                     >
                       Track
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
                       onClick={() => onReorder(ord)}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer"
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold cursor-pointer transition-colors"
                     >
-                      <RotateCcw className="w-3 h-3" />
+                      <RotateCcw className="w-3 h-3 text-[#FEE248]" />
                       <span>Re-order</span>
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </div>
@@ -168,29 +171,29 @@ export const LoyaltyDashboard: React.FC<LoyaltyDashboardProps> = ({ onReorder, o
         </div>
 
         {/* Loyalty Points Transactions */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="app-card p-5 space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">Points Activity Ledger</h3>
+              <Sparkles className="w-4 h-4 text-[#E5A324]" />
+              <h3 className="font-bold text-sm text-stone-900 dark:text-stone-100">Points Activity Ledger</h3>
             </div>
-            <span className="text-xs text-zinc-500">{loyaltyHistory.length} logs</span>
+            <span className="text-xs text-stone-500">{loyaltyHistory.length} logs</span>
           </div>
 
-          <div className="divide-y divide-zinc-100 dark:divide-zinc-800 text-xs">
+          <div className="divide-y divide-stone-100 dark:divide-stone-800 text-xs">
             {loyaltyHistory.map((lh) => (
-              <div key={lh.id} className="py-3 flex items-center justify-between">
+              <div key={lh.id} className="py-2.5 flex items-center justify-between">
                 <div>
-                  <span className="font-bold text-zinc-900 dark:text-zinc-100 block">
+                  <span className="font-bold text-stone-900 dark:text-stone-100 block">
                     {lh.description}
                   </span>
-                  <span className="text-[10px] text-zinc-400">{lh.timestamp}</span>
+                  <span className="text-[10px] text-stone-400">{lh.timestamp}</span>
                 </div>
 
                 <span
                   className={`font-mono font-extrabold text-sm ${
                     lh.type === 'earn'
-                      ? 'text-emerald-600 dark:text-emerald-400'
+                      ? 'text-[#9A2D22] dark:text-[#FEE248]'
                       : 'text-amber-600 dark:text-amber-400'
                   }`}
                 >
@@ -201,6 +204,7 @@ export const LoyaltyDashboard: React.FC<LoyaltyDashboardProps> = ({ onReorder, o
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
+

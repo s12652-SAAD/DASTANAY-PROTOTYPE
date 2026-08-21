@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Role } from '../../types';
 import { motion, AnimatePresence } from 'motion/react';
+import { DastnayLogo } from './DastnayLogo';
 
 interface HeaderProps {
   onOpenCart?: () => void;
@@ -51,9 +52,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const roles: { key: Role; label: string; icon: React.ReactNode; color: string }[] = [
-    { key: 'customer', label: t.role_customer, icon: <UtensilsCrossed className="w-3.5 h-3.5" />, color: 'bg-emerald-600' },
+    { key: 'customer', label: t.role_customer, icon: <UtensilsCrossed className="w-3.5 h-3.5" />, color: 'bg-[#9A2D22]' },
     { key: 'manager', label: t.role_manager, icon: <LayoutDashboard className="w-3.5 h-3.5" />, color: 'bg-amber-600' },
-    { key: 'kitchen', label: t.role_kitchen, icon: <ChefHat className="w-3.5 h-3.5" />, color: 'bg-rose-600' },
+    { key: 'kitchen', label: t.role_kitchen, icon: <ChefHat className="w-3.5 h-3.5" />, color: 'bg-rose-700' },
     { key: 'admin', label: t.role_admin, icon: <ShieldCheck className="w-3.5 h-3.5" />, color: 'bg-stone-800 dark:bg-stone-200 dark:text-stone-900' },
   ];
 
@@ -82,34 +83,24 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
         </motion.div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
-          {/* Logo & Brand */}
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-4">
+          {/* Logo & Brand matching the exact uploaded Dastnay logo */}
           <motion.div
-            className="flex items-center gap-3"
+            className="flex items-center cursor-pointer shrink-0"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="w-9 h-9 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-black text-lg shadow-xs">
-              <span className="tracking-tighter">د</span>
+            <div className="sm:hidden">
+              <DastnayLogo size="xs" variant="tile" rounded="lg" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-xl tracking-tight text-stone-900 dark:text-stone-50">
-                  Dastanay<span className="text-emerald-700 dark:text-emerald-400 font-black">.pk</span>
-                </span>
-                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                  POS & KDS
-                </span>
-              </div>
-              <p className="text-[10px] font-medium text-stone-500 dark:text-stone-400 hidden sm:block">
-                {t.brand_tagline}
-              </p>
+            <div className="hidden sm:block">
+              <DastnayLogo size="md" />
             </div>
           </motion.div>
 
-          {/* Role Switcher Navigation with Animated Transition */}
-          <div className="flex items-center p-1 bg-stone-100 dark:bg-stone-800 rounded-xl border border-stone-200/80 dark:border-stone-700/80 overflow-x-auto max-w-xs sm:max-w-md">
+          {/* Role Switcher Navigation - Ultra compact on mobile */}
+          <div className="flex items-center p-0.5 sm:p-1 bg-stone-100 dark:bg-stone-800 rounded-xl border border-stone-200/80 dark:border-stone-700/80 shrink-0">
             {roles.map((r) => {
               const active = role === r.key;
               return (
@@ -117,8 +108,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                   key={r.key}
                   id={`role-btn-${r.key}`}
                   onClick={() => setRole(r.key)}
-                  whileTap={{ scale: 0.95 }}
-                  className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  whileTap={{ scale: 0.93 }}
+                  title={r.label}
+                  className={`relative flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                     active
                       ? `${r.color} text-white shadow-xs`
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-white/60 dark:hover:bg-stone-700/50'
@@ -126,17 +118,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                 >
                   {r.icon}
                   <span className="hidden md:inline">{r.label}</span>
-                  <span className="md:hidden">{r.label.split(' ')[0]}</span>
+                  <span className="hidden sm:inline md:hidden">{r.label.split(' ')[0]}</span>
                 </motion.button>
               );
             })}
           </div>
 
-          {/* Right Controls */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Right Controls - Sleek & non-wrapping */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Live System Status */}
             <div className="hidden xl:flex items-center bg-stone-100 dark:bg-stone-800 rounded-full px-3 py-1 gap-2 border border-stone-200 dark:border-stone-700">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+              <span className="w-2 h-2 bg-[#E5A324] rounded-full animate-pulse"></span>
               <span className="text-[11px] font-medium text-stone-600 dark:text-stone-300">Live Engine</span>
             </div>
 
@@ -167,9 +159,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-xs font-bold text-emerald-800 dark:text-emerald-300"
+                className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-800 dark:text-amber-300"
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E5A324] animate-pulse"></span>
                 <span>{currentTableSession.tableNumber}</span>
               </motion.div>
             )}
@@ -180,11 +172,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               onClick={() => setLanguage(language === 'en' ? 'ur_roman' : 'en')}
               whileTap={{ scale: 0.92 }}
               whileHover={{ scale: 1.05 }}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer transition-colors"
+              className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer transition-colors"
               title="Toggle Language / Zuban Badlein"
             >
-              <Globe className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
-              <span className="font-bold">{language === 'en' ? 'ENG' : 'اردو'}</span>
+              <Globe className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#E5A324]" />
+              <span>{language === 'en' ? 'EN' : 'اردو'}</span>
             </motion.button>
 
             {/* Dark / Light Mode Toggle */}
@@ -193,10 +185,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
               whileTap={{ scale: 0.88, rotate: 45 }}
               whileHover={{ scale: 1.08 }}
-              className="p-2 rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer transition-colors"
+              className="p-1.5 sm:p-2 rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer transition-colors"
               title="Toggle Dark/Light Mode"
             >
-              {theme === 'light' ? <Moon className="w-4 h-4 text-stone-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
+              {theme === 'light' ? <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-stone-700" /> : <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FEE248]" />}
             </motion.button>
 
             {/* Network simulator toggle */}
@@ -207,7 +199,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                 setNetworkStatus(next);
               }}
               whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer hidden md:flex"
+              className="p-2 rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer hidden lg:flex"
               title={`Network simulation: ${networkStatus}`}
             >
               {networkStatus === 'online' ? (
@@ -225,11 +217,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                 id="notif-bell-btn"
                 onClick={() => setShowNotifications(!showNotifications)}
                 whileTap={{ scale: 0.92 }}
-                className="relative p-2 rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer"
+                className="relative p-1.5 sm:p-2 rounded-xl text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer"
               >
-                <Bell className="w-4 h-4" />
+                <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 {unreadNotifs > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center animate-bounce">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#9A2D22] text-white rounded-full text-[10px] font-bold flex items-center justify-center animate-bounce">
                     {unreadNotifs}
                   </span>
                 )}
@@ -243,11 +235,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.96 }}
                     transition={{ duration: 0.18 }}
-                    className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-4 z-50"
+                    className="absolute right-0 mt-2 w-72 sm:w-96 bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-4 z-50"
                   >
                     <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-stone-800">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
+                        <div className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-[#9A2D22] dark:text-[#FEE248]">
                           <Bell className="w-3.5 h-3.5" />
                         </div>
                         <span className="font-bold text-sm text-stone-900 dark:text-stone-100">Live Alerts</span>
@@ -263,7 +255,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                             key={n.id}
                             onClick={() => markNotificationRead(n.id)}
                             className={`py-2.5 px-2 rounded-xl cursor-pointer transition-colors ${
-                              n.read ? 'opacity-70' : 'bg-emerald-50/40 dark:bg-emerald-950/20'
+                              n.read ? 'opacity-70' : 'bg-amber-50/40 dark:bg-amber-950/20'
                             }`}
                           >
                             <div className="flex items-start justify-between gap-2">
@@ -282,22 +274,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               </AnimatePresence>
             </div>
 
-            {/* Cart Button for Customer Mode with Motion */}
+            {/* Cart Button for Customer Mode - Icon only on mobile as requested, full label on desktop */}
             {role === 'customer' && onOpenCart && (
               <motion.button
                 id="cart-drawer-btn"
                 onClick={onOpenCart}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.92 }}
                 whileHover={{ scale: 1.03 }}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs hover:shadow-md transition-all cursor-pointer"
+                title="View My Cart"
+                className="relative flex items-center justify-center p-1.5 sm:px-3 sm:py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold shadow-xs hover:shadow-md transition-all cursor-pointer shrink-0 min-w-[34px] sm:min-w-fit"
               >
-                <ShoppingBag className="w-4 h-4" />
-                <span>{t.cart}</span>
+                <ShoppingBag className="w-4 h-4 text-[#FEE248]" />
+                <span className="hidden sm:inline ml-1.5">{t.cart}</span>
                 {cartCount > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="bg-white text-emerald-800 px-1.5 py-0.2 rounded-full text-[11px] font-extrabold"
+                    className="absolute -top-1.5 -right-1.5 sm:static sm:top-auto sm:right-auto sm:ml-1.5 bg-[#FEE248] text-stone-900 w-4 h-4 sm:w-auto sm:h-auto sm:px-1.5 sm:py-0.2 rounded-full text-[10px] sm:text-[11px] font-black flex items-center justify-center shadow-xs"
                   >
                     {cartCount}
                   </motion.span>
@@ -310,3 +303,4 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
     </header>
   );
 };
+

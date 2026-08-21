@@ -97,56 +97,57 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
     (o) => o.status !== 'completed' && o.status !== 'cancelled' && o.status !== 'refunded'
   ).length;
 
-  const tabs: { id: 'explore' | 'menu' | 'reserve' | 'track' | 'loyalty'; label: string; icon: React.ReactNode }[] = [
-    { id: 'explore', label: t.explore_restaurants, icon: <Compass className="w-4 h-4" /> },
-    { id: 'menu', label: t.menu, icon: <MenuSquare className="w-4 h-4" /> },
-    { id: 'reserve', label: t.book_table, icon: <CalendarDays className="w-4 h-4" /> },
-    { id: 'track', label: t.order_status, icon: <Clock className="w-4 h-4" /> },
-    { id: 'loyalty', label: t.loyalty_points, icon: <Award className="w-4 h-4" /> },
+  const tabs: { id: 'explore' | 'menu' | 'reserve' | 'track' | 'loyalty'; label: string; mobileLabel: string; icon: React.ReactNode }[] = [
+    { id: 'explore', label: t.explore_restaurants, mobileLabel: 'Explore', icon: <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> },
+    { id: 'menu', label: t.menu, mobileLabel: 'Menu', icon: <MenuSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> },
+    { id: 'reserve', label: t.book_table, mobileLabel: 'Reserve', icon: <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> },
+    { id: 'track', label: t.order_status, mobileLabel: 'Track', icon: <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> },
+    { id: 'loyalty', label: t.loyalty_points, mobileLabel: 'Dine Club', icon: <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 space-y-5">
-      {/* Top Context Bar */}
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-1 sm:py-2 space-y-3.5 sm:space-y-5">
+      {/* Top Context Bar - Compact & Responsive */}
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        className="app-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4"
+        className="app-card p-3 sm:p-4 md:p-5 flex flex-wrap items-center justify-between gap-2.5 sm:gap-4"
       >
         {/* Selected Restaurant & Branch info */}
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
           <img
             src={currentRestaurant.logo}
             alt={currentRestaurant.name}
-            className="w-12 h-12 rounded-xl object-cover border border-stone-200 dark:border-stone-700 shadow-xs"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover border border-stone-200 dark:border-stone-700 shadow-xs shrink-0"
           />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-extrabold text-xs sm:text-base text-stone-900 dark:text-stone-100 truncate">
                 {currentRestaurant.name}
               </span>
-              <span className="app-pill">{currentBranch.city}</span>
+              <span className="app-pill text-[10px] sm:text-xs shrink-0">{currentBranch.city}</span>
             </div>
-            <p className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold mt-0.5">
+            <p className="text-[11px] sm:text-xs text-[#9A2D22] dark:text-[#E5A324] font-semibold mt-0.5 truncate">
               {currentBranch.name} • {currentBranch.area}
             </p>
           </div>
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 ml-auto sm:ml-0">
           {currentTableSession ? (
-            <div className="flex items-center gap-2.5 bg-emerald-50 dark:bg-emerald-950/50 px-3.5 py-1.5 rounded-xl border border-emerald-300 dark:border-emerald-700">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
+            <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/50 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl border border-amber-300 dark:border-amber-700">
+              <span className="w-2 h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
+              <span className="text-[11px] sm:text-xs font-bold text-amber-900 dark:text-amber-300">
                 {currentTableSession.tableNumber}
               </span>
               <button
                 onClick={() => endTableSession(currentTableSession.tableId)}
-                className="text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-bold flex items-center gap-0.5 cursor-pointer ml-1"
+                className="text-[10px] sm:text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-bold flex items-center gap-0.5 cursor-pointer ml-1"
                 title="End Table Session"
               >
-                <LogOut className="w-3 h-3" /> End Session
+                <LogOut className="w-3 h-3" />
+                <span className="hidden sm:inline">End</span>
               </button>
             </div>
           ) : (
@@ -154,10 +155,11 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.02 }}
               onClick={onOpenQRScanner}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-all cursor-pointer shadow-2xs"
+              title="Scan Table QR"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-all cursor-pointer shadow-2xs"
             >
-              <QrCode className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
-              <span>{t.scan_qr}</span>
+              <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#9A2D22] dark:text-[#E5A324]" />
+              <span className="hidden xs:inline sm:inline">{t.scan_qr}</span>
             </motion.button>
           )}
 
@@ -165,20 +167,20 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.02 }}
             onClick={() => setActiveTab('reserve')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'reserve'
-                ? 'bg-emerald-700 text-white shadow-xs'
+                ? 'bg-[#9A2D22] text-white shadow-xs'
                 : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-700'
             }`}
           >
-            <CalendarDays className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span>{t.book_table}</span>
+            <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#9A2D22] dark:text-[#E5A324]" />
+            <span className="hidden xs:inline sm:inline">{t.book_table}</span>
           </motion.button>
         </div>
       </motion.div>
 
-      {/* Navigation Sub-Tabs */}
-      <div className="flex items-center gap-1.5 p-1 bg-stone-100 dark:bg-stone-800/90 rounded-xl border border-stone-200 dark:border-stone-700/80 overflow-x-auto">
+      {/* Navigation Sub-Tabs - Horizontal scrollable & fitted */}
+      <div className="flex items-center gap-1 sm:gap-1.5 p-1 bg-stone-100 dark:bg-stone-800/90 rounded-xl border border-stone-200 dark:border-stone-700/80 overflow-x-auto scrollbar-none">
         {tabs.map((tab) => {
           const active = activeTab === tab.id;
           return (
@@ -186,16 +188,17 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
               key={tab.id}
               whileTap={{ scale: 0.96 }}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all relative cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all relative cursor-pointer shrink-0 ${
                 active
-                  ? 'bg-white dark:bg-stone-700 text-emerald-700 dark:text-emerald-400 shadow-xs'
+                  ? 'bg-white dark:bg-stone-700 text-[#9A2D22] dark:text-[#FEE248] shadow-xs'
                   : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
               }`}
             >
               {tab.icon}
-              <span>{tab.label}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.mobileLabel}</span>
               {tab.id === 'track' && activeOrdersCount > 0 && (
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
               )}
             </motion.button>
           );

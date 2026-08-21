@@ -10,8 +10,11 @@ import {
   AlertCircle,
   X,
   Minus,
+  ShoppingBag,
+  ArrowRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { DastnayLogo } from '../common/DastnayLogo';
 
 interface LiveMenuViewProps {
   onOpenCart: () => void;
@@ -26,6 +29,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
     currentRestaurantId,
     language,
     currentTableSession,
+    cart,
   } = useDastanay();
   const t = dictionary[language];
 
@@ -115,13 +119,13 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 bg-emerald-700 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-bold"
+            className="fixed bottom-6 right-6 z-50 bg-[#9A2D22] text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-bold"
           >
-            <Check className="w-4 h-4" />
+            <Check className="w-4 h-4 text-[#FEE248]" />
             <span>{addedToast}</span>
             <button
               onClick={onOpenCart}
-              className="ml-2 px-2.5 py-1 bg-white text-emerald-800 rounded-lg text-[11px] font-bold hover:bg-emerald-50 cursor-pointer transition-colors"
+              className="ml-2 px-2.5 py-1 bg-[#FEE248] text-stone-900 rounded-lg text-[11px] font-black hover:bg-yellow-300 cursor-pointer transition-colors"
             >
               View Cart
             </button>
@@ -134,10 +138,10 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
         <motion.div
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="app-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800"
+          className="app-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 bg-amber-50/50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-emerald-700 text-white font-extrabold flex items-center justify-center text-sm shadow-xs">
+            <div className="w-11 h-11 rounded-xl bg-[#9A2D22] text-[#FEE248] font-extrabold flex items-center justify-center text-sm shadow-xs">
               {currentTableSession.tableNumber.replace('Table ', 'T')}
             </div>
             <div>
@@ -145,7 +149,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 <span className="font-extrabold text-sm text-stone-900 dark:text-stone-100">
                   {currentTableSession.tableNumber} Active
                 </span>
-                <span className="app-pill bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border-emerald-300">
+                <span className="app-pill bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 border-amber-300">
                   Direct Kitchen Ordering
                 </span>
               </div>
@@ -156,7 +160,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.02 }}
             onClick={onOpenCart}
-            className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold shadow-xs cursor-pointer"
           >
             Review Cart & Order
           </motion.button>
@@ -164,7 +168,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
       ) : (
         <div className="app-card p-3.5 bg-amber-50/60 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2.5 text-amber-800 dark:text-amber-300">
-            <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+            <AlertCircle className="w-4 h-4 shrink-0 text-[#9A2D22]" />
             <span>Browsing menu in preview mode. Check in or scan QR at your table to place kitchen orders.</span>
           </div>
         </div>
@@ -182,7 +186,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                   selectedCategory === cat
-                    ? 'bg-emerald-700 text-white shadow-xs'
+                    ? 'bg-[#9A2D22] text-white shadow-xs'
                     : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700'
                 }`}
               >
@@ -199,7 +203,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
               placeholder="Search dishes or items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:border-emerald-600 shadow-2xs"
+              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22] shadow-2xs"
             />
           </div>
         </div>
@@ -228,7 +232,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 className={`app-card p-4 transition-all flex flex-col sm:flex-row gap-4 justify-between group ${
                   !isBranchAvailable
                     ? 'opacity-60 bg-stone-50 dark:bg-stone-900/40'
-                    : 'hover:border-emerald-400 dark:hover:border-emerald-600 hover:shadow-sm'
+                    : 'hover:border-[#9A2D22]/60 dark:hover:border-[#E5A324]/60 hover:shadow-sm'
                 }`}
               >
                 <div className="flex-1 space-y-2 flex flex-col justify-between">
@@ -238,7 +242,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                         <h4 className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100">
                           {item.name}
                         </h4>
-                        <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 font-serif">
+                        <p className="text-xs font-semibold text-[#9A2D22] dark:text-[#E5A324] font-serif">
                           {item.nameUrdu}
                         </p>
                       </div>
@@ -277,9 +281,9 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                       whileHover={{ scale: 1.04 }}
                       disabled={!isBranchAvailable}
                       onClick={() => handleOpenCustomizer(item)}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:bg-stone-300 dark:disabled:bg-stone-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed"
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] disabled:bg-stone-300 dark:disabled:bg-stone-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-3.5 h-3.5 text-[#FEE248]" />
                       <span>Add</span>
                     </motion.button>
                   </div>
@@ -294,12 +298,12 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                     loading="lazy"
                   />
                   {item.isPopular && (
-                    <span className="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-xs">
+                    <span className="absolute top-1.5 left-1.5 bg-[#E5A324] text-stone-900 text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-xs">
                       MUST TRY
                     </span>
                   )}
                   {item.isSpicy && (
-                    <span className="absolute bottom-1.5 right-1.5 bg-rose-600/90 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md backdrop-blur-xs">
+                    <span className="absolute bottom-1.5 right-1.5 bg-[#9A2D22]/90 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md backdrop-blur-xs">
                       🌶️ SPICY
                     </span>
                   )}
@@ -336,7 +340,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 </button>
                 <div className="absolute bottom-3 left-4 right-4">
                   <h3 className="text-lg font-extrabold text-white drop-shadow">{activeItem.name}</h3>
-                  <p className="text-xs text-emerald-200 font-serif drop-shadow">{activeItem.nameUrdu}</p>
+                  <p className="text-xs text-[#FEE248] font-serif drop-shadow">{activeItem.nameUrdu}</p>
                 </div>
               </div>
 
@@ -355,7 +359,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                           onClick={() => setSelectedVariation(v)}
                           className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
                             selectedVariation?.id === v.id
-                              ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 font-bold text-emerald-900 dark:text-emerald-200'
+                              ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 font-bold text-[#9A2D22] dark:text-[#FEE248]'
                               : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
                           }`}
                         >
@@ -384,14 +388,14 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                             onClick={() => handleToggleAddon(a)}
                             className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
                               isSelected
-                                ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200'
+                                ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 text-[#9A2D22] dark:text-[#FEE248]'
                                 : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
                             }`}
                           >
                             <div className="flex items-center gap-2">
                               <div
                                 className={`w-4 h-4 rounded flex items-center justify-center border ${
-                                  isSelected ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-stone-400'
+                                  isSelected ? 'bg-[#9A2D22] border-[#9A2D22] text-white' : 'border-stone-400'
                                 }`}
                               >
                                 {isSelected && <Check className="w-3 h-3" />}
@@ -416,7 +420,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                     placeholder="e.g. Less spicy, extra lemon, crispier naan..."
                     value={specialInstructions}
                     onChange={(e) => setSpecialInstructions(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 outline-none focus:border-emerald-600"
+                    className="w-full px-3.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 outline-none focus:border-[#9A2D22]"
                   />
                 </div>
 
@@ -427,7 +431,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                     <motion.button
                       whileTap={{ scale: 0.85 }}
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-emerald-600 cursor-pointer"
+                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#9A2D22] cursor-pointer"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </motion.button>
@@ -435,7 +439,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                     <motion.button
                       whileTap={{ scale: 0.85 }}
                       onClick={() => setQuantity(quantity + 1)}
-                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-emerald-600 cursor-pointer"
+                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#9A2D22] cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </motion.button>
@@ -447,7 +451,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
               <div className="p-4 bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between shrink-0">
                 <div>
                   <span className="text-[10px] text-stone-500 block font-semibold">Calculated Total</span>
-                  <span className="font-mono font-black text-lg text-emerald-700 dark:text-emerald-400">
+                  <span className="font-mono font-black text-lg text-[#9A2D22] dark:text-[#FEE248]">
                     Rs. {calculateCustomizerTotal().toLocaleString()}
                   </span>
                 </div>
@@ -456,13 +460,51 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                   whileTap={{ scale: 0.95 }}
                   whileHover={{ scale: 1.02 }}
                   onClick={handleAddToCartSubmit}
-                  className="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-extrabold shadow-sm cursor-pointer"
+                  className="px-5 py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-extrabold shadow-sm cursor-pointer"
                 >
                   Add to Cart
                 </motion.button>
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+      {/* Floating Bottom Cart Bar for Mobile View */}
+      <AnimatePresence>
+        {cart.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            className="sm:hidden fixed bottom-4 inset-x-3 z-40"
+          >
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={onOpenCart}
+              className="w-full bg-gradient-to-r from-[#83241A] to-[#9A2D22] text-white p-3.5 rounded-2xl shadow-2xl flex items-center justify-between border border-amber-400/40 cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <DastnayLogo variant="tile" size="xs" rounded="lg" />
+                <div className="text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-black text-[#FEE248]">
+                      {cart.reduce((s, i) => s + i.quantity, 0)} Items
+                    </span>
+                    <span className="text-[10px] text-amber-200/80">•</span>
+                    <span className="text-xs font-bold text-white">
+                      Rs. {cart.reduce((s, i) => s + i.itemTotal, 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-amber-100/90 font-medium">Tap to review & order to table</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 bg-[#FEE248] text-stone-900 px-3 py-1.5 rounded-xl font-black text-xs shadow-xs">
+                <span>Cart</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

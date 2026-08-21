@@ -17,6 +17,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { DastnayLogo } from '../common/DastnayLogo';
 
 interface CartCheckoutDrawerProps {
   isOpen: boolean;
@@ -144,8 +145,8 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
       >
         {/* Top Bar */}
         <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
+          <div className="flex items-center gap-2.5">
+            <DastnayLogo variant="tile" size="xs" rounded="md" />
             <h3 className="font-extrabold text-base">{t.cart}</h3>
             <span className="text-xs text-stone-500">
               ({cart.reduce((s, i) => s + i.quantity, 0)} items)
@@ -170,16 +171,16 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
 
           {/* Table Session Status in Cart */}
           {currentTableSession ? (
-            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between">
+            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center justify-between">
               <div>
-                <span className="font-extrabold text-xs text-emerald-800 dark:text-emerald-300 block">
+                <span className="font-extrabold text-xs text-amber-900 dark:text-amber-300 block">
                   Delivering to: {currentTableSession.tableNumber}
                 </span>
                 <span className="text-[10px] text-stone-500">
                   Kitchen will dispatch directly to your table
                 </span>
               </div>
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E5A324] animate-pulse"></span>
             </div>
           ) : (
             <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-2">
@@ -195,7 +196,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                   onClose();
                   onOpenQRScanner();
                 }}
-                className="w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs cursor-pointer shadow-2xs"
+                className="w-full py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs cursor-pointer shadow-2xs"
               >
                 Scan Table QR / Check In
               </motion.button>
@@ -262,7 +263,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                         <span className="font-bold w-4 text-center">{item.quantity}</span>
                         <button
                           onClick={() => updateCartItemQuantity(item.cartItemId, 1)}
-                          className="p-1 hover:text-emerald-600 cursor-pointer"
+                          className="p-1 hover:text-[#9A2D22] cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
@@ -294,7 +295,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                     placeholder="Enter Code"
                     value={promoCodeInput}
                     onChange={(e) => setPromoCodeInput(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 uppercase font-mono tracking-wider outline-none focus:border-emerald-600"
+                    className="flex-1 px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 uppercase font-mono tracking-wider outline-none focus:border-[#9A2D22]"
                   />
                   <motion.button
                     whileTap={{ scale: 0.95 }}
@@ -307,7 +308,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                 {promoMessage && (
                   <p
                     className={`text-[11px] ${
-                      appliedPromo ? 'text-emerald-700 dark:text-emerald-400 font-bold' : 'text-rose-500'
+                      appliedPromo ? 'text-[#9A2D22] dark:text-[#FEE248] font-bold' : 'text-rose-500'
                     }`}
                   >
                     {promoMessage}
@@ -320,8 +321,8 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                 <div className="p-3.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                      Redeem Dastanay Points
+                      <Sparkles className="w-3.5 h-3.5 text-[#E5A324]" />
+                      Redeem dastnay Points
                     </span>
                     <span className="text-[11px] font-mono text-stone-500">
                       Balance: {loyalty.pointsBalance} pts
@@ -335,10 +336,10 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                     step="50"
                     value={redeemedPoints}
                     onChange={(e) => setRedeemedPoints(Number(e.target.value))}
-                    className="w-full accent-emerald-700 cursor-pointer"
+                    className="w-full accent-[#9A2D22] cursor-pointer"
                   />
 
-                  <div className="flex justify-between text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                  <div className="flex justify-between text-[11px] font-medium text-[#9A2D22] dark:text-[#FEE248]">
                     <span>Redeeming: {redeemedPoints} Points</span>
                     <span>Discount: - Rs. {loyaltyDiscount}</span>
                   </div>
@@ -362,7 +363,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                       onClick={() => setPaymentMethod(pm.id as any)}
                       className={`p-2.5 rounded-xl border flex items-center gap-2 cursor-pointer transition-all ${
                         paymentMethod === pm.id
-                          ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 font-bold text-emerald-900 dark:text-emerald-200'
+                          ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 font-bold text-[#9A2D22] dark:text-[#FEE248]'
                           : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
                       }`}
                     >
@@ -389,14 +390,14 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                 </div>
 
                 {totalDiscount > 0 && (
-                  <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-semibold">
+                  <div className="flex justify-between text-[#9A2D22] dark:text-[#FEE248] font-semibold">
                     <span>Discounts Applied:</span>
                     <span className="font-mono">- Rs. {totalDiscount.toFixed(0)}</span>
                   </div>
                 )}
 
                 {bookingFeeDeduction > 0 && (
-                  <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-semibold">
+                  <div className="flex justify-between text-[#9A2D22] dark:text-[#FEE248] font-semibold">
                     <span>Prepaid Reservation Adjusted:</span>
                     <span className="font-mono">- Rs. {bookingFeeDeduction.toFixed(0)}</span>
                   </div>
@@ -404,14 +405,14 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
 
                 <div className="flex justify-between font-extrabold text-sm pt-2 border-t border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100">
                   <span>{t.bill_total}:</span>
-                  <span className="font-mono text-emerald-700 dark:text-emerald-400 text-base">
+                  <span className="font-mono text-[#9A2D22] dark:text-[#FEE248] text-base">
                     Rs. {finalTotal.toFixed(0)}
                   </span>
                 </div>
 
                 <div className="flex justify-between text-[10px] text-stone-500 pt-1">
                   <span>Points to Earn on completion:</span>
-                  <span className="font-bold text-amber-600">+{pointsToEarn} Dastanay Points</span>
+                  <span className="font-bold text-[#E5A324]">+{pointsToEarn} dastnay Points</span>
                 </div>
               </div>
             </>
@@ -426,13 +427,13 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
               whileHover={{ scale: 1.01 }}
               onClick={handlePlaceOrderSubmit}
               disabled={isPlacingOrder}
-              className="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isPlacingOrder ? (
                 <span>Dispatching Order to Kitchen KDS...</span>
               ) : (
                 <>
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck className="w-4 h-4 text-[#FEE248]" />
                   <span>
                     {t.order_now} • Rs. {finalTotal.toFixed(0)}
                   </span>

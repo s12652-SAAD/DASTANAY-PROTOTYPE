@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDastanay } from '../../context/DastanayContext';
-import { Star, X, Check, Heart } from 'lucide-react';
+import { Star, X, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ReviewModalProps {
   orderId: string | null;
@@ -29,19 +30,19 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
   };
 
   const StarPicker = ({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) => (
-    <div className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800">
-      <span className="font-bold text-xs text-zinc-800 dark:text-zinc-200">{label}</span>
+    <div className="flex items-center justify-between py-2 border-b border-stone-100 dark:border-stone-800">
+      <span className="font-bold text-xs text-stone-800 dark:text-stone-200">{label}</span>
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             type="button"
             onClick={() => onChange(star)}
-            className="p-1 text-zinc-300 hover:text-amber-400 cursor-pointer transition-colors"
+            className="p-1 text-stone-300 hover:text-amber-400 cursor-pointer transition-colors"
           >
             <Star
               className={`w-5 h-5 ${
-                star <= value ? 'fill-amber-400 text-amber-400' : 'text-zinc-300 dark:text-zinc-700'
+                star <= value ? 'fill-amber-400 text-amber-400' : 'text-stone-300 dark:text-stone-700'
               }`}
             />
           </button>
@@ -51,16 +52,21 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
-      <div className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-zinc-200 dark:border-zinc-800">
-        <div className="p-5 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        className="app-card max-w-md w-full overflow-hidden shadow-2xl"
+      >
+        <div className="p-5 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between">
           <div>
-            <h3 className="font-extrabold text-base">Rate Your Dining Experience</h3>
-            <p className="text-xs text-zinc-500">Order #{orderId} • {order?.tableNumber}</p>
+            <h3 className="font-extrabold text-base text-stone-900 dark:text-stone-100">Rate Your Dining Experience</h3>
+            <p className="text-xs text-stone-500">Order #{orderId} • {order?.tableNumber}</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+            className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -68,11 +74,11 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
 
         {isDone ? (
           <div className="p-8 text-center space-y-3">
-            <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 bg-amber-100 dark:bg-amber-950 text-[#9A2D22] dark:text-[#FEE248] rounded-full flex items-center justify-center mx-auto">
               <Check className="w-8 h-8" />
             </div>
-            <h4 className="font-bold text-base">Shukriya! Thank you for your feedback.</h4>
-            <p className="text-xs text-zinc-500">Your review helps our kitchen and staff maintain high culinary standards.</p>
+            <h4 className="font-bold text-base text-stone-900 dark:text-stone-100">Shukriya! Thank you for your feedback.</h4>
+            <p className="text-xs text-stone-500">Your review helps our kitchen and staff maintain high culinary standards.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
@@ -83,7 +89,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
             </div>
 
             <div className="space-y-1.5 pt-2">
-              <label className="font-bold text-zinc-700 dark:text-zinc-300 block">
+              <label className="font-bold text-stone-700 dark:text-stone-300 block">
                 Written Comments & Suggestions
               </label>
               <textarea
@@ -91,22 +97,24 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
                 placeholder="What did you love about the food, ambiance, or service? (e.g. Mutton Karahi was flavorful, fast service...)"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full p-3 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full p-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22]"
                 required
               ></textarea>
             </div>
 
             <div className="pt-2">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.97 }}
                 type="submit"
-                className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-extrabold text-xs shadow-sm cursor-pointer transition-colors"
               >
                 Submit Verified Review
-              </button>
+              </motion.button>
             </div>
           </form>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
+

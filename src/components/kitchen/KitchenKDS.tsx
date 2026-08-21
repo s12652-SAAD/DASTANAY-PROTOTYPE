@@ -15,6 +15,7 @@ import {
   Bell,
   RefreshCw,
 } from 'lucide-react';
+import { DastnayLogo } from '../common/DastnayLogo';
 
 export const KitchenKDS: React.FC = () => {
   const {
@@ -71,19 +72,17 @@ export const KitchenKDS: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6">
       {/* KDS Header Bento Bar */}
-      <div className="bento-card bg-slate-900 text-white p-5 sm:p-6 border-2 border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="app-card bg-stone-900 text-white p-5 sm:p-6 border border-stone-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-lg">
-            <ChefHat className="w-6 h-6" />
-          </div>
+          <DastnayLogo variant="tile" size="lg" rounded="2xl" />
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-extrabold text-slate-100">
+              <h2 className="text-lg sm:text-xl font-extrabold text-stone-100">
                 {currentRestaurant.name} • Kitchen Display System
               </h2>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-stone-400 mt-0.5">
               Live Cooking Station Monitor • {currentBranch.name} • {activeKitchenOrders.length} Active Tickets
             </p>
           </div>
@@ -97,8 +96,8 @@ export const KitchenKDS: React.FC = () => {
               onClick={() => setStationFilter(st)}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
                 stationFilter === st
-                  ? 'bg-indigo-600 text-white border border-indigo-500 shadow-xs'
-                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
+                  ? 'bg-[#9A2D22] text-white border border-[#9A2D22] shadow-xs'
+                  : 'bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700'
               }`}
             >
               {st}
@@ -109,12 +108,12 @@ export const KitchenKDS: React.FC = () => {
 
       {/* Active Kitchen Tickets Grid in Bento Format */}
       {activeKitchenOrders.length === 0 ? (
-        <div className="text-center py-20 bento-card p-8 space-y-3">
-          <ChefHat className="w-14 h-14 text-slate-300 dark:text-slate-700 mx-auto" />
-          <h3 className="font-black text-lg text-slate-900 dark:text-slate-100">
+        <div className="text-center py-20 app-card p-8 space-y-3">
+          <ChefHat className="w-14 h-14 text-stone-300 dark:text-stone-700 mx-auto" />
+          <h3 className="font-black text-lg text-stone-900 dark:text-stone-100">
             Kitchen Queue Clear!
           </h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          <p className="text-xs text-stone-500 max-w-sm mx-auto">
             All active table orders have been cooked and dispatched. New customer orders will appear automatically.
           </p>
         </div>
@@ -127,12 +126,12 @@ export const KitchenKDS: React.FC = () => {
             return (
               <div
                 key={order.id}
-                className={`bento-card overflow-hidden flex flex-col justify-between shadow-md transition-all ${
+                className={`app-card overflow-hidden flex flex-col justify-between shadow-md transition-all ${
                   isReady
                     ? 'border-emerald-500/80 bg-emerald-50/20 dark:bg-emerald-950/20'
                     : isCooking
                     ? 'border-amber-500/80 shadow-amber-500/5'
-                    : 'border-slate-200 dark:border-slate-800'
+                    : 'border-stone-200 dark:border-stone-800'
                 }`}
               >
                 {/* Ticket Header */}
@@ -141,8 +140,8 @@ export const KitchenKDS: React.FC = () => {
                     isReady
                       ? 'bg-emerald-600 text-white border-emerald-700'
                       : isCooking
-                      ? 'bg-amber-500 text-slate-950 font-bold border-amber-600'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-700'
+                      ? 'bg-amber-500 text-stone-950 font-bold border-amber-600'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 border-stone-200 dark:border-stone-700'
                   }`}
                 >
                   <div>
@@ -175,20 +174,20 @@ export const KitchenKDS: React.FC = () => {
                     </div>
                   )}
 
-                  <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <div className="divide-y divide-stone-100 dark:divide-stone-800">
                     {order.items.map((item, idx) => (
                       <div key={idx} className="py-3 space-y-1">
                         <div className="flex items-start justify-between">
-                          <span className="font-extrabold text-sm text-slate-900 dark:text-slate-100">
+                          <span className="font-extrabold text-sm text-stone-900 dark:text-stone-100">
                             {item.quantity}x {item.name}
                           </span>
-                          <span className="text-[11px] text-slate-500 font-mono">
+                          <span className="text-[11px] text-stone-500 font-mono">
                             {item.station}
                           </span>
                         </div>
 
                         {item.selectedAddons && item.selectedAddons.length > 0 && (
-                          <span className="block text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold">
+                          <span className="block text-[11px] text-[#9A2D22] dark:text-[#FEE248] font-semibold">
                             Add-ons: {item.selectedAddons.join(', ')}
                           </span>
                         )}
@@ -204,12 +203,12 @@ export const KitchenKDS: React.FC = () => {
                 </div>
 
                 {/* Ticket Footer Action Buttons */}
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-t-2 border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shrink-0">
+                <div className="p-4 bg-stone-50 dark:bg-stone-800/60 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between gap-2 shrink-0">
                   <div className="flex items-center gap-2">
                     {/* Print KOT */}
                     <button
                       onClick={() => setPrintModalData({ type: 'kot', order })}
-                      className="p-2.5 rounded-2xl bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-600 cursor-pointer shadow-2xs"
+                      className="p-2.5 rounded-2xl bg-white dark:bg-stone-700 hover:bg-stone-100 dark:hover:bg-stone-600 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-600 cursor-pointer shadow-2xs"
                       title="Print KOT Slip"
                     >
                       <Printer className="w-4 h-4" />
@@ -231,10 +230,10 @@ export const KitchenKDS: React.FC = () => {
                     onClick={() => handleAdvanceStatus(order)}
                     className={`px-4 py-2.5 rounded-2xl text-white font-black text-xs shadow-md flex items-center gap-1.5 transition-all cursor-pointer ${
                       isReady
-                        ? 'bg-slate-900 dark:bg-slate-100 dark:text-slate-900 hover:bg-indigo-600'
+                        ? 'bg-stone-900 dark:bg-stone-100 dark:text-stone-900 hover:bg-[#9A2D22]'
                         : isCooking
                         ? 'bg-emerald-600 hover:bg-emerald-700'
-                        : 'bg-amber-600 hover:bg-amber-700'
+                        : 'bg-[#9A2D22] hover:bg-[#83241A]'
                     }`}
                   >
                     {isReady ? (
@@ -264,9 +263,9 @@ export const KitchenKDS: React.FC = () => {
       {/* Delay Modal in Bento Style */}
       {delayModalOrderId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-[2rem] shadow-2xl max-w-md w-full p-6 border-2 border-slate-200 dark:border-slate-800 space-y-4 text-xs">
-            <h3 className="font-black text-base text-amber-600">Notify Customer of Kitchen Delay</h3>
-            <p className="text-slate-500">
+          <div className="bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-[2rem] shadow-2xl max-w-md w-full p-6 border border-stone-200 dark:border-stone-800 space-y-4 text-xs">
+            <h3 className="font-black text-base text-[#9A2D22]">Notify Customer of Kitchen Delay</h3>
+            <p className="text-stone-500">
               Updating the cooking countdown notifies the diner at the table in real-time.
             </p>
 
@@ -279,10 +278,10 @@ export const KitchenKDS: React.FC = () => {
                       key={m}
                       type="button"
                       onClick={() => setDelayMins(m)}
-                      className={`p-2.5 rounded-2xl border-2 text-center font-bold cursor-pointer ${
+                      className={`p-2.5 rounded-2xl border text-center font-bold cursor-pointer ${
                         delayMins === m
-                          ? 'border-amber-600 bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200'
-                          : 'border-slate-200 dark:border-slate-700'
+                          ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/60 text-[#9A2D22] dark:text-[#FEE248]'
+                          : 'border-stone-200 dark:border-stone-700'
                       }`}
                     >
                       +{m} Mins
@@ -296,7 +295,7 @@ export const KitchenKDS: React.FC = () => {
                 <select
                   value={delayReason}
                   onChange={(e) => setDelayReason(e.target.value)}
-                  className="w-full p-2.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                  className="w-full p-2.5 rounded-2xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22]"
                 >
                   <option value="High Coal Charcoal Restock">High Coal Charcoal Restock</option>
                   <option value="Slow Dum Cooking for Tender Mutton">Slow Dum Cooking for Tender Mutton</option>
@@ -309,13 +308,13 @@ export const KitchenKDS: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setDelayModalOrderId(null)}
-                  className="px-4 py-2 rounded-xl text-slate-500 font-bold cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-stone-500 font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold cursor-pointer"
+                  className="px-5 py-2 rounded-2xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold cursor-pointer"
                 >
                   Send Delay Alert
                 </button>

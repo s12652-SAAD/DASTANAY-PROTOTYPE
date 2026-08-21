@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDastanay } from '../../context/DastanayContext';
 import { Printer, X, Check, Utensils, QrCode } from 'lucide-react';
+import { DastnayLogo } from './DastnayLogo';
 
 export const ThermalReceiptModal: React.FC = () => {
   const { printModalData, setPrintModalData, restaurants, branches } = useDastanay();
@@ -19,16 +20,16 @@ export const ThermalReceiptModal: React.FC = () => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
       <div className="bg-white text-zinc-900 rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden border border-zinc-300">
         {/* Top Control Bar */}
-        <div className="bg-zinc-900 text-white px-4 py-3 flex items-center justify-between">
+        <div className="bg-stone-900 text-white px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold">
-            <Printer className="w-4 h-4 text-emerald-400" />
+            <Printer className="w-4 h-4 text-[#FEE248]" />
             <span>
               {type === 'kot' ? 'Kitchen Order Ticket (KOT)' : type === 'bar' ? 'Bar Beverage Slip' : 'Cashier Tax Invoice'}
             </span>
           </div>
           <button
             onClick={() => setPrintModalData(null)}
-            className="p-1 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white cursor-pointer"
+            className="p-1 rounded-md hover:bg-stone-800 text-stone-400 hover:text-white cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -38,8 +39,11 @@ export const ThermalReceiptModal: React.FC = () => {
         <div className="p-6 bg-[#fcfcf9] font-mono text-[11px] leading-relaxed select-text border-b border-dashed border-zinc-300 max-h-[75vh] overflow-y-auto print:max-h-none print:p-0">
           {/* Header */}
           <div className="text-center pb-3 border-b border-dashed border-zinc-400">
+            <div className="flex justify-center mb-2">
+              <DastnayLogo variant="tile" size="xs" rounded="md" />
+            </div>
             <div className="font-extrabold text-sm tracking-wider uppercase">
-              {restaurant?.name || 'DASTANAY RESTAURANT'}
+              {restaurant?.name || 'DASTNAY RESTAURANT'}
             </div>
             <div className="text-[10px] text-zinc-600 uppercase font-sans font-medium mt-0.5">
               {branch?.name || 'Branch'}
@@ -158,7 +162,10 @@ export const ThermalReceiptModal: React.FC = () => {
           {/* Footer & Barcode */}
           <div className="pt-3 text-center text-[9px] text-zinc-500 space-y-1">
             <p>Thank you for dining with {restaurant?.name}!</p>
-            <p className="font-sans">Powered by Dastanay Platform PK</p>
+            <div className="flex items-center justify-center gap-1.5 font-sans font-bold text-stone-700">
+              <DastnayLogo variant="tile" size="xs" rounded="sm" className="w-3.5 h-3.5" />
+              <span>Powered by Dastnay Platform PK</span>
+            </div>
             <div className="flex justify-center pt-1">
               <div className="text-[10px] tracking-widest font-mono bg-zinc-200 px-3 py-1 rounded">
                 |||||| | ||||| |||| || | |||||

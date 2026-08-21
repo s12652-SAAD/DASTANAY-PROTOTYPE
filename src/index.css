@@ -10,9 +10,26 @@
     color-scheme: dark;
   }
   body {
-    @apply antialiased bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-emerald-600 selection:text-white font-sans;
+    @apply antialiased bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-[#9A2D22] selection:text-[#FEE248] font-sans;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
+}
+
+/* Dastnay Signature Theme Utilities */
+.bg-dastnay-gradient {
+  background: linear-gradient(145deg, #882421 0%, #B8531E 45%, #E5A324 100%);
+}
+
+.bg-dastnay-gradient-subtle {
+  background: linear-gradient(145deg, rgba(136, 36, 33, 0.08) 0%, rgba(184, 83, 30, 0.05) 50%, rgba(229, 163, 36, 0.08) 100%);
+}
+
+.text-dastnay-saffron {
+  color: #FEE248;
+}
+
+.text-dastnay-crimson {
+  color: #9A2D22;
 }
 
 /* Clean, modern card and pill utility classes */
@@ -61,5 +78,6 @@
     margin: 0 !important;
   }
 }
+
 
 
