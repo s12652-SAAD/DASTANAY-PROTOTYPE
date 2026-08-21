@@ -84,6 +84,7 @@ interface DastanayContextType {
   // Actions
   createReservation: (resData: Omit<Reservation, 'id' | 'createdAt' | 'status'>) => { success: boolean; message: string; reservation?: Reservation };
   cancelReservation: (reservationId: string, reason?: string) => { success: boolean; message: string };
+  checkInReservation: (reservationId: string) => { success: boolean; message: string };
   startTableSession: (tableNumber: string, reservationId?: string) => { success: boolean; message: string; table?: Table };
   endTableSession: (tableId: string) => void;
   placeOrder: (paymentMethod: PaymentMethod, customerPhone?: string, customerName?: string) => { success: boolean; message: string; order?: Order };
@@ -410,6 +411,43 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     });
 
     return { success: true, message: 'Reservation has been cancelled.' };
+  };
+
+  const checkInReservation = (reservationId: string) => {
+    const res = reservations.find((r) => r.id === reservationId);
+    if (!res) return { success: false, message: 'Reservation not found' };
+
+    const sessionId = `DST-SESS-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    setReservations((prev) =>
+      prev.map((r) => (r.id === reservationId ? { ...r, status: 'checked_in' } : r))
+    );
+
+    setTables((prev) =>
+      prev.map((t) =>
+        t.id === res.tableId ? { ...t, status: 'occupied', currentSessionId: sessionId } : t
+      )
+    );
+
+    addNotification({
+      targetRole: 'all',
+      title: 'Guest Checked In',
+      message: `${res.customerName} checked in for ${res.tableNumber}.`,
+      type: 'success',
+      tableNumber: res.tableNumber,
+    });
+
+    addAuditLog({
+      userName: 'Branch Manager',
+      userRole: 'Manager',
+      action: 'RESERVATION_CHECKED_IN',
+      entity: 'Reservation',
+      entityId: reservationId,
+      newValue: `Table ${res.tableNumber} occupied for ${res.customerName}`,
+      branchId: res.branchId,
+    });
+
+    return { success: true, message: `${res.customerName} successfully checked in at ${res.tableNumber}.` };
   };
 
   // 2. Table Session Check-In
@@ -1175,6 +1213,7 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setRedeemedPoints,
         createReservation,
         cancelReservation,
+        checkInReservation,
         startTableSession,
         endTableSession,
         placeOrder,

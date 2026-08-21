@@ -40,6 +40,10 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
 
   useEffect(() => {
     if (!targetOrder) return;
+    if (targetOrder.status === 'ready' || targetOrder.status === 'served' || targetOrder.status === 'completed') {
+      setRemainingSeconds(0);
+      return;
+    }
     const initialSeconds = (targetOrder.estimatedPrepMinutes + (targetOrder.delayMinutes || 0)) * 60;
     setRemainingSeconds(initialSeconds);
 
@@ -48,7 +52,7 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetOrder?.id, targetOrder?.delayMinutes]);
+  }, [targetOrder?.id, targetOrder?.delayMinutes, targetOrder?.status]);
 
   if (!targetOrder) {
     return (

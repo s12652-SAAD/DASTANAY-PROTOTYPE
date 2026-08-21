@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDastanay } from '../../context/DastanayContext';
 import { dictionary } from '../../utils/translations';
 import { Order, OrderStatus } from '../../types';
@@ -14,6 +14,7 @@ import {
   Plus,
   Bell,
   RefreshCw,
+  Timer,
 } from 'lucide-react';
 import { DastnayLogo } from '../common/DastnayLogo';
 
@@ -30,6 +31,15 @@ export const KitchenKDS: React.FC = () => {
     language,
   } = useDastanay();
   const t = dictionary[language];
+
+  const [liveKdsTime, setLiveKdsTime] = useState(new Date());
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setLiveKdsTime(new Date());
+    }, 1000);
+    return () => clearInterval(t);
+  }, []);
 
   const currentBranch = branches.find((b) => b.id === currentBranchId) || branches[0];
   const currentRestaurant = restaurants.find((r) => r.id === currentBranch.restaurantId) || restaurants[0];
@@ -88,21 +98,30 @@ export const KitchenKDS: React.FC = () => {
           </div>
         </div>
 
-        {/* Station Bento Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1">
-          {stations.map((st) => (
-            <button
-              key={st}
-              onClick={() => setStationFilter(st)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
-                stationFilter === st
-                  ? 'bg-[#9A2D22] text-white border border-[#9A2D22] shadow-xs'
-                  : 'bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700'
-              }`}
-            >
-              {st}
-            </button>
-          ))}
+        {/* Live Clock & Station Bento Pills */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 bg-stone-800/90 border border-stone-700 px-3.5 py-1.5 rounded-xl font-mono text-xs text-amber-400">
+            <Timer className="w-4 h-4 animate-spin text-[#FEE248]" />
+            <span className="font-bold">
+              {liveKdsTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1">
+            {stations.map((st) => (
+              <button
+                key={st}
+                onClick={() => setStationFilter(st)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs ${
+                  stationFilter === st
+                    ? 'bg-[#9A2D22] text-white border border-[#9A2D22] shadow-xs'
+                    : 'bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

@@ -12,6 +12,10 @@ import {
   Minus,
   ShoppingBag,
   ArrowRight,
+  Flame,
+  Utensils,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DastnayLogo } from '../common/DastnayLogo';
@@ -24,6 +28,8 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
   const {
     menuItems,
     inventory,
+    restaurants,
+    branches,
     currentBranchId,
     addToCart,
     currentRestaurantId,
@@ -32,6 +38,11 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
     cart,
   } = useDastanay();
   const t = dictionary[language];
+
+  const currentRestaurant =
+    restaurants.find((r) => r.id === currentRestaurantId) || restaurants[0];
+  const currentBranch =
+    branches.find((b) => b.id === currentBranchId) || branches[0];
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -132,6 +143,61 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Main Menu Branding Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="app-card p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-gradient-to-br from-stone-900 via-[#832822] to-[#9B341F] text-white shadow-md border-0 relative overflow-hidden"
+      >
+        <div className="flex items-center gap-3.5 z-10">
+          <DastnayLogo variant="tile" size="md" rounded="xl" className="shadow-md shrink-0" />
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5">
+                <span>{currentRestaurant.name}</span>
+                <span className="text-[#FEE158] font-serif font-normal text-xs sm:text-sm">
+                  (Live Menu)
+                </span>
+              </h2>
+              <span className="px-2 py-0.5 rounded-md bg-white/20 text-[#FEE158] text-[10px] font-bold uppercase tracking-wider">
+                {currentBranch.area}
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-amber-100/90 font-medium">
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#FEE158]" />
+                100% Halal Certified
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Flame className="w-3.5 h-3.5 text-[#FEE158]" />
+                Fresh Charcoal & Handi
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-[#FEE158]" />
+                10-25m Prep
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Action / Table status pill */}
+        <div className="flex items-center gap-2 z-10 self-end md:self-auto shrink-0">
+          {currentTableSession ? (
+            <div className="flex items-center gap-2 bg-black/30 border border-white/20 rounded-xl px-3 py-1.5 text-xs font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#FEE158] animate-pulse"></span>
+              <span>{currentTableSession.tableNumber} Active</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 bg-white/15 border border-white/20 rounded-xl px-3 py-1.5 text-xs font-semibold text-amber-100">
+              <Sparkles className="w-3.5 h-3.5 text-[#FEE158]" />
+              <span>dastnay Live Kitchen</span>
+            </div>
+          )}
+        </div>
+      </motion.div>
 
       {/* Table Session Banner if active */}
       {currentTableSession ? (

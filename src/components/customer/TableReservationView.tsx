@@ -31,8 +31,34 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
   const { tables, createReservation, language } = useDastanay();
   const t = dictionary[language];
 
+  const getTodayDateString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const getTomorrowDateString = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const getDayAfterTomorrowString = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 2);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const [selectedTableId, setSelectedTableId] = useState<string>('tbl-4');
-  const [selectedDate, setSelectedDate] = useState<string>('2026-08-14');
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayDateString());
   const [selectedTime, setSelectedTime] = useState<string>('08:30 PM');
   const [guestCount, setGuestCount] = useState<number>(4);
   const [customerName, setCustomerName] = useState<string>('Syed Hamza Ali');
@@ -272,59 +298,105 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
           </div>
 
           {/* Step 2: Date, Time & Guests Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <div className="space-y-3 pt-2">
+            {/* Quick Date Selectors */}
             <div>
               <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5">
-                Reservation Date
+                Select Booking Date
               </label>
-              <div className="relative">
-                <Calendar className="w-4 h-4 text-stone-400 absolute left-3.5 top-3 pointer-events-none" />
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22]"
-                />
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedDate(getTodayDateString())}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    selectedDate === getTodayDateString()
+                      ? 'bg-[#9A2D22] text-white shadow-xs'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                  }`}
+                >
+                  Today
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedDate(getTomorrowDateString())}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    selectedDate === getTomorrowDateString()
+                      ? 'bg-[#9A2D22] text-white shadow-xs'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                  }`}
+                >
+                  Tomorrow
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedDate(getDayAfterTomorrowString())}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    selectedDate === getDayAfterTomorrowString()
+                      ? 'bg-[#9A2D22] text-white shadow-xs'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                  }`}
+                >
+                  In 2 Days
+                </button>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5">
-                Time Slot
-              </label>
-              <div className="relative">
-                <Clock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3 pointer-events-none" />
-                <select
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22] cursor-pointer"
-                >
-                  {timeSlots.map((slot) => (
-                    <option key={slot} value={slot}>
-                      {slot}
-                    </option>
-                  ))}
-                </select>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5">
+                  Custom Date
+                </label>
+                <div className="relative">
+                  <Calendar className="w-4 h-4 text-stone-400 absolute left-3.5 top-3 pointer-events-none" />
+                  <input
+                    type="date"
+                    min={getTodayDateString()}
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22]"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5">
-                Number of Guests
-              </label>
-              <div className="relative">
-                <Users className="w-4 h-4 text-stone-400 absolute left-3.5 top-3 pointer-events-none" />
-                <select
-                  value={guestCount}
-                  onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22] cursor-pointer"
-                >
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16].map((num) => (
-                    <option key={num} value={num}>
-                      {num} {num === 1 ? 'Guest' : 'Guests'}
-                    </option>
-                  ))}
-                </select>
+              <div>
+                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5">
+                  Time Slot
+                </label>
+                <div className="relative">
+                  <Clock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3 pointer-events-none" />
+                  <select
+                    value={selectedTime}
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22] cursor-pointer"
+                  >
+                    {timeSlots.map((slot) => (
+                      <option key={slot} value={slot}>
+                        {slot}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5">
+                  Number of Guests
+                </label>
+                <div className="relative">
+                  <Users className="w-4 h-4 text-stone-400 absolute left-3.5 top-3 pointer-events-none" />
+                  <select
+                    value={guestCount}
+                    onChange={(e) => setGuestCount(Number(e.target.value))}
+                    className="w-full pl-10 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22] cursor-pointer"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16].map((num) => (
+                      <option key={num} value={num}>
+                        {num} {num === 1 ? 'Guest' : 'Guests'}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>

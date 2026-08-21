@@ -10,6 +10,7 @@ import { OrderTrackerView } from './OrderTrackerView';
 import { LoyaltyDashboard } from './LoyaltyDashboard';
 import { ReviewModal } from './ReviewModal';
 import { QRScannerModal } from '../common/QRScannerModal';
+import { DastnayLogo } from '../common/DastnayLogo';
 import {
   Compass,
   CalendarDays,
@@ -115,11 +116,16 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
       >
         {/* Selected Restaurant & Branch info */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-          <img
-            src={currentRestaurant.logo}
-            alt={currentRestaurant.name}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover border border-stone-200 dark:border-stone-700 shadow-xs shrink-0"
-          />
+          <div className="relative shrink-0">
+            <img
+              src={currentRestaurant.logo}
+              alt={currentRestaurant.name}
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover border border-stone-200 dark:border-stone-700 shadow-xs"
+            />
+            <div className="absolute -bottom-1 -right-1 ring-2 ring-white dark:ring-stone-900 rounded-md shadow-xs">
+              <DastnayLogo variant="tile" size="xs" rounded="sm" className="w-4 h-4 !rounded-[4px]" />
+            </div>
+          </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="font-extrabold text-xs sm:text-base text-stone-900 dark:text-stone-100 truncate">
