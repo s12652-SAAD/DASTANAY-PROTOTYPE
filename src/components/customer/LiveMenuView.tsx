@@ -151,13 +151,13 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 15 }}
-            className="fixed bottom-6 right-6 z-50 bg-[#9A2D22] text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-xs font-bold"
+            className="fixed bottom-6 right-6 z-50 bg-[#22336F] text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-xs font-bold border border-[#364FAB]"
           >
-            <Check className="w-4 h-4 text-[#FEE248]" />
+            <Check className="w-4 h-4 text-[#E8ECFB]" />
             <span>{addedToast}</span>
             <button
               onClick={onOpenCart}
-              className="ml-2 px-2.5 py-1 bg-[#FEE248] text-stone-900 rounded-md text-[11px] font-extrabold hover:bg-yellow-300 cursor-pointer"
+              className="ml-2 px-2.5 py-1 bg-[#364FAB] text-white rounded-md text-[11px] font-extrabold hover:bg-[#2D428F] cursor-pointer"
             >
               View Cart
             </button>
@@ -179,7 +179,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
 
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-extrabold text-stone-900 dark:text-stone-100">
+                <h1 className="text-lg sm:text-xl font-extrabold text-[#202124] dark:text-[#F7F8FA]">
                   {currentRestaurant.name}
                 </h1>
                 <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
@@ -187,14 +187,14 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 </span>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs text-stone-500">
-                <span className="flex items-center gap-1 font-semibold text-stone-800 dark:text-stone-200">
-                  <Star className="w-3.5 h-3.5 fill-[#E5A324] text-[#E5A324]" />
+              <div className="flex flex-wrap items-center gap-2 text-xs text-[#687078]">
+                <span className="flex items-center gap-1 font-semibold text-[#202124] dark:text-stone-200">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   {currentRestaurant.rating} ({currentRestaurant.reviewCount} reviews)
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#9A2D22]" />
+                  <MapPin className="w-3.5 h-3.5 text-[#364FAB]" />
                   {currentBranch.name}, {currentBranch.city}
                 </span>
                 <span>•</span>
@@ -209,9 +209,9 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
           {/* Active Table Session status */}
           <div className="flex items-center gap-2 self-stretch sm:self-auto">
             {currentTableSession ? (
-              <div className="flex-1 sm:flex-initial flex items-center justify-between sm:justify-start gap-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 rounded-lg px-3 py-2 text-xs font-bold text-amber-900 dark:text-[#FEE248]">
+              <div className="flex-1 sm:flex-initial flex items-center justify-between sm:justify-start gap-2 bg-[#F3F5FD] dark:bg-[#22336F]/40 border border-[#E8ECFB] dark:border-[#364FAB]/40 rounded-lg px-3 py-2 text-xs font-bold text-[#22336F] dark:text-[#E8ECFB]">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#364FAB] animate-pulse"></span>
                   <span>{currentTableSession.tableNumber} Active Session</span>
                 </div>
                 <button
@@ -222,8 +222,8 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg px-3 py-2 text-xs font-medium text-stone-700 dark:text-stone-300">
-                <Utensils className="w-3.5 h-3.5 text-[#9A2D22]" />
+              <div className="flex items-center gap-1.5 bg-[#F7F8FA] dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg px-3 py-2 text-xs font-medium text-[#202124] dark:text-stone-300">
+                <Utensils className="w-3.5 h-3.5 text-[#364FAB]" />
                 <span>Dine-in & Takeaway Live Menu</span>
               </div>
             )}
@@ -249,8 +249,8 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors cursor-pointer flex items-center gap-1.5 ${
                     isSelected
-                      ? 'bg-[#9A2D22] text-white'
-                      : 'bg-white dark:bg-[#18181B] text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700'
+                      ? 'bg-[#364FAB] text-white'
+                      : 'bg-white dark:bg-[#18181B] text-[#202124] dark:text-stone-300 hover:bg-[#F3F5FD] dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700'
                   }`}
                 >
                   <span>{cat}</span>
@@ -274,7 +274,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
               placeholder="Search dishes in menu..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-[#18181B] text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
+              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-[#18181B] text-[#202124] dark:text-[#F7F8FA] outline-none focus:border-[#364FAB]"
             />
           </div>
         </div>
@@ -305,10 +305,10 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="font-bold text-sm text-stone-900 dark:text-stone-100">
+                      <h3 className="font-bold text-sm text-[#202124] dark:text-[#F7F8FA]">
                         {item.name}
                       </h3>
-                      <p className="text-xs font-semibold text-[#9A2D22] dark:text-[#E5A324] font-urdu">
+                      <p className="text-xs font-semibold text-[#364FAB] dark:text-[#E8ECFB] font-urdu">
                         {item.nameUrdu}
                       </p>
                     </div>
@@ -324,7 +324,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                     ) : null}
                   </div>
 
-                  <p className="text-xs text-stone-500 line-clamp-2 mt-1 leading-relaxed">
+                  <p className="text-xs text-[#687078] line-clamp-2 mt-1 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
@@ -332,7 +332,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 {/* Price & Action Button */}
                 <div className="flex items-center justify-between pt-2 border-t border-stone-100 dark:border-stone-800">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-sm text-stone-900 dark:text-stone-100">
+                    <span className="font-mono font-bold text-sm text-[#202124] dark:text-[#F7F8FA]">
                       Rs. {item.basePrice.toLocaleString()}
                     </span>
                     <span className="text-[10px] text-stone-400">• {item.prepTimeMinutes}m</span>
@@ -341,9 +341,9 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                   <button
                     disabled={!isBranchAvailable}
                     onClick={() => handleOpenCustomizer(item)}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] disabled:bg-stone-300 dark:disabled:bg-stone-700 text-white text-xs font-bold transition-colors cursor-pointer disabled:cursor-not-allowed shadow-2xs"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#364FAB] hover:bg-[#2D428F] disabled:bg-stone-300 dark:disabled:bg-stone-700 text-white text-xs font-bold transition-colors cursor-pointer disabled:cursor-not-allowed shadow-2xs"
                   >
-                    <Plus className="w-3.5 h-3.5 text-[#FEE248]" />
+                    <Plus className="w-3.5 h-3.5 text-white" />
                     <span>{inCartCount > 0 ? `${inCartCount} Added` : 'Add'}</span>
                   </button>
                 </div>
@@ -358,12 +358,12 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                   loading="lazy"
                 />
                 {item.isPopular && (
-                  <span className="absolute top-1 left-1 bg-[#E5A324] text-stone-900 text-[9px] font-extrabold px-1.5 py-0.2 rounded">
+                  <span className="absolute top-1 left-1 bg-[#364FAB] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded">
                     Popular
                   </span>
                 )}
                 {item.isSpicy && (
-                  <span className="absolute bottom-1 right-1 bg-[#9A2D22] text-white text-[9px] font-bold px-1.5 py-0.2 rounded">
+                  <span className="absolute bottom-1 right-1 bg-rose-600 text-white text-[9px] font-bold px-1.5 py-0.2 rounded">
                     🌶️ Spicy
                   </span>
                 )}
@@ -382,15 +382,15 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.15 }}
-              className="bg-white dark:bg-[#18181B] text-stone-900 dark:text-stone-100 rounded-xl shadow-2xl max-w-md w-full overflow-hidden border border-stone-200 dark:border-stone-800 max-h-[90vh] flex flex-col"
+              className="bg-white dark:bg-[#18181B] text-[#202124] dark:text-[#F7F8FA] rounded-xl shadow-2xl max-w-md w-full overflow-hidden border border-stone-200 dark:border-stone-800 max-h-[90vh] flex flex-col"
             >
               {/* Header */}
               <div className="p-4 border-b border-stone-100 dark:border-stone-800 flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                  <h3 className="text-sm font-bold text-[#202124] dark:text-[#F7F8FA]">
                     Customize {activeItem.name}
                   </h3>
-                  <p className="text-xs text-[#9A2D22] dark:text-[#E5A324] font-urdu">
+                  <p className="text-xs text-[#364FAB] dark:text-[#E8ECFB] font-urdu">
                     {activeItem.nameUrdu}
                   </p>
                 </div>
@@ -407,7 +407,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 {/* Variations (e.g. Half / Full) */}
                 {activeItem.variations && activeItem.variations.length > 0 && (
                   <div className="space-y-2">
-                    <label className="font-bold text-stone-800 dark:text-stone-200 text-xs block">
+                    <label className="font-bold text-[#202124] dark:text-stone-200 text-xs block">
                       Portion / Serving Size
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -417,7 +417,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                           onClick={() => setSelectedVariation(v)}
                           className={`p-2.5 rounded-lg border text-left cursor-pointer transition-colors ${
                             selectedVariation?.id === v.id
-                              ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 font-bold text-[#9A2D22] dark:text-[#FEE248]'
+                              ? 'border-[#364FAB] bg-[#F3F5FD] dark:bg-[#22336F]/50 font-bold text-[#364FAB] dark:text-[#E8ECFB]'
                               : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
                           }`}
                         >
@@ -436,7 +436,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 {/* Add-ons */}
                 {activeItem.addons && activeItem.addons.length > 0 && (
                   <div className="space-y-2">
-                    <label className="font-bold text-stone-800 dark:text-stone-200 text-xs block">
+                    <label className="font-bold text-[#202124] dark:text-stone-200 text-xs block">
                       Choose Add-ons
                     </label>
                     <div className="space-y-1.5">
@@ -448,7 +448,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                             onClick={() => handleToggleAddon(a)}
                             className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition-colors ${
                               isSelected
-                                ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 text-[#9A2D22] dark:text-[#FEE248]'
+                                ? 'border-[#364FAB] bg-[#F3F5FD] dark:bg-[#22336F]/50 text-[#364FAB] dark:text-[#E8ECFB]'
                                 : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
                             }`}
                           >
@@ -456,7 +456,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                               <div
                                 className={`w-4 h-4 rounded flex items-center justify-center border ${
                                   isSelected
-                                    ? 'bg-[#9A2D22] border-[#9A2D22] text-white'
+                                    ? 'bg-[#364FAB] border-[#364FAB] text-white'
                                     : 'border-stone-400'
                                 }`}
                               >
@@ -474,7 +474,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
 
                 {/* Instructions */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-stone-800 dark:text-stone-200 text-xs block">
+                  <label className="font-bold text-[#202124] dark:text-stone-200 text-xs block">
                     Special Cooking Note
                   </label>
                   <input
@@ -482,7 +482,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                     placeholder="e.g. Less spice, extra raita, crispier..."
                     value={specialInstructions}
                     onChange={(e) => setSpecialInstructions(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 outline-none focus:border-[#9A2D22]"
+                    className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 outline-none focus:border-[#364FAB]"
                   />
                 </div>
 
@@ -492,14 +492,14 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                   <div className="flex items-center gap-3 bg-stone-100 dark:bg-stone-800 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#9A2D22] cursor-pointer"
+                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#364FAB] cursor-pointer"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
                     <span className="font-mono font-bold text-xs w-4 text-center">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#9A2D22] cursor-pointer"
+                      className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#364FAB] cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
@@ -508,17 +508,17 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
               </div>
 
               {/* Footer */}
-              <div className="p-3.5 bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between shrink-0">
+              <div className="p-3.5 bg-[#F7F8FA] dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between shrink-0">
                 <div>
-                  <span className="text-[10px] text-stone-500 block">Total</span>
-                  <span className="font-mono font-bold text-sm text-[#9A2D22] dark:text-[#FEE248]">
+                  <span className="text-[10px] text-[#687078] block">Total</span>
+                  <span className="font-mono font-bold text-sm text-[#364FAB] dark:text-[#E8ECFB]">
                     Rs. {calculateCustomizerTotal().toLocaleString()}
                   </span>
                 </div>
 
                 <button
                   onClick={handleAddToCartSubmit}
-                  className="px-4 py-2 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+                  className="px-4 py-2 rounded-lg bg-[#364FAB] hover:bg-[#2D428F] text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
                 >
                   Add to Cart
                 </button>
@@ -533,10 +533,10 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
         <div className="sm:hidden fixed bottom-4 inset-x-3 z-40">
           <button
             onClick={onOpenCart}
-            className="w-full bg-[#9A2D22] text-white p-3 rounded-xl shadow-xl flex items-center justify-between cursor-pointer"
+            className="w-full bg-[#364FAB] text-white p-3 rounded-xl shadow-xl flex items-center justify-between cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-4 h-4 text-[#FEE248]" />
+              <ShoppingBag className="w-4 h-4 text-white" />
               <div className="text-left text-xs">
                 <span className="font-bold">{cartTotalItems} items</span>
                 <span className="mx-1">•</span>
@@ -544,7 +544,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-1 bg-[#FEE248] text-stone-900 px-2.5 py-1 rounded-md font-bold text-xs">
+            <div className="flex items-center gap-1 bg-[#E8ECFB] text-[#22336F] px-2.5 py-1 rounded-md font-bold text-xs">
               <span>View Cart</span>
               <ChevronRight className="w-3 h-3" />
             </div>

@@ -260,10 +260,10 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const existing = prev.find(
         (i) =>
           i.menuItemId === item.menuItemId &&
-          i.selectedVariation?.id === item.selectedVariation?.id &&
-          JSON.stringify(i.selectedAddons?.map((a) => a.id).sort()) ===
-            JSON.stringify(item.selectedAddons?.map((a) => a.id).sort()) &&
-          i.specialInstructions === item.specialInstructions
+          (i.selectedVariation?.id || null) === (item.selectedVariation?.id || null) &&
+          JSON.stringify((i.selectedAddons || []).map((a) => (typeof a === 'object' && a ? a.id : a)).sort()) ===
+            JSON.stringify((item.selectedAddons || []).map((a) => (typeof a === 'object' && a ? a.id : a)).sort()) &&
+          (i.specialInstructions || '') === (item.specialInstructions || '')
       );
 
       if (existing) {

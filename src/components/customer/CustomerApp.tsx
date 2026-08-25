@@ -107,7 +107,7 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-1 sm:py-2 space-y-3.5 sm:space-y-5">
+    <div className="app-container py-1 sm:py-2 space-y-3.5 sm:space-y-5">
       {/* Top Context Bar - Compact & Responsive */}
       <div className="bg-white dark:bg-[#18181B] rounded-xl border border-stone-200 dark:border-stone-800 p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
         {/* Selected Restaurant & Branch info */}
@@ -135,9 +135,9 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
         {/* Quick Action Buttons */}
         <div className="flex items-center gap-2 shrink-0 ml-auto sm:ml-0">
           {currentTableSession ? (
-            <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/50 px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-700">
-              <span className="w-2 h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
-              <span className="text-xs font-bold text-amber-900 dark:text-amber-300">
+            <div className="flex items-center gap-2 bg-[#F3F5FD] dark:bg-[#22336F]/40 px-3 py-1.5 rounded-lg border border-[#E8ECFB] dark:border-[#364FAB]/40">
+              <span className="w-2 h-2 rounded-full bg-[#364FAB] animate-pulse"></span>
+              <span className="text-xs font-bold text-[#22336F] dark:text-[#E8ECFB]">
                 {currentTableSession.tableNumber}
               </span>
               <button
@@ -153,9 +153,9 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
             <button
               onClick={onOpenQRScanner}
               title="Scan Table QR"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-[#E8ECFB] dark:hover:bg-[#22336F]/40 text-[#202124] dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
             >
-              <QrCode className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#E5A324]" />
+              <QrCode className="w-3.5 h-3.5 text-[#364FAB]" />
               <span>{t.scan_qr}</span>
             </button>
           )}
@@ -164,11 +164,11 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
             onClick={() => setActiveTab('reserve')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'reserve'
-                ? 'bg-[#9A2D22] text-white'
-                : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-700'
+                ? 'bg-[#364FAB] text-white'
+                : 'bg-stone-100 dark:bg-stone-800 hover:bg-[#E8ECFB] dark:hover:bg-[#22336F]/40 text-[#202124] dark:text-stone-200 border border-stone-200 dark:border-stone-700'
             }`}
           >
-            <CalendarDays className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#E5A324]" />
+            <CalendarDays className={`w-3.5 h-3.5 ${activeTab === 'reserve' ? 'text-white' : 'text-[#364FAB]'}`} />
             <span>{t.book_table}</span>
           </button>
         </div>
@@ -184,15 +184,15 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
                 active
-                  ? 'bg-white dark:bg-stone-700 text-[#9A2D22] dark:text-[#FEE248] shadow-2xs'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+                  ? 'bg-white dark:bg-[#22336F] text-[#364FAB] dark:text-[#E8ECFB] shadow-2xs'
+                  : 'text-[#687078] dark:text-stone-400 hover:text-[#202124] dark:hover:text-stone-100'
               }`}
             >
               {tab.icon}
               <span className="hidden sm:inline">{tab.label}</span>
               <span className="sm:hidden">{tab.mobileLabel}</span>
               {tab.id === 'track' && activeOrdersCount > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
+                <span className="w-2 h-2 rounded-full bg-[#364FAB] animate-pulse"></span>
               )}
             </button>
           );

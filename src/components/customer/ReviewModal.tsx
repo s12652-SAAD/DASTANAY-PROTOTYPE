@@ -74,11 +74,11 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
 
         {isDone ? (
           <div className="p-8 text-center space-y-3">
-            <div className="w-14 h-14 bg-amber-100 dark:bg-amber-950 text-[#9A2D22] dark:text-[#FEE248] rounded-full flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 bg-[#E8ECFB] dark:bg-[#22336F]/60 text-[#364FAB] dark:text-[#E8ECFB] rounded-full flex items-center justify-center mx-auto">
               <Check className="w-8 h-8" />
             </div>
-            <h4 className="font-bold text-base text-stone-900 dark:text-stone-100">Shukriya! Thank you for your feedback.</h4>
-            <p className="text-xs text-stone-500">Your review helps our kitchen and staff maintain high culinary standards.</p>
+            <h4 className="font-bold text-base text-[#202124] dark:text-stone-100">Shukriya! Thank you for your feedback.</h4>
+            <p className="text-xs text-[#687078]">Your review helps our kitchen and staff maintain high culinary standards.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
@@ -89,7 +89,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
             </div>
 
             <div className="space-y-1.5 pt-2">
-              <label className="font-bold text-stone-700 dark:text-stone-300 block">
+              <label className="font-bold text-[#202124] dark:text-stone-300 block">
                 Written Comments & Suggestions
               </label>
               <textarea
@@ -97,7 +97,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
                 placeholder="What did you love about the food, ambiance, or service? (e.g. Mutton Karahi was flavorful, fast service...)"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full p-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#9A2D22]"
+                className="w-full p-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-[#F7F8FA] dark:bg-stone-800 text-[#202124] dark:text-stone-100 outline-none focus:ring-1 focus:ring-[#364FAB]"
                 required
               ></textarea>
             </div>
@@ -106,7 +106,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ orderId, onClose }) =>
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 type="submit"
-                className="w-full py-2.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-extrabold text-xs shadow-sm cursor-pointer transition-colors"
+                className="w-full py-2.5 rounded-xl bg-[#364FAB] hover:bg-[#2D428F] text-white font-extrabold text-xs shadow-sm cursor-pointer transition-colors"
               >
                 Submit Verified Review
               </motion.button>

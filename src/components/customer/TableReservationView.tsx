@@ -221,7 +221,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="app-card p-6 sm:p-8 border border-amber-500/40 shadow-xl text-center space-y-6"
+          className="app-card p-6 sm:p-8 border border-[#364FAB]/40 shadow-xl text-center space-y-6"
         >
           <div className="flex justify-center">
             <DastnayLogo variant="tile" size="md" rounded="2xl" />
@@ -232,47 +232,47 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
               <CheckCircle2 className="w-4 h-4" />
               <span>Real Database Booking Confirmed</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-stone-900 dark:text-stone-100">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#202124] dark:text-stone-100">
               Table Reservation Secured!
             </h2>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-[#687078]">
               Your table is reserved at {restaurant.name} ({branch.name}).
             </p>
           </div>
 
-          <div className="max-w-md mx-auto bg-stone-50 dark:bg-stone-800/60 rounded-xl p-5 border border-stone-200 dark:border-stone-700 text-left text-xs space-y-3 font-mono">
+          <div className="max-w-md mx-auto bg-[#F7F8FA] dark:bg-stone-800/60 rounded-xl p-5 border border-stone-200 dark:border-stone-700 text-left text-xs space-y-3 font-mono">
             <div className="flex justify-between border-b border-stone-200 dark:border-stone-700 pb-2">
-              <span className="text-stone-500 font-sans">Official Booking ID:</span>
-              <span className="font-bold text-[#9A2D22] dark:text-[#FEE248] text-sm">
+              <span className="text-[#687078] font-sans">Official Booking ID:</span>
+              <span className="font-bold text-[#364FAB] dark:text-[#E8ECFB] text-sm">
                 {successInfo.id}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-stone-500 font-sans">Reserved For:</span>
-              <span className="font-bold text-stone-900 dark:text-stone-100">{successInfo.customerName}</span>
+              <span className="text-[#687078] font-sans">Reserved For:</span>
+              <span className="font-bold text-[#202124] dark:text-stone-100">{successInfo.customerName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-stone-500 font-sans">Table Assigned:</span>
-              <span className="font-bold text-stone-900 dark:text-stone-100">{successInfo.tableNumber}</span>
+              <span className="text-[#687078] font-sans">Table Assigned:</span>
+              <span className="font-bold text-[#202124] dark:text-stone-100">{successInfo.tableNumber}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-stone-500 font-sans">Date & Time:</span>
-              <span className="font-bold text-stone-900 dark:text-stone-100">
+              <span className="text-[#687078] font-sans">Date & Time:</span>
+              <span className="font-bold text-[#202124] dark:text-stone-100">
                 {successInfo.date} at {successInfo.time}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-stone-500 font-sans">Number of Guests:</span>
-              <span className="font-bold text-stone-900 dark:text-stone-100">{successInfo.guests} Persons</span>
+              <span className="text-[#687078] font-sans">Number of Guests:</span>
+              <span className="font-bold text-[#202124] dark:text-stone-100">{successInfo.guests} Persons</span>
             </div>
-            <div className="flex justify-between text-amber-900 dark:text-amber-300 pt-2 border-t border-stone-200 dark:border-stone-700">
+            <div className="flex justify-between text-[#22336F] dark:text-[#E8ECFB] pt-2 border-t border-stone-200 dark:border-stone-700">
               <span className="font-sans">Prepaid Booking Deposit:</span>
               <span className="font-bold">Rs. {successInfo.bookingFee} (Adjustable in Bill)</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 text-left flex items-start gap-3">
-            <Info className="w-5 h-5 shrink-0 text-[#9A2D22] mt-0.5" />
+          <div className="p-4 rounded-xl bg-[#F3F5FD] dark:bg-[#22336F]/40 border border-[#E8ECFB] dark:border-[#364FAB]/30 text-xs text-[#22336F] dark:text-[#E8ECFB] text-left flex items-start gap-3">
+            <Info className="w-5 h-5 shrink-0 text-[#364FAB] mt-0.5" />
             <div>
               <span className="font-bold">Arrival Policy & QR Table Ordering:</span>
               <p className="mt-0.5">
@@ -284,14 +284,14 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
               onClick={handleCancelBooking}
-              className="px-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs font-bold cursor-pointer transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-[#687078] hover:bg-[#F3F5FD] dark:hover:bg-stone-800 text-xs font-bold cursor-pointer transition-colors"
             >
               Cancel Reservation
             </button>
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={() => onReservationComplete(successInfo.id)}
-              className="px-6 py-2.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs shadow-md cursor-pointer transition-colors"
+              className="px-6 py-2.5 rounded-xl bg-[#364FAB] hover:bg-[#2D428F] text-white font-bold text-xs shadow-md cursor-pointer transition-colors"
             >
               Start Table Session & Browse Menu
             </motion.button>
@@ -302,15 +302,15 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
         <div className="app-card p-5 sm:p-7 space-y-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#9A2D22] dark:text-[#E5A324] bg-amber-50 dark:bg-amber-950 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#364FAB] dark:text-[#E8ECFB] bg-[#E8ECFB] dark:bg-[#22336F]/60 px-2 py-0.5 rounded">
                 Live SQL Database Booking
               </span>
-              <span className="text-xs text-stone-500">• Real-Time Capacity Verified</span>
+              <span className="text-xs text-[#687078]">• Real-Time Capacity Verified</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#202124] dark:text-stone-100">
               Pre-Book Your Table at {restaurant.name}
             </h2>
-            <p className="text-xs text-stone-500 mt-0.5">
+            <p className="text-xs text-[#687078] mt-0.5">
               {branch.name} • {branch.address}
             </p>
           </div>
@@ -325,11 +325,11 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
           {/* Step 1: Date, Time & Guests Grid */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-stone-800 dark:text-stone-200 uppercase tracking-wider">
+              <label className="text-xs font-bold text-[#202124] dark:text-stone-200 uppercase tracking-wider">
                 1. Choose Date, Time & Guests
               </label>
               {isLoadingAvailability && (
-                <span className="text-[11px] text-amber-700 dark:text-amber-400 animate-pulse font-medium">
+                <span className="text-[11px] text-[#364FAB] dark:text-[#E8ECFB] animate-pulse font-medium">
                   Checking live slot availability...
                 </span>
               )}
@@ -342,7 +342,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                 onClick={() => setSelectedDate(getTodayDateString())}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   selectedDate === getTodayDateString()
-                    ? 'bg-[#9A2D22] text-white shadow-xs'
+                    ? 'bg-[#364FAB] text-white shadow-xs'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
@@ -353,7 +353,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                 onClick={() => setSelectedDate(getTomorrowDateString())}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   selectedDate === getTomorrowDateString()
-                    ? 'bg-[#9A2D22] text-white shadow-xs'
+                    ? 'bg-[#364FAB] text-white shadow-xs'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
@@ -364,7 +364,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                 onClick={() => setSelectedDate(getDayAfterTomorrowString())}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   selectedDate === getDayAfterTomorrowString()
-                    ? 'bg-[#9A2D22] text-white shadow-xs'
+                    ? 'bg-[#364FAB] text-white shadow-xs'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
@@ -384,7 +384,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                     min={getTodayDateString()}
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB]"
                     required
                   />
                 </div>
@@ -399,7 +399,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                   <select
                     value={selectedTime}
                     onChange={(e) => setSelectedTime(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22] cursor-pointer"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB] cursor-pointer"
                   >
                     {timeSlots.map((slot) => (
                       <option key={slot} value={slot}>
@@ -419,7 +419,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                   <select
                     value={guestCount}
                     onChange={(e) => setGuestCount(Number(e.target.value))}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22] cursor-pointer"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB] cursor-pointer"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16].map((num) => (
                       <option key={num} value={num}>
@@ -435,10 +435,10 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
           {/* Step 2: Visual Table Floor Plan */}
           <div className="space-y-3 pt-2 border-t border-stone-100 dark:border-stone-800">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-stone-800 dark:text-stone-200 uppercase tracking-wider">
+              <label className="text-xs font-bold text-[#202124] dark:text-stone-200 uppercase tracking-wider">
                 2. Select Table on Live Floor Plan
               </label>
-              <span className="text-[11px] text-stone-500">
+              <span className="text-[11px] text-[#687078]">
                 {availableTableIds.length} tables free for {selectedTime}
               </span>
             </div>
@@ -460,16 +460,16 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                     }}
                     className={`p-3 rounded-xl border text-left transition-all relative cursor-pointer ${
                       isSelected
-                        ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/60 ring-2 ring-[#9A2D22]/40 shadow-xs'
+                        ? 'border-[#364FAB] bg-[#F3F5FD] dark:bg-[#22336F]/60 ring-2 ring-[#364FAB]/40 shadow-xs'
                         : isAvailable
                         ? fitsGuests
-                          ? 'border-stone-200 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-800/50 hover:border-[#9A2D22]/50 hover:bg-white dark:hover:bg-stone-800'
-                          : 'border-amber-200 dark:border-amber-900 bg-stone-50/30 opacity-75'
+                          ? 'border-stone-200 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-800/50 hover:border-[#364FAB]/50 hover:bg-white dark:hover:bg-stone-800'
+                          : 'border-[#E8ECFB] dark:border-[#22336F]/40 bg-stone-50/30 opacity-75'
                         : 'border-stone-200 dark:border-stone-800 bg-stone-100 dark:bg-stone-800/30 opacity-50 cursor-not-allowed'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-extrabold text-xs text-stone-900 dark:text-stone-100">
+                      <span className="font-extrabold text-xs text-[#202124] dark:text-stone-100">
                         {table.tableNumber}
                       </span>
                       <span
@@ -499,7 +499,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
 
           {/* Step 3: Customer Information */}
           <div className="pt-2 border-t border-stone-100 dark:border-stone-800 space-y-3">
-            <label className="text-xs font-bold text-stone-800 dark:text-stone-200 uppercase tracking-wider">
+            <label className="text-xs font-bold text-[#202124] dark:text-stone-200 uppercase tracking-wider">
               3. Guest Contact Information
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -509,7 +509,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                   placeholder="Full Name"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB]"
                   required
                 />
               </div>
@@ -519,7 +519,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                   placeholder="Pakistani Mobile (+92 300 1234567)"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB]"
                   required
                 />
               </div>
@@ -529,7 +529,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                   placeholder="Email Address"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB]"
                   required
                 />
               </div>
@@ -541,7 +541,7 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                 placeholder="Special requests (e.g. Birthday decor, high chair for infant, corner table)..."
                 value={specialRequests}
                 onChange={(e) => setSpecialRequests(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
+                className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB]"
               />
             </div>
           </div>
@@ -549,10 +549,10 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
           {/* Step 4: Booking Fee & Pakistani Payment */}
           <div className="pt-2 border-t border-stone-100 dark:border-stone-800 space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-stone-800 dark:text-stone-200 uppercase tracking-wider">
+              <label className="text-xs font-bold text-[#202124] dark:text-stone-200 uppercase tracking-wider">
                 4. Booking Deposit & Pakistani Wallet
               </label>
-              <span className="font-extrabold text-sm text-[#9A2D22] dark:text-[#FEE248]">
+              <span className="font-extrabold text-sm text-[#364FAB] dark:text-[#E8ECFB]">
                 Rs. {bookingFee}
               </span>
             </div>
@@ -569,12 +569,12 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
                   onClick={() => setSelectedPayment(m.id as any)}
                   className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                     selectedPayment === m.id
-                      ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/40 text-[#9A2D22] dark:text-[#FEE248] font-bold ring-1 ring-[#9A2D22]'
-                      : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
+                      ? 'border-[#364FAB] bg-[#F3F5FD] dark:bg-[#22336F]/40 text-[#364FAB] dark:text-[#E8ECFB] font-bold ring-1 ring-[#364FAB]'
+                      : 'border-stone-200 dark:border-stone-700 hover:bg-[#F7F8FA] dark:hover:bg-stone-800'
                   }`}
                 >
                   <span className="font-bold text-xs block">{m.name}</span>
-                  <span className="text-[10px] text-stone-500 font-normal">{m.desc}</span>
+                  <span className="text-[10px] text-[#687078] font-normal">{m.desc}</span>
                 </button>
               ))}
             </div>
@@ -585,13 +585,13 @@ export const TableReservationView: React.FC<TableReservationViewProps> = ({
             whileTap={{ scale: 0.98 }}
             onClick={handleConfirmReservation}
             disabled={isSubmitting}
-            className="w-full py-3 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-[#364FAB] hover:bg-[#2D428F] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <span>Confirming Reservation in Database...</span>
             ) : (
               <>
-                <ShieldCheck className="w-4 h-4 text-[#FEE248]" />
+                <ShieldCheck className="w-4 h-4 text-[#E8ECFB]" />
                 <span>
                   Confirm & Pre-Pay Rs. {bookingFee} for {selectedTable?.tableNumber || 'Selected Table'}
                 </span>

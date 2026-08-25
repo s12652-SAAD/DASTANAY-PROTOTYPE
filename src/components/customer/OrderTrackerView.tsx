@@ -96,19 +96,19 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
       <div className="bg-white dark:bg-[#18181B] rounded-xl border border-stone-200 dark:border-stone-800 p-5 sm:p-6 space-y-5 shadow-2xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-stone-100 dark:border-stone-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#9A2D22] text-[#FEE248] flex items-center justify-center font-extrabold text-sm shadow-2xs">
+            <div className="w-10 h-10 rounded-lg bg-[#364FAB] text-[#E8ECFB] flex items-center justify-center font-extrabold text-sm shadow-2xs">
               {targetOrder.tableNumber.replace('Table ', 'T')}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono font-bold text-base text-[#9A2D22] dark:text-[#FEE248]">
+                <span className="font-mono font-bold text-base text-[#364FAB] dark:text-[#E8ECFB]">
                   {targetOrder.id}
                 </span>
-                <span className="px-2 py-0.2 rounded bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-xs font-bold">
+                <span className="px-2 py-0.2 rounded bg-[#F3F5FD] dark:bg-stone-800 text-[#364FAB] dark:text-[#E8ECFB] text-xs font-bold">
                   {targetOrder.tableNumber}
                 </span>
               </div>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-[#687078] mt-0.5">
                 Placed at {targetOrder.createdAt} • Guest: {targetOrder.customerName}
               </p>
             </div>
@@ -117,9 +117,9 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPrintModalData({ type: 'receipt', order: targetOrder })}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F3F5FD] dark:bg-stone-800 hover:bg-[#E8ECFB] dark:hover:bg-stone-700 text-[#22336F] dark:text-stone-200 text-xs font-bold transition-colors cursor-pointer"
             >
-              <Printer className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#FEE248]" />
+              <Printer className="w-3.5 h-3.5 text-[#364FAB] dark:text-[#E8ECFB]" />
               <span>Tax Invoice</span>
             </button>
           </div>
@@ -127,30 +127,30 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
 
         {/* Live Prep Countdown Clock Banner */}
         {targetOrder.status === 'preparing' || targetOrder.status === 'received' || targetOrder.status === 'confirmed' ? (
-          <div className="p-4 rounded-xl bg-stone-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4 border border-stone-800">
+          <div className="p-4 rounded-xl bg-[#22336F] text-white flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#364FAB]/30">
             <div className="space-y-1 text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[#FEE248] text-xs font-bold uppercase tracking-wider">
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[#E8ECFB] text-xs font-bold uppercase tracking-wider">
                 <ChefHat className="w-4 h-4" />
                 <span>Estimated Preparation</span>
               </div>
-              <p className="text-xs text-stone-300">
+              <p className="text-xs text-[#E8ECFB]/80">
                 Ready Around: <span className="font-bold text-white">{targetOrder.expectedReadyAt}</span>
               </p>
             </div>
 
             <div className="text-center sm:text-right">
-              <div className="font-mono text-2xl sm:text-3xl font-extrabold tracking-widest text-[#FEE248]">
+              <div className="font-mono text-2xl sm:text-3xl font-extrabold tracking-widest text-[#E8ECFB]">
                 {formatCountdown(remainingSeconds)}
               </div>
-              <span className="text-[10px] text-stone-400">Minutes Remaining</span>
+              <span className="text-[10px] text-[#E8ECFB]/70">Minutes Remaining</span>
             </div>
           </div>
         ) : targetOrder.status === 'ready' ? (
-          <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-950 dark:text-amber-200 flex items-center gap-3">
-            <Sparkles className="w-5 h-5 text-[#9A2D22] dark:text-[#FEE248] shrink-0" />
+          <div className="p-4 rounded-xl bg-[#F3F5FD] dark:bg-[#22336F]/60 border border-[#E8ECFB] dark:border-[#364FAB]/40 text-[#22336F] dark:text-[#E8ECFB] flex items-center gap-3">
+            <Sparkles className="w-5 h-5 text-[#364FAB] dark:text-[#E8ECFB] shrink-0" />
             <div>
               <span className="font-bold text-sm block">Your food is ready!</span>
-              <p className="text-xs text-amber-800 dark:text-amber-300">
+              <p className="text-xs text-[#364FAB] dark:text-[#E8ECFB]">
                 Our staff is bringing your order to {targetOrder.tableNumber}.
               </p>
             </div>
@@ -160,19 +160,19 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <div>
-                <span className="font-bold text-sm text-stone-900 dark:text-stone-100 block">
+                <span className="font-bold text-sm text-[#202124] dark:text-stone-100 block">
                   Food Served. Enjoy your meal!
                 </span>
-                <p className="text-xs text-stone-500 font-urdu">کھانا نوش فرمائیں</p>
+                <p className="text-xs text-[#687078] font-urdu">کھانا نوش فرمائیں</p>
               </div>
             </div>
 
             {!targetOrder.isReviewed && (
               <button
                 onClick={() => onOpenReviewModal(targetOrder.id)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs cursor-pointer transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#364FAB] hover:bg-[#2D428F] text-white font-bold text-xs cursor-pointer transition-colors"
               >
-                <Star className="w-3.5 h-3.5 fill-[#FEE248] text-[#FEE248]" />
+                <Star className="w-3.5 h-3.5 fill-[#E8ECFB] text-[#E8ECFB]" />
                 <span>Rate & Review</span>
               </button>
             )}
@@ -182,7 +182,7 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
         {/* Delay Notice Banner if Kitchen flagged delay */}
         {targetOrder.delayMinutes && targetOrder.delayMinutes > 0 && (
           <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs flex items-center gap-3">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-[#9A2D22]" />
+            <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
             <div>
               <span className="font-bold">Kitchen Update: +{targetOrder.delayMinutes} Mins</span>
               <p className="text-[11px] text-amber-800 dark:text-amber-300">
@@ -194,7 +194,7 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
 
         {/* Real-time Order Progress Steps */}
         <div className="space-y-4 pt-2">
-          <label className="text-xs font-bold text-stone-800 dark:text-stone-200 uppercase tracking-wider block">
+          <label className="text-xs font-bold text-[#202124] dark:text-stone-200 uppercase tracking-wider block">
             Kitchen & Serving Workflow
           </label>
 
@@ -212,9 +212,9 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
                   <div
                     className={`absolute -left-[9px] top-0.5 w-4 h-4 rounded-full border-2 transition-all flex items-center justify-center ${
                       isCurrent
-                        ? 'bg-[#9A2D22] border-amber-300 ring-4 ring-[#9A2D22]/20'
+                        ? 'bg-[#364FAB] border-[#E8ECFB] ring-4 ring-[#364FAB]/20'
                         : isPastOrCurrent
-                        ? 'bg-[#9A2D22] border-white dark:border-stone-900'
+                        ? 'bg-[#364FAB] border-white dark:border-stone-900'
                         : 'bg-stone-200 dark:bg-stone-700 border-white dark:border-stone-900'
                     }`}
                   ></div>
@@ -223,15 +223,15 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
                     <span
                       className={`text-xs font-bold block ${
                         isCurrent
-                          ? 'text-[#9A2D22] dark:text-[#FEE248]'
+                          ? 'text-[#364FAB] dark:text-[#E8ECFB]'
                           : isPastOrCurrent
-                          ? 'text-stone-900 dark:text-stone-100'
-                          : 'text-stone-400'
+                          ? 'text-[#202124] dark:text-stone-100'
+                          : 'text-[#687078]'
                       }`}
                     >
                       {step.label}
                     </span>
-                    <span className="text-[11px] text-stone-500">{step.desc}</span>
+                    <span className="text-[11px] text-[#687078]">{step.desc}</span>
                   </div>
                 </div>
               );
@@ -241,30 +241,30 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
 
         {/* Itemized Order Breakdown */}
         <div className="pt-4 border-t border-stone-100 dark:border-stone-800 space-y-3">
-          <div className="flex justify-between items-center text-xs font-bold text-stone-800 dark:text-stone-200">
+          <div className="flex justify-between items-center text-xs font-bold text-[#202124] dark:text-stone-200">
             <span>Ordered Items</span>
-            <span className="text-stone-500">{targetOrder.items.length} items</span>
+            <span className="text-[#687078]">{targetOrder.items.length} items</span>
           </div>
 
           <div className="divide-y divide-stone-100 dark:divide-stone-800 text-xs">
             {targetOrder.items.map((item, i) => (
               <div key={i} className="py-2 flex justify-between items-start">
                 <div>
-                  <span className="font-semibold text-stone-900 dark:text-stone-100">
+                  <span className="font-semibold text-[#202124] dark:text-stone-100">
                     {item.quantity}x {item.name}
                   </span>
                   {item.selectedAddons && item.selectedAddons.length > 0 && (
-                    <span className="block text-[10px] text-stone-500">
+                    <span className="block text-[10px] text-[#687078]">
                       + {item.selectedAddons.join(', ')}
                     </span>
                   )}
                   {item.specialInstructions && (
-                    <span className="block text-[10px] font-bold text-[#9A2D22] dark:text-[#FEE248]">
+                    <span className="block text-[10px] font-bold text-[#364FAB] dark:text-[#E8ECFB]">
                       Note: {item.specialInstructions}
                     </span>
                   )}
                 </div>
-                <span className="font-mono font-bold text-stone-900 dark:text-stone-100">
+                <span className="font-mono font-bold text-[#202124] dark:text-stone-100">
                   Rs. {item.totalPrice.toLocaleString()}
                 </span>
               </div>
@@ -272,14 +272,14 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
           </div>
 
           {/* Payment info bar */}
-          <div className="p-3.5 rounded-xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 flex items-center justify-between text-xs">
+          <div className="p-3.5 rounded-xl bg-[#F7F8FA] dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 flex items-center justify-between text-xs">
             <div>
-              <span className="text-stone-500">Payment Status:</span>
-              <span className="font-bold ml-1 uppercase text-[#9A2D22] dark:text-[#FEE248]">
+              <span className="text-[#687078]">Payment Status:</span>
+              <span className="font-bold ml-1 uppercase text-[#364FAB] dark:text-[#E8ECFB]">
                 {targetOrder.paymentStatus} ({targetOrder.paymentMethod.toUpperCase()})
               </span>
             </div>
-            <span className="font-mono font-extrabold text-sm text-stone-900 dark:text-stone-100">
+            <span className="font-mono font-extrabold text-sm text-[#202124] dark:text-stone-100">
               Total: Rs. {targetOrder.total.toFixed(0)}
             </span>
           </div>

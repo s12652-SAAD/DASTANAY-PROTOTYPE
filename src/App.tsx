@@ -16,7 +16,7 @@ const AppContent: React.FC = () => {
   const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors duration-200 flex flex-col font-sans">
+    <div className="min-h-screen w-full bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors duration-200 flex flex-col font-sans">
       {/* Global Responsive Navigation Header */}
       <Header
         onOpenCart={() => setIsCartOpen(true)}
@@ -24,7 +24,7 @@ const AppContent: React.FC = () => {
       />
 
       {/* Main Role-Specific Workspace with animated page transition */}
-      <main className="flex-1 w-full max-w-full overflow-x-hidden py-2 sm:py-4">
+      <main className="flex-1 w-full py-2 sm:py-4">
         <AnimatePresence mode="wait">
           {role === 'customer' && (
             <motion.div
@@ -94,7 +94,7 @@ const AppContent: React.FC = () => {
 
       {/* Clean, minimalist footer */}
       <footer className="border-t border-stone-200 dark:border-stone-800 bg-white/70 dark:bg-stone-900/70 backdrop-blur-xs py-6 mt-12 text-xs text-stone-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="app-container flex flex-col sm:flex-row items-center justify-between gap-4">
           <DastnayLogo size="sm" />
 
           <div className="flex flex-wrap items-center gap-2 text-[11px] font-medium text-stone-500 dark:text-stone-400">

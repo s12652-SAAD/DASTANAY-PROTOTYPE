@@ -68,17 +68,17 @@ export const AdminPortal: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="app-container py-6 space-y-6">
       {/* Super Admin Top Header */}
       <div className="bg-stone-950 text-white rounded-3xl p-6 border border-stone-800 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <DastnayLogo variant="tile" size="lg" rounded="2xl" />
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-extrabold">
+              <h2 className="text-lg sm:text-xl font-extrabold text-stone-100">
                 dastnay Platform Super Admin
               </h2>
-              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#E5A324]/20 text-[#FEE248] border border-[#E5A324]/30">
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#364FAB]/30 text-[#E8ECFB] border border-[#364FAB]/50">
                 HQ Governance
               </span>
             </div>
@@ -90,7 +90,7 @@ export const AdminPortal: React.FC = () => {
 
         <button
           onClick={() => setShowAddRestaurantModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs shadow-lg transition-all cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#364FAB] hover:bg-[#2D428F] text-white font-bold text-xs shadow-lg transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Onboard Restaurant Brand</span>
@@ -100,35 +100,35 @@ export const AdminPortal: React.FC = () => {
       {/* KPI Platform Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
-          <span className="text-xs text-stone-500 block">Total Platform GMV</span>
-          <span className="font-mono text-2xl font-black text-stone-900 dark:text-stone-100 mt-1 block">
+          <span className="text-xs text-[#687078] block">Total Platform GMV</span>
+          <span className="font-mono text-2xl font-black text-[#202124] dark:text-stone-100 mt-1 block">
             Rs. {totalGMV.toLocaleString()}
           </span>
           <span className="text-[10px] text-emerald-600 font-bold">Across all merchant orders</span>
         </div>
 
         <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
-          <span className="text-xs text-stone-500 block">Platform Commission (5%)</span>
-          <span className="font-mono text-2xl font-black text-[#9A2D22] dark:text-[#FEE248] mt-1 block">
+          <span className="text-xs text-[#687078] block">Platform Commission (5%)</span>
+          <span className="font-mono text-2xl font-black text-[#364FAB] dark:text-[#E8ECFB] mt-1 block">
             Rs. {platformCommissionEarned.toLocaleString()}
           </span>
-          <span className="text-[10px] text-stone-500">Net platform take-rate</span>
+          <span className="text-[10px] text-[#687078]">Net platform take-rate</span>
         </div>
 
         <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
-          <span className="text-xs text-stone-500 block">Active Brands</span>
-          <span className="font-mono text-2xl font-black text-stone-900 dark:text-stone-100 mt-1 block">
+          <span className="text-xs text-[#687078] block">Active Brands</span>
+          <span className="font-mono text-2xl font-black text-[#202124] dark:text-stone-100 mt-1 block">
             {restaurants.filter((r) => r.status === 'active').length} / {restaurants.length}
           </span>
-          <span className="text-[10px] text-stone-500">Approved enterprises</span>
+          <span className="text-[10px] text-[#687078]">Approved enterprises</span>
         </div>
 
         <div className="bg-white dark:bg-stone-900 p-5 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
-          <span className="text-xs text-stone-500 block">Total Active Branches</span>
-          <span className="font-mono text-2xl font-black text-stone-900 dark:text-stone-100 mt-1 block">
+          <span className="text-xs text-[#687078] block">Total Active Branches</span>
+          <span className="font-mono text-2xl font-black text-[#202124] dark:text-stone-100 mt-1 block">
             {branches.length}
           </span>
-          <span className="text-[10px] text-stone-500">Live POS & KDS endpoints</span>
+          <span className="text-[10px] text-[#687078]">Live POS & KDS endpoints</span>
         </div>
       </div>
 
@@ -145,8 +145,8 @@ export const AdminPortal: React.FC = () => {
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
               activeTab === tab.id
-                ? 'bg-[#9A2D22] text-white shadow-xs'
-                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+                ? 'bg-[#364FAB] text-white shadow-xs'
+                : 'text-[#687078] hover:bg-[#F3F5FD] dark:hover:bg-stone-800'
             }`}
           >
             {tab.icon}

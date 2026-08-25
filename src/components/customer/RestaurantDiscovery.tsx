@@ -103,26 +103,26 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#9A2D22] dark:text-[#E5A324] bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-900">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#364FAB] dark:text-[#E8ECFB] bg-[#F3F5FD] dark:bg-[#22336F]/40 px-2 py-0.5 rounded border border-[#E8ECFB] dark:border-[#364FAB]/30">
                 Pakistan's Culinary Network
               </span>
-              <span className="text-xs text-stone-500">• 100% Halal Verified</span>
+              <span className="text-xs text-[#687078]">• 100% Halal Verified</span>
             </div>
-            <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#202124] dark:text-[#F7F8FA] tracking-tight">
               {language === 'en' ? 'What are you craving today?' : 'آج آپ کا کیا کھانے کا موڈ ہے؟'}
             </h1>
           </div>
 
           {/* Search Input Box */}
           <div className="w-full md:w-96">
-            <div className="relative flex items-center bg-stone-50 dark:bg-stone-800/80 rounded-lg border border-stone-200 dark:border-stone-700 focus-within:border-[#9A2D22] dark:focus-within:border-[#E5A324] transition-colors">
+            <div className="relative flex items-center bg-[#F7F8FA] dark:bg-stone-800/80 rounded-lg border border-stone-200 dark:border-stone-700 focus-within:border-[#364FAB] dark:focus-within:border-[#364FAB] transition-colors">
               <Search className="w-4 h-4 text-stone-400 ml-3 shrink-0" />
               <input
                 type="text"
                 placeholder={t.search_placeholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 py-2 text-xs sm:text-sm text-stone-900 dark:text-stone-100 placeholder-stone-400 bg-transparent outline-none"
+                className="w-full px-3 py-2 text-xs sm:text-sm text-[#202124] dark:text-[#F7F8FA] placeholder-stone-400 bg-transparent outline-none"
               />
               {searchQuery && (
                 <button
@@ -138,7 +138,7 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
 
         {/* Quick Tag Pills */}
         <div className="flex items-center gap-2 pt-3 border-t border-stone-100 dark:border-stone-800/80 mt-3 text-xs overflow-x-auto no-scrollbar">
-          <span className="text-stone-600 dark:text-stone-400 font-semibold text-[11px] shrink-0">
+          <span className="text-[#687078] dark:text-stone-400 font-semibold text-[11px] shrink-0">
             Popular:
           </span>
           {['Dum Biryani', 'Mutton Karahi', 'Reshmi Kabab', 'Zinger Burger', 'Malai Boti', 'Karak Chai'].map(
@@ -146,7 +146,7 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
               <button
                 key={tag}
                 onClick={() => setSearchQuery(tag)}
-                className="px-2.5 py-1 rounded bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-[11px] font-medium transition-colors cursor-pointer shrink-0 whitespace-nowrap"
+                className="px-2.5 py-1 rounded bg-[#F3F5FD] dark:bg-stone-800 hover:bg-[#E8ECFB] dark:hover:bg-stone-700 text-[#364FAB] dark:text-[#E8ECFB] text-[11px] font-medium transition-colors cursor-pointer shrink-0 whitespace-nowrap"
               >
                 {tag}
               </button>
@@ -158,13 +158,13 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
       {/* 2. Pakistani Food Categories Row */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100 flex items-center gap-2">
+          <h2 className="font-bold text-sm sm:text-base text-[#202124] dark:text-[#F7F8FA] flex items-center gap-2">
             <span>Explore by Category</span>
-            <span className="text-xs font-normal text-stone-600 dark:text-stone-400 font-urdu">
+            <span className="text-xs font-normal text-[#687078] dark:text-stone-400 font-urdu">
               (کھانوں کی اقسام)
             </span>
           </h2>
-          <span className="text-xs text-stone-500 font-medium">Select a category to filter</span>
+          <span className="text-xs text-[#687078] font-medium">Select a category to filter</span>
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-9 gap-2 sm:gap-2.5">
@@ -176,8 +176,8 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`p-2.5 sm:p-3 rounded-xl flex flex-col items-center justify-center text-center transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-[#9A2D22] text-white border-[#9A2D22] shadow-xs'
-                    : 'bg-white dark:bg-[#18181B] text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700'
+                    ? 'bg-[#364FAB] text-white border-[#364FAB] shadow-xs'
+                    : 'bg-white dark:bg-[#18181B] text-[#202124] dark:text-stone-300 border-stone-200 dark:border-stone-800 hover:border-[#364FAB]/40 dark:hover:border-[#364FAB]/40'
                 }`}
               >
                 <span className="text-xl sm:text-2xl mb-1">{cat.icon}</span>
@@ -186,7 +186,7 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                 </span>
                 <span
                   className={`text-[9px] block mt-0.5 truncate w-full ${
-                    isSelected ? 'text-amber-200' : 'text-stone-600 dark:text-stone-400'
+                    isSelected ? 'text-[#E8ECFB]' : 'text-[#687078] dark:text-stone-400'
                   }`}
                 >
                   {cat.labelUrdu}
@@ -201,12 +201,12 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Tag className="w-4 h-4 text-[#9A2D22]" />
-            <h2 className="font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+            <Tag className="w-4 h-4 text-[#364FAB]" />
+            <h2 className="font-bold text-sm sm:text-base text-[#202124] dark:text-[#F7F8FA]">
               Active Vouchers & Deals
             </h2>
           </div>
-          <span className="text-xs text-[#9A2D22] dark:text-[#E5A324] font-bold">
+          <span className="text-xs text-[#364FAB] dark:text-[#E8ECFB] font-bold">
             Instant Checkout Discount
           </span>
         </div>
@@ -215,32 +215,32 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
           {promotions.map((promo) => (
             <div
               key={promo.id}
-              className="p-3.5 rounded-xl bg-white dark:bg-[#18181B] border border-dashed border-amber-400 dark:border-amber-600 flex flex-col justify-between space-y-2.5 shadow-2xs"
+              className="p-3.5 rounded-xl bg-white dark:bg-[#18181B] border border-dashed border-[#364FAB]/40 dark:border-[#364FAB]/60 flex flex-col justify-between space-y-2.5 shadow-2xs"
             >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-[#9A2D22] dark:text-[#FEE248] text-[10px] font-extrabold uppercase">
+                  <span className="px-2 py-0.5 rounded bg-[#F3F5FD] dark:bg-[#22336F]/50 text-[#364FAB] dark:text-[#E8ECFB] text-[10px] font-extrabold uppercase">
                     {promo.discountType === 'percentage'
                       ? `${promo.discountValue}% OFF`
                       : `Rs. ${promo.discountValue} FLAT`}
                   </span>
-                  <span className="text-[10px] text-stone-600 dark:text-stone-400">
+                  <span className="text-[10px] text-[#687078] dark:text-stone-400">
                     Min Rs. {promo.minOrderValue}
                   </span>
                 </div>
-                <h3 className="font-bold text-xs text-stone-900 dark:text-stone-100 leading-snug">
+                <h3 className="font-bold text-xs text-[#202124] dark:text-[#F7F8FA] leading-snug">
                   {promo.title}
                 </h3>
-                <p className="text-[11px] text-stone-500 line-clamp-1">{promo.description}</p>
+                <p className="text-[11px] text-[#687078] line-clamp-1">{promo.description}</p>
               </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-stone-100 dark:border-stone-800">
-                <div className="font-mono font-bold text-xs text-stone-800 dark:text-stone-200 bg-stone-100 dark:bg-stone-800 px-2 py-1 rounded">
+                <div className="font-mono font-bold text-xs text-[#22336F] dark:text-[#E8ECFB] bg-[#F3F5FD] dark:bg-[#22336F]/30 px-2 py-1 rounded">
                   {promo.code}
                 </div>
                 <button
                   onClick={() => handleCopyPromo(promo.code)}
-                  className="flex items-center gap-1 text-[11px] font-bold text-[#9A2D22] dark:text-[#FEE248] hover:underline cursor-pointer"
+                  className="flex items-center gap-1 text-[11px] font-bold text-[#364FAB] dark:text-[#E8ECFB] hover:underline cursor-pointer"
                 >
                   {copiedPromo === promo.code ? (
                     <>
@@ -263,8 +263,8 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
       {/* 4. Filter by City & Status Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          <span className="text-xs font-bold text-stone-500 mr-1 flex items-center gap-1 shrink-0">
-            <MapPin className="w-3.5 h-3.5 text-[#9A2D22]" /> City:
+          <span className="text-xs font-bold text-[#687078] mr-1 flex items-center gap-1 shrink-0">
+            <MapPin className="w-3.5 h-3.5 text-[#364FAB]" /> City:
           </span>
           {cities.map((city) => (
             <button
@@ -272,8 +272,8 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
               onClick={() => setSelectedCity(city)}
               className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ${
                 selectedCity === city
-                  ? 'bg-[#9A2D22] text-white'
-                  : 'bg-white dark:bg-[#18181B] text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700'
+                  ? 'bg-[#364FAB] text-white'
+                  : 'bg-white dark:bg-[#18181B] text-[#202124] dark:text-stone-300 hover:bg-[#F3F5FD] dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700'
               }`}
             >
               {city}
@@ -281,8 +281,8 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
           ))}
         </div>
 
-        <div className="text-xs text-stone-500">
-          Showing <span className="font-bold text-stone-900 dark:text-stone-100">{filteredRestaurants.length}</span> restaurant brands
+        <div className="text-xs text-[#687078]">
+          Showing <span className="font-bold text-[#202124] dark:text-[#F7F8FA]">{filteredRestaurants.length}</span> restaurant brands
         </div>
       </div>
 
@@ -297,7 +297,7 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
           return (
             <div
               key={rest.id}
-              className="food-card overflow-hidden flex flex-col group hover:border-[#9A2D22]/60 dark:hover:border-[#E5A324]/60"
+              className="food-card overflow-hidden flex flex-col group hover:border-[#364FAB]/60 dark:hover:border-[#364FAB]/60"
             >
               {/* Cover Photo */}
               <div className="relative h-44 sm:h-48 overflow-hidden bg-stone-100 dark:bg-stone-800">
@@ -310,8 +310,8 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
 
                 {/* Rating Badge */}
-                <div className="absolute top-3 right-3 bg-white/95 dark:bg-stone-900/95 px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-2xs text-stone-900 dark:text-stone-100">
-                  <Star className="w-3.5 h-3.5 fill-[#E5A324] text-[#E5A324]" />
+                <div className="absolute top-3 right-3 bg-white/95 dark:bg-stone-900/95 px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-2xs text-[#202124] dark:text-[#F7F8FA]">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{rest.rating}</span>
                   <span className="text-stone-400 font-normal text-[10px]">({rest.reviewCount})</span>
                 </div>
@@ -344,17 +344,17 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                 <div className="space-y-2.5">
                   {/* Cuisines & Price tier */}
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-[#9A2D22] dark:text-[#E5A324] truncate max-w-[200px]">
+                    <span className="font-semibold text-[#364FAB] dark:text-[#E8ECFB] truncate max-w-[200px]">
                       {rest.cuisine.join(' • ')}
                     </span>
-                    <span className="font-mono font-bold text-stone-700 dark:text-stone-300">
+                    <span className="font-mono font-bold text-[#202124] dark:text-stone-300">
                       {rest.priceRange}
                     </span>
                   </div>
 
                   {/* Branch & Area */}
-                  <div className="flex items-center gap-1.5 text-xs text-stone-600 dark:text-stone-300">
-                    <MapPin className="w-3.5 h-3.5 text-[#9A2D22] shrink-0" />
+                  <div className="flex items-center gap-1.5 text-xs text-[#687078] dark:text-stone-300">
+                    <MapPin className="w-3.5 h-3.5 text-[#364FAB] shrink-0" />
                     <span className="truncate">
                       {defaultBranch.name} • {defaultBranch.area}, {defaultBranch.city}
                     </span>
@@ -362,15 +362,15 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
 
                   {/* Delivery & Live Tables Status */}
                   <div className="grid grid-cols-2 gap-2 pt-1">
-                    <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/60 border border-stone-200/60 dark:border-stone-700/60 text-center">
-                      <span className="text-[10px] text-stone-500 block">Delivery Time</span>
-                      <span className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center justify-center gap-1 mt-0.5">
-                        <Clock className="w-3 h-3 text-[#9A2D22]" /> 25-35 mins
+                    <div className="p-2 rounded-lg bg-[#F7F8FA] dark:bg-stone-800/60 border border-stone-200/60 dark:border-stone-700/60 text-center">
+                      <span className="text-[10px] text-[#687078] block">Delivery Time</span>
+                      <span className="text-xs font-bold text-[#202124] dark:text-stone-200 flex items-center justify-center gap-1 mt-0.5">
+                        <Clock className="w-3 h-3 text-[#364FAB]" /> 25-35 mins
                       </span>
                     </div>
 
-                    <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/60 border border-stone-200/60 dark:border-stone-700/60 text-center">
-                      <span className="text-[10px] text-stone-500 block">Dine-In Tables</span>
+                    <div className="p-2 rounded-lg bg-[#F7F8FA] dark:bg-stone-800/60 border border-stone-200/60 dark:border-stone-700/60 text-center">
+                      <span className="text-[10px] text-[#687078] block">Dine-In Tables</span>
                       <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1 mt-0.5">
                         <Users className="w-3 h-3" /> {availableCount} Tables Free
                       </span>
@@ -382,13 +382,13 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                 <div className="grid grid-cols-2 gap-2 pt-1 border-t border-stone-100 dark:border-stone-800">
                   <button
                     onClick={() => onSelectRestaurant(rest, defaultBranch)}
-                    className="w-full py-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold transition-colors cursor-pointer text-center"
+                    className="w-full py-2 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-[#E8ECFB] dark:hover:bg-stone-700 text-[#202124] dark:text-stone-200 text-xs font-bold transition-colors cursor-pointer text-center"
                   >
                     Book Table
                   </button>
                   <button
                     onClick={() => onSelectRestaurant(rest, defaultBranch)}
-                    className="w-full py-2 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-2xs"
+                    className="w-full py-2 rounded-lg bg-[#364FAB] hover:bg-[#2D428F] text-white text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-2xs"
                   >
                     <span>Order Food</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -404,17 +404,17 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
       <div className="space-y-4 pt-4 border-t border-stone-200 dark:border-stone-800">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <Flame className="w-4 h-4 text-[#9A2D22]" />
+            <h2 className="font-bold text-sm sm:text-base text-[#202124] dark:text-[#F7F8FA] flex items-center gap-2">
+              <Flame className="w-4 h-4 text-[#364FAB]" />
               <span>Trending Best Sellers Across Pakistan</span>
             </h2>
-            <p className="text-xs text-stone-500">Most ordered dishes this week</p>
+            <p className="text-xs text-[#687078]">Most ordered dishes this week</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {popularDishes.map((dish) => {
-            const inCart = cart.find((c) => c.item.id === dish.id);
+            const inCart = cart.find((c) => c.menuItemId === dish.id);
             const cartQty = inCart ? inCart.quantity : 0;
 
             return (
@@ -429,14 +429,14 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                 />
 
                 <div className="min-w-0 flex-1 space-y-1">
-                  <h4 className="font-bold text-xs sm:text-sm text-stone-900 dark:text-stone-100 truncate">
+                  <h4 className="font-bold text-xs sm:text-sm text-[#202124] dark:text-[#F7F8FA] truncate">
                     {dish.name}
                   </h4>
-                  <div className="text-[10px] text-stone-600 dark:text-stone-400 font-urdu truncate">
+                  <div className="text-[10px] text-[#687078] dark:text-stone-400 font-urdu truncate">
                     {dish.nameUrdu}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-xs text-[#9A2D22] dark:text-[#FEE248]">
+                    <span className="font-mono font-bold text-xs text-[#364FAB] dark:text-[#E8ECFB]">
                       Rs. {dish.basePrice.toLocaleString()}
                     </span>
                     <span className="text-[10px] text-stone-400">• {dish.prepTimeMinutes}m</span>
@@ -445,15 +445,29 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
 
                 <div className="shrink-0">
                   {cartQty > 0 ? (
-                    <div className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 px-2 py-1 rounded-lg">
-                      <span className="text-xs font-extrabold text-[#9A2D22] dark:text-[#FEE248]">
+                    <div className="flex items-center gap-1.5 bg-[#F3F5FD] dark:bg-[#22336F]/60 border border-[#E8ECFB] dark:border-[#364FAB]/40 px-2 py-1 rounded-lg">
+                      <span className="text-xs font-extrabold text-[#364FAB] dark:text-[#E8ECFB]">
                         {cartQty} in cart
                       </span>
                     </div>
                   ) : (
                     <button
-                      onClick={() => addToCart(dish, 1)}
-                      className="px-2.5 py-1.5 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold flex items-center gap-1 shadow-2xs transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (onQuickAddItem) {
+                          onQuickAddItem(dish);
+                        } else {
+                          addToCart({
+                            cartItemId: `cart-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+                            menuItemId: dish.id,
+                            name: dish.name,
+                            basePrice: dish.basePrice,
+                            selectedAddons: [],
+                            quantity: 1,
+                            itemTotal: dish.basePrice,
+                          });
+                        }
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg bg-[#364FAB] hover:bg-[#2D428F] text-white text-xs font-bold flex items-center gap-1 shadow-2xs transition-colors cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add</span>
@@ -467,11 +481,11 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
       </div>
 
       {/* 7. Commercial Trust & Payment Partner Badges */}
-      <div className="p-4 rounded-xl bg-stone-100 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-600 dark:text-stone-400">
+      <div className="p-4 rounded-xl bg-[#F3F5FD] dark:bg-stone-800/60 border border-[#E8ECFB] dark:border-stone-700/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#687078] dark:text-stone-400">
         <div className="flex items-center gap-3">
-          <ShieldCheck className="w-5 h-5 text-[#9A2D22] dark:text-[#E5A324] shrink-0" />
+          <ShieldCheck className="w-5 h-5 text-[#364FAB] dark:text-[#E8ECFB] shrink-0" />
           <div>
-            <span className="font-bold text-stone-900 dark:text-stone-100 block">
+            <span className="font-bold text-[#202124] dark:text-[#F7F8FA] block">
               Official Pakistani Restaurant Commerce Platform
             </span>
             <span className="text-[11px]">

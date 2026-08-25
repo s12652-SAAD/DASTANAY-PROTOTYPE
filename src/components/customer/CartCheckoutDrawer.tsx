@@ -165,14 +165,14 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
         className="w-full max-w-lg bg-white dark:bg-[#18181B] h-full shadow-2xl flex flex-col justify-between border-l border-stone-200 dark:border-stone-800"
       >
         {/* Drawer Header */}
-        <div className="p-4 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between bg-stone-50/50 dark:bg-stone-900/50">
+        <div className="p-4 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between bg-[#F7F8FA] dark:bg-stone-900/50">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#9A2D22]" />
+            <ShoppingBag className="w-5 h-5 text-[#364FAB]" />
             <div>
-              <h2 className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+              <h2 className="font-extrabold text-sm sm:text-base text-[#202124] dark:text-[#F7F8FA]">
                 Your Pakistani Food Cart
               </h2>
-              <p className="text-[11px] text-stone-500">{currentBranch.name}</p>
+              <p className="text-[11px] text-[#687078]">{currentBranch.name}</p>
             </div>
           </div>
 
@@ -180,14 +180,14 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
             {cart.length > 0 && (
               <button
                 onClick={clearCart}
-                className="text-[11px] text-stone-500 hover:text-rose-600 font-semibold cursor-pointer p-1"
+                className="text-[11px] text-[#687078] hover:text-rose-600 font-semibold cursor-pointer p-1"
               >
                 Clear Cart
               </button>
             )}
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-400 hover:text-[#202124] dark:hover:text-stone-200 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -204,8 +204,8 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
           )}
 
           {/* Dine-In vs Takeaway Toggle */}
-          <div className="p-3 rounded-xl bg-stone-100 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold text-stone-800 dark:text-stone-200">
+          <div className="p-3 rounded-xl bg-[#F7F8FA] dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-2">
+            <div className="flex items-center justify-between text-xs font-bold text-[#202124] dark:text-stone-200">
               <span>Order Type</span>
               <div className="flex items-center gap-1 bg-white dark:bg-stone-900 p-0.5 rounded-lg border border-stone-200 dark:border-stone-700">
                 <button
@@ -213,8 +213,8 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                   onClick={() => setOrderType('dine_in')}
                   className={`px-3 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer ${
                     orderType === 'dine_in'
-                      ? 'bg-[#9A2D22] text-white shadow-2xs'
-                      : 'text-stone-600 dark:text-stone-400'
+                      ? 'bg-[#364FAB] text-white shadow-2xs'
+                      : 'text-[#687078] dark:text-stone-400'
                   }`}
                 >
                   Dine-In Table
@@ -224,8 +224,8 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                   onClick={() => setOrderType('takeaway')}
                   className={`px-3 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer ${
                     orderType === 'takeaway'
-                      ? 'bg-[#9A2D22] text-white shadow-2xs'
-                      : 'text-stone-600 dark:text-stone-400'
+                      ? 'bg-[#364FAB] text-white shadow-2xs'
+                      : 'text-[#687078] dark:text-stone-400'
                   }`}
                 >
                   Takeaway / Counter
@@ -236,22 +236,22 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
             {orderType === 'dine_in' && (
               <div className="pt-2 border-t border-stone-200 dark:border-stone-700">
                 {currentTableSession ? (
-                  <div className="flex items-center justify-between text-xs bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-lg border border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-200">
+                  <div className="flex items-center justify-between text-xs bg-[#F3F5FD] dark:bg-[#22336F]/40 p-2 rounded-lg border border-[#E8ECFB] dark:border-[#364FAB]/40 text-[#22336F] dark:text-[#E8ECFB]">
                     <span className="font-bold">Active Table: {currentTableSession.tableNumber}</span>
-                    <span className="text-[10px] bg-emerald-200 dark:bg-emerald-900 px-2 py-0.5 rounded font-mono">
+                    <span className="text-[10px] bg-[#E8ECFB] dark:bg-[#22336F] text-[#22336F] dark:text-[#E8ECFB] px-2 py-0.5 rounded font-mono font-bold">
                       Session Active
                     </span>
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-stone-600 dark:text-stone-400 block">
+                    <label className="text-[11px] font-bold text-[#687078] dark:text-stone-400 block">
                       Select Table or Scan QR Code:
                     </label>
                     <div className="flex items-center gap-2">
                       <select
                         value={selectedQuickTable}
                         onChange={(e) => setSelectedQuickTable(e.target.value)}
-                        className="flex-1 px-3 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs font-bold text-stone-900 dark:text-stone-100 outline-none"
+                        className="flex-1 px-3 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs font-bold text-[#202124] dark:text-[#F7F8FA] outline-none"
                       >
                         <option value="">-- Choose Table Number --</option>
                         {branchTables.map((t) => (
@@ -263,7 +263,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                       <button
                         type="button"
                         onClick={onOpenQRScanner}
-                        className="px-3 py-1.5 rounded-lg bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                        className="px-3 py-1.5 rounded-lg bg-[#E8ECFB] hover:bg-[#d8e0f8] text-[#22336F] text-xs font-bold flex items-center gap-1 cursor-pointer"
                       >
                         <QrCode className="w-3.5 h-3.5" />
                         <span>QR</span>
@@ -279,10 +279,10 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
           {cart.length === 0 ? (
             <div className="py-12 text-center space-y-2">
               <ShoppingBag className="w-10 h-10 text-stone-300 dark:text-stone-700 mx-auto" />
-              <p className="text-xs font-bold text-stone-700 dark:text-stone-300">
+              <p className="text-xs font-bold text-[#202124] dark:text-stone-300">
                 Your cart is empty
               </p>
-              <p className="text-[11px] text-stone-500">
+              <p className="text-[11px] text-[#687078]">
                 Explore handi karahi, biryani, BBQ platters & fresh naan to add items!
               </p>
             </div>
@@ -292,19 +292,19 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                 <div key={item.cartItemId} className="py-3 flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1 space-y-0.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-extrabold text-xs text-stone-900 dark:text-stone-100">
-                        {item.menuItemName}
+                      <span className="font-extrabold text-xs text-[#202124] dark:text-[#F7F8FA]">
+                        {item.name || item.menuItemName}
                       </span>
                     </div>
 
                     {item.selectedVariation && (
-                      <p className="text-[11px] text-amber-800 dark:text-[#FEE248] font-semibold">
+                      <p className="text-[11px] text-[#364FAB] dark:text-[#E8ECFB] font-semibold">
                         Portion: {item.selectedVariation.name}
                       </p>
                     )}
 
                     {item.selectedAddons && item.selectedAddons.length > 0 && (
-                      <p className="text-[10px] text-stone-500">
+                      <p className="text-[10px] text-[#687078]">
                         Add-ons: {item.selectedAddons.map((a) => a.name).join(', ')}
                       </p>
                     )}
@@ -315,25 +315,25 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                       </p>
                     )}
 
-                    <div className="font-mono font-bold text-xs text-[#9A2D22] dark:text-[#FEE248] pt-1">
+                    <div className="font-mono font-bold text-xs text-[#364FAB] dark:text-[#E8ECFB] pt-1">
                       Rs. {item.itemTotal.toLocaleString()}
                     </div>
                   </div>
 
                   {/* Quantity Controls */}
-                  <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 p-1 rounded-lg border border-stone-200 dark:border-stone-700 shrink-0">
+                  <div className="flex items-center gap-1.5 bg-[#F7F8FA] dark:bg-stone-800 p-1 rounded-lg border border-stone-200 dark:border-stone-700 shrink-0">
                     <button
                       onClick={() => updateCartItemQuantity(item.cartItemId, -1)}
-                      className="p-1 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 cursor-pointer"
+                      className="p-1 text-[#687078] dark:text-stone-400 hover:text-[#202124] dark:hover:text-stone-100 cursor-pointer"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
-                    <span className="font-extrabold text-xs w-5 text-center text-stone-900 dark:text-stone-100">
+                    <span className="font-extrabold text-xs w-5 text-center text-[#202124] dark:text-stone-100">
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => updateCartItemQuantity(item.cartItemId, 1)}
-                      className="p-1 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 cursor-pointer"
+                      className="p-1 text-[#687078] dark:text-stone-400 hover:text-[#202124] dark:hover:text-stone-100 cursor-pointer"
                     >
                       <Plus className="w-3 h-3" />
                     </button>
@@ -348,7 +348,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
             <div className="space-y-3 pt-3 border-t border-stone-100 dark:border-stone-800">
               {/* Voucher Code */}
               <div>
-                <label className="text-[11px] font-bold text-stone-700 dark:text-stone-300 block mb-1">
+                <label className="text-[11px] font-bold text-[#202124] dark:text-stone-300 block mb-1">
                   Pakistani Voucher / Promo Code
                 </label>
                 <div className="flex gap-2">
@@ -357,18 +357,18 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                     placeholder="Enter code (e.g. DINE20, WELCOME10)"
                     value={promoCodeInput}
                     onChange={(e) => setPromoCodeInput(e.target.value)}
-                    className="flex-1 px-3 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 uppercase"
+                    className="flex-1 px-3 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-[#F7F8FA] dark:bg-stone-800 text-xs text-[#202124] dark:text-stone-100 uppercase outline-none focus:border-[#364FAB]"
                   />
                   <button
                     type="button"
                     onClick={() => handleApplyPromo()}
-                    className="px-4 py-1.5 rounded-lg bg-stone-800 dark:bg-stone-700 hover:bg-stone-900 text-white font-bold text-xs cursor-pointer"
+                    className="px-4 py-1.5 rounded-lg bg-[#364FAB] hover:bg-[#2D428F] text-white font-bold text-xs cursor-pointer transition-colors"
                   >
                     Apply
                   </button>
                 </div>
                 {promoMessage && (
-                  <p className="text-[10px] font-semibold text-[#9A2D22] dark:text-[#FEE248] mt-1">
+                  <p className="text-[10px] font-semibold text-[#364FAB] dark:text-[#E8ECFB] mt-1">
                     {promoMessage}
                   </p>
                 )}
@@ -376,12 +376,12 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
 
               {/* DineClub Loyalty Points */}
               {loyalty.pointsBalance > 0 && (
-                <div className="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 flex items-center justify-between text-xs">
+                <div className="p-3 rounded-xl bg-[#F3F5FD] dark:bg-[#22336F]/30 border border-[#E8ECFB] dark:border-[#364FAB]/30 flex items-center justify-between text-xs">
                   <div>
-                    <div className="font-extrabold text-amber-900 dark:text-amber-200">
+                    <div className="font-extrabold text-[#22336F] dark:text-[#E8ECFB]">
                       DineClub Points: {loyalty.pointsBalance}
                     </div>
-                    <div className="text-[10px] text-amber-700 dark:text-amber-400">
+                    <div className="text-[10px] text-[#364FAB] dark:text-blue-300">
                       100 pts = Rs. 50 discount
                     </div>
                   </div>
@@ -395,7 +395,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                   ) : (
                     <button
                       onClick={() => setRedeemedPoints(Math.min(loyalty.pointsBalance, 500))}
-                      className="px-3 py-1 bg-[#9A2D22] text-white rounded-lg font-bold text-[11px] cursor-pointer"
+                      className="px-3 py-1 bg-[#364FAB] text-white rounded-lg font-bold text-[11px] cursor-pointer hover:bg-[#2D428F]"
                     >
                       Redeem Points
                     </button>
@@ -405,7 +405,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
 
               {/* Payment Method Selector */}
               <div className="space-y-1.5 pt-2">
-                <label className="text-[11px] font-bold text-stone-700 dark:text-stone-300 block">
+                <label className="text-[11px] font-bold text-[#202124] dark:text-stone-300 block">
                   Payment Method
                 </label>
                 <div className="grid grid-cols-4 gap-1.5">
@@ -421,8 +421,8 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                       onClick={() => setPaymentMethod(pm.id as PaymentMethod)}
                       className={`p-2 rounded-lg border text-center transition-colors flex flex-col items-center gap-1 cursor-pointer ${
                         paymentMethod === pm.id
-                          ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/40 text-[#9A2D22] dark:text-[#FEE248] font-bold'
-                          : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
+                          ? 'border-[#364FAB] bg-[#F3F5FD] dark:bg-[#22336F]/40 text-[#364FAB] dark:text-[#E8ECFB] font-bold'
+                          : 'border-stone-200 dark:border-stone-700 text-[#687078] dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                       }`}
                     >
                       {pm.icon}
@@ -433,17 +433,17 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
               </div>
 
               {/* Bill Breakdown */}
-              <div className="bg-stone-50 dark:bg-stone-800/40 rounded-xl p-3 space-y-1.5 text-xs border border-stone-200 dark:border-stone-700 font-mono">
-                <div className="flex justify-between text-stone-600 dark:text-stone-400 font-sans">
+              <div className="bg-[#F7F8FA] dark:bg-stone-800/40 rounded-xl p-3 space-y-1.5 text-xs border border-stone-200 dark:border-stone-700 font-mono">
+                <div className="flex justify-between text-[#687078] dark:text-stone-400 font-sans">
                   <span>Subtotal:</span>
                   <span>Rs. {subtotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-stone-600 dark:text-stone-400 font-sans">
+                <div className="flex justify-between text-[#687078] dark:text-stone-400 font-sans">
                   <span>PRA/SRB Tax ({taxRate}%):</span>
                   <span>Rs. {taxAmount.toFixed(0)}</span>
                 </div>
                 {orderType === 'dine_in' && (
-                  <div className="flex justify-between text-stone-600 dark:text-stone-400 font-sans">
+                  <div className="flex justify-between text-[#687078] dark:text-stone-400 font-sans">
                     <span>Service Charge ({serviceRate}%):</span>
                     <span>Rs. {serviceCharge.toFixed(0)}</span>
                   </div>
@@ -455,18 +455,18 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
                   </div>
                 )}
                 {bookingFeeDeduction > 0 && (
-                  <div className="flex justify-between text-amber-700 dark:text-[#FEE248] font-sans font-bold">
+                  <div className="flex justify-between text-[#364FAB] dark:text-[#E8ECFB] font-sans font-bold">
                     <span>Prepaid Table Booking Credit:</span>
                     <span>- Rs. {bookingFeeDeduction}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-stone-900 dark:text-stone-100 font-bold text-sm pt-2 border-t border-stone-200 dark:border-stone-700 font-sans">
+                <div className="flex justify-between text-[#202124] dark:text-[#F7F8FA] font-bold text-sm pt-2 border-t border-stone-200 dark:border-stone-700 font-sans">
                   <span>Grand Total Payable:</span>
-                  <span className="text-[#9A2D22] dark:text-[#FEE248] font-mono">
+                  <span className="text-[#364FAB] dark:text-[#E8ECFB] font-mono font-bold text-base">
                     Rs. {finalTotal.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-[10px] text-amber-700 dark:text-amber-400 font-sans">
+                <p className="text-[10px] text-[#364FAB] dark:text-blue-300 font-sans font-medium">
                   ⭐ You will earn +{pointsToEarn} DineClub reward points with this order.
                 </p>
               </div>
@@ -476,18 +476,18 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
 
         {/* Drawer Footer Checkout Button */}
         {cart.length > 0 && (
-          <div className="p-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/50">
+          <div className="p-4 border-t border-stone-200 dark:border-stone-800 bg-[#F7F8FA] dark:bg-stone-900/50">
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={handlePlaceOrderSubmit}
               disabled={isPlacingOrder}
-              className="w-full py-3.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 rounded-xl bg-[#364FAB] hover:bg-[#2D428F] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isPlacingOrder ? (
                 <span>Sending to Kitchen KDS & Database...</span>
               ) : (
                 <>
-                  <ShieldCheck className="w-4 h-4 text-[#FEE248]" />
+                  <ShieldCheck className="w-4 h-4 text-[#E8ECFB]" />
                   <span>Place Order • Rs. {finalTotal.toLocaleString()}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>

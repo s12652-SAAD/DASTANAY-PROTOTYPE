@@ -71,7 +71,7 @@ export const ManagerPortal: React.FC = () => {
   >('overview');
 
   const currentBranch = branches.find((b) => b.id === currentBranchId) || branches[0];
-  const currentRestaurant = restaurants.find((r) => r.id === currentBranch.restaurantId) || restaurants[0];
+  const currentRestaurant = restaurants.find((r) => r.id === currentBranch?.restaurantId) || restaurants[0];
 
   // Modals / forms state
   const [showAddMenuModal, setShowAddMenuModal] = useState(false);
@@ -93,7 +93,7 @@ export const ManagerPortal: React.FC = () => {
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
 
   // Metrics calculation
-  const branchOrders = orders.filter((o) => o.branchId === currentBranch.id);
+  const branchOrders = orders.filter((o) => o.branchId === currentBranch?.id);
   const todaySales = branchOrders
     .filter((o) => o.paymentStatus === 'paid')
     .reduce((sum, o) => sum + o.total, 0);
@@ -101,10 +101,10 @@ export const ManagerPortal: React.FC = () => {
   const activeTablesCount = tables.filter((t) => t.status === 'occupied').length;
   const availableTablesCount = tables.filter((t) => t.status === 'available').length;
   const kitchenPreparingCount = branchOrders.filter((o) => o.status === 'preparing' || o.status === 'received').length;
-  const staffOnDutyCount = staff.filter((s) => s.status === 'On Duty' && s.branchId === currentBranch.id).length;
+  const staffOnDutyCount = staff.filter((s) => s.status === 'On Duty' && s.branchId === currentBranch?.id).length;
 
   const lowStockItems = inventory.filter(
-    (inv) => inv.branchId === currentBranch.id && inv.stockQuantity <= inv.lowStockThreshold
+    (inv) => inv.branchId === currentBranch?.id && inv.stockQuantity <= inv.lowStockThreshold
   );
 
   const handleCreateMenuItemSubmit = (e: React.FormEvent) => {
@@ -138,19 +138,19 @@ export const ManagerPortal: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6">
+    <div className="app-container py-4 space-y-6">
       {/* Branch Header Bento Banner */}
       <div className="app-card p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <DastnayLogo variant="tile" size="lg" rounded="2xl" />
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-extrabold text-stone-900 dark:text-stone-100">
+              <h2 className="text-lg sm:text-xl font-extrabold text-[#202124] dark:text-stone-100">
                 {currentRestaurant.name}
               </h2>
-              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-[#9A2D22] dark:text-[#FEE248] border border-amber-300 dark:border-amber-800">{currentBranch.name}</span>
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#E8ECFB] dark:bg-[#22336F]/60 text-[#364FAB] dark:text-[#E8ECFB] border border-[#364FAB]/20">{currentBranch.name}</span>
             </div>
-            <p className="text-xs text-stone-500 mt-0.5">
+            <p className="text-xs text-[#687078] mt-0.5">
               Working Hours: {currentBranch.openingHours} • Tax Rate: {currentBranch.taxRatePercent}%
             </p>
           </div>
@@ -158,13 +158,13 @@ export const ManagerPortal: React.FC = () => {
 
         {/* Branch Open/Close Toggle Control */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F7F8FA] dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
             <span
               className={`w-2.5 h-2.5 rounded-full ${
                 currentBranch.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
               }`}
             ></span>
-            <span className="text-xs font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#202124] dark:text-stone-200">
               {currentBranch.isOpen ? 'Branch OPEN' : 'Branch CLOSED'}
             </span>
           </div>
@@ -180,7 +180,7 @@ export const ManagerPortal: React.FC = () => {
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
               currentBranch.isOpen
                 ? 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-                : 'bg-[#9A2D22] hover:bg-[#83241A] text-white shadow-xs'
+                : 'bg-[#364FAB] hover:bg-[#2D428F] text-white shadow-xs'
             }`}
           >
             <Power className="w-3.5 h-3.5" />
@@ -190,7 +190,7 @@ export const ManagerPortal: React.FC = () => {
       </div>
 
       {/* Navigation Sub-Tabs in Bento Style */}
-      <div className="flex items-center gap-1.5 p-1.5 bg-stone-200/70 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-x-auto text-xs font-bold">
+      <div className="flex items-center gap-1.5 p-1.5 bg-[#F3F5FD] dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-x-auto text-xs font-bold">
         {[
           { id: 'overview', label: 'Live Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
           { id: 'tables', label: 'Tables & QR', icon: <Layers className="w-4 h-4" /> },
@@ -207,8 +207,8 @@ export const ManagerPortal: React.FC = () => {
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
               activeTab === tab.id
-                ? 'bg-white dark:bg-stone-800 text-[#9A2D22] dark:text-[#FEE248] shadow-sm font-extrabold'
-                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+                ? 'bg-white dark:bg-stone-800 text-[#364FAB] dark:text-[#E8ECFB] shadow-xs font-extrabold'
+                : 'text-[#687078] hover:text-[#202124] dark:hover:text-stone-100'
             }`}
           >
             {tab.icon}

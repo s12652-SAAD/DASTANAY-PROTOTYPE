@@ -78,9 +78,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
   const cartTotal = cart.reduce((acc, item) => acc + item.itemTotal, 0);
 
   const roles: { key: Role; label: string; icon: React.ReactNode; color: string }[] = [
-    { key: 'customer', label: t.role_customer, icon: <UtensilsCrossed className="w-3.5 h-3.5" />, color: 'bg-[#9A2D22]' },
-    { key: 'kitchen', label: t.role_kitchen, icon: <ChefHat className="w-3.5 h-3.5" />, color: 'bg-stone-800' },
-    { key: 'manager', label: t.role_manager, icon: <LayoutDashboard className="w-3.5 h-3.5" />, color: 'bg-amber-700' },
+    { key: 'customer', label: t.role_customer, icon: <UtensilsCrossed className="w-3.5 h-3.5" />, color: 'bg-[#364FAB]' },
+    { key: 'kitchen', label: t.role_kitchen, icon: <ChefHat className="w-3.5 h-3.5" />, color: 'bg-[#22336F]' },
+    { key: 'manager', label: t.role_manager, icon: <LayoutDashboard className="w-3.5 h-3.5" />, color: 'bg-[#2D428F]' },
     { key: 'admin', label: t.role_admin, icon: <ShieldCheck className="w-3.5 h-3.5" />, color: 'bg-stone-900 dark:bg-stone-100 dark:text-stone-900' },
   ];
 
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
       )}
 
       {/* Main Commercial Top Navbar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="app-container">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
           {/* Brand Logo & Commercial Location Selector */}
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
@@ -138,7 +138,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               onClick={() => setShowLocationModal(true)}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-stone-50 dark:bg-stone-800/80 hover:bg-stone-100 dark:hover:bg-stone-700/80 border border-stone-200 dark:border-stone-700 text-left transition-colors cursor-pointer max-w-[130px] sm:max-w-[220px]"
             >
-              <MapPin className="w-3.5 h-3.5 text-[#9A2D22] shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-[#364FAB] shrink-0" />
               <div className="min-w-0 flex-1">
                 <span className="text-[9px] sm:text-[10px] text-stone-500 font-medium block leading-none truncate">
                   {currentBranch.city}
@@ -178,8 +178,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
 
             {/* DineClub Points (Customer Mode) */}
             {role === 'customer' && (
-              <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-xs font-bold text-amber-900 dark:text-[#FEE248]">
-                <Award className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#FEE248]" />
+              <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#F3F5FD] dark:bg-[#22336F]/40 border border-[#E8ECFB] dark:border-[#364FAB]/30 text-xs font-bold text-[#22336F] dark:text-[#E8ECFB]">
+                <Award className="w-3.5 h-3.5 text-[#364FAB] dark:text-[#E8ECFB]" />
                 <span>{loyalty.pointsBalance} pts</span>
               </div>
             )}
@@ -192,7 +192,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                 className="flex items-center gap-1 px-1.5 sm:px-2 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer"
                 title="Toggle Language"
               >
-                <Globe className="w-3.5 h-3.5 text-[#9A2D22]" />
+                <Globe className="w-3.5 h-3.5 text-[#364FAB]" />
                 <span>{language === 'en' ? 'EN' : 'اردو'}</span>
               </button>
 
@@ -202,7 +202,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                 className="p-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 cursor-pointer"
                 title="Toggle Dark/Light Mode"
               >
-                {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-stone-700" /> : <Sun className="w-3.5 h-3.5 text-[#FEE248]" />}
+                {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-stone-700" /> : <Sun className="w-3.5 h-3.5 text-amber-400" />}
               </button>
             </div>
 
@@ -215,7 +215,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               >
                 <Bell className="w-4 h-4" />
                 {unreadNotifs > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#9A2D22] text-white rounded-full text-[10px] font-bold flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#364FAB] text-white rounded-full text-[10px] font-bold flex items-center justify-center">
                     {unreadNotifs}
                   </span>
                 )}
@@ -243,14 +243,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                             key={n.id}
                             onClick={() => markNotificationRead(n.id)}
                             className={`py-2 px-1.5 rounded-lg cursor-pointer transition-colors ${
-                              n.read ? 'opacity-70' : 'bg-amber-50/50 dark:bg-amber-950/20'
+                              n.read ? 'opacity-70' : 'bg-[#F3F5FD] dark:bg-[#22336F]/20'
                             }`}
                           >
                             <div className="flex items-start justify-between gap-1">
-                              <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
+                              <span className="text-xs font-bold text-[#202124] dark:text-[#F7F8FA]">
                                 {n.title}
                               </span>
-                              <span className="text-[9px] text-stone-400">{n.timestamp}</span>
+                              <span className="text-[9px] text-[#687078]">{n.timestamp}</span>
                             </div>
                             <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-0.5">{n.message}</p>
                           </div>
@@ -267,17 +267,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               <button
                 id="cart-drawer-btn"
                 onClick={onOpenCart}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer shrink-0"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-[#364FAB] hover:bg-[#2D428F] text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer shrink-0"
               >
-                <ShoppingBag className="w-4 h-4 text-[#FEE248]" />
+                <ShoppingBag className="w-4 h-4 text-white" />
                 <span className="hidden sm:inline">{t.cart}</span>
                 {cartCount > 0 && (
-                  <span className="bg-[#FEE248] text-stone-900 px-1.5 py-0.2 rounded-full text-[11px] font-extrabold ml-0.5">
+                  <span className="bg-[#E8ECFB] text-[#22336F] px-1.5 py-0.2 rounded-full text-[11px] font-extrabold ml-0.5">
                     {cartCount}
                   </span>
                 )}
                 {cartTotal > 0 && (
-                  <span className="hidden md:inline font-mono font-normal ml-1 border-l border-white/20 pl-1.5 text-[11px] text-amber-100">
+                  <span className="hidden md:inline font-mono font-normal ml-1 border-l border-white/20 pl-1.5 text-[11px] text-white/90">
                     Rs. {cartTotal.toLocaleString()}
                   </span>
                 )}
@@ -301,7 +301,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
               {/* Modal Header */}
               <div className="p-4 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#9A2D22]" />
+                  <MapPin className="w-5 h-5 text-[#364FAB]" />
                   <div>
                     <h2 className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100">
                       Select Pakistani Dining Branch
@@ -328,7 +328,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                       onClick={() => setCityFilter(city)}
                       className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ${
                         cityFilter === city
-                          ? 'bg-[#9A2D22] text-white shadow-2xs'
+                          ? 'bg-[#364FAB] text-white shadow-2xs'
                           : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700'
                       }`}
                     >
@@ -344,7 +344,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                     placeholder="Search by area (e.g. DHA, Gulberg, F-7, Clifton)..."
                     value={areaSearch}
                     onChange={(e) => setAreaSearch(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
+                    className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:border-[#364FAB]"
                   />
                 </div>
               </div>
@@ -368,7 +368,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                         }}
                         className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-start justify-between cursor-pointer ${
                           isSelected
-                            ? 'bg-amber-50 dark:bg-amber-950/40 border border-[#9A2D22]/40 text-[#9A2D22] dark:text-[#FEE248]'
+                            ? 'bg-[#F3F5FD] dark:bg-[#22336F]/40 border border-[#364FAB]/40 text-[#364FAB] dark:text-[#E8ECFB]'
                             : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800/80'
                         }`}
                       >
@@ -395,7 +395,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                             {b.city}
                           </span>
-                          {isSelected && <Check className="w-4 h-4 text-[#9A2D22] dark:text-[#FEE248]" />}
+                          {isSelected && <Check className="w-4 h-4 text-[#364FAB] dark:text-[#E8ECFB]" />}
                         </div>
                       </button>
                     );

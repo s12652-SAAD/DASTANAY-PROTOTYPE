@@ -9,8 +9,8 @@ export const ThermalReceiptModal: React.FC = () => {
   if (!printModalData) return null;
 
   const { type, order } = printModalData;
-  const restaurant = restaurants.find((r) => r.id === order.restaurantId);
-  const branch = branches.find((b) => b.id === order.branchId);
+  const restaurant = restaurants.find((r) => r.id === order?.restaurantId);
+  const branch = branches.find((b) => b.id === order?.branchId);
 
   const handlePrint = () => {
     window.print();

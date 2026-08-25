@@ -2,26 +2,81 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-primary: #364FAB;
+  --color-primary-dark: #2D428F;
+  --color-primary-deep: #22336F;
+  --color-primary-light: #E8ECFB;
+  --color-primary-soft: #F3F5FD;
+  --color-brand-bg: #F7F8FA;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-text: #202124;
+  --color-brand-muted: #687078;
+}
+
 @layer base {
   html {
     color-scheme: light;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   html.dark {
     color-scheme: dark;
   }
   body {
-    @apply antialiased bg-[#F8F9FA] dark:bg-[#121212] text-[#1C1917] dark:text-[#F4F4F5] selection:bg-[#9A2D22] selection:text-[#FEE248] font-sans;
+    @apply antialiased bg-[#F7F8FA] dark:bg-[#121212] text-[#202124] dark:text-[#F7F8FA] selection:bg-[#364FAB] selection:text-white font-sans;
     transition: background-color 0.15s ease, color 0.15s ease;
+    min-width: 320px;
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+  }
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
   }
 }
 
-/* Primary Brand Palette: Authentic Pakistani Culinary Crimson & Saffron */
+/* Primary Brand Palette: Dastanay #364FAB Ecosystem */
 :root {
-  --brand-primary: #9A2D22;
-  --brand-primary-hover: #83241A;
-  --brand-secondary: #E5A324;
-  --brand-accent: #B8531E;
+  --brand-primary: #364FAB;
+  --brand-primary-dark: #2D428F;
+  --brand-primary-deep: #22336F;
+  --brand-primary-light: #E8ECFB;
+  --brand-primary-soft: #F3F5FD;
+  --brand-bg: #F7F8FA;
+  --brand-surface: #FFFFFF;
+  --brand-text: #202124;
+  --brand-muted: #687078;
+}
+
+/* Standardized Responsive App Container System */
+.app-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@media (min-width: 640px) {
+  .app-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
 }
 
 /* Commercial Food-Commerce Cards and Controls */
@@ -30,10 +85,14 @@
 }
 
 .food-card:hover {
-  @apply border-stone-300 dark:border-stone-700 shadow-xs;
+  @apply border-[#364FAB]/30 dark:border-[#364FAB]/40 shadow-xs;
 }
 
 .app-card {
+  @apply bg-white dark:bg-[#1C1917] rounded-xl border border-stone-200 dark:border-stone-800 shadow-2xs;
+}
+
+.bento-card {
   @apply bg-white dark:bg-[#1C1917] rounded-xl border border-stone-200 dark:border-stone-800 shadow-2xs;
 }
 
@@ -41,13 +100,17 @@
   @apply px-2.5 py-1 bg-stone-100 dark:bg-stone-800 text-[11px] font-semibold rounded-md text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 inline-flex items-center gap-1.5;
 }
 
+.app-pill-brand {
+  @apply px-2.5 py-1 bg-[#F3F5FD] dark:bg-[#22336F]/40 text-[#364FAB] dark:text-[#E8ECFB] text-[11px] font-bold rounded-md border border-[#E8ECFB] dark:border-[#364FAB]/30 inline-flex items-center gap-1.5;
+}
+
 /* Button & Action Styles */
 .btn-primary {
-  @apply bg-[#9A2D22] hover:bg-[#83241A] active:bg-[#6D1B13] text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center gap-2 shadow-2xs;
+  @apply bg-[#364FAB] hover:bg-[#2D428F] active:bg-[#22336F] text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center gap-2 shadow-2xs;
 }
 
 .btn-secondary {
-  @apply bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer inline-flex items-center justify-center gap-2;
+  @apply bg-[#F3F5FD] dark:bg-stone-800 hover:bg-[#E8ECFB] dark:hover:bg-stone-700 text-[#202124] dark:text-stone-200 font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-lg border border-[#E8ECFB] dark:border-stone-700 transition-colors cursor-pointer inline-flex items-center justify-center gap-2;
 }
 
 /* Custom scrollbars for dense POS, KDS & horizontal categories */
@@ -61,12 +124,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(168, 162, 158, 0.4);
+  background: rgba(104, 112, 120, 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 162, 158, 0.7);
+  background: rgba(54, 79, 171, 0.6);
 }
 
 /* Hide scrollbar for horizontal categories while keeping touch scroll */
