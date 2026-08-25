@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const DASTNAY_LOGO_URL = 'https://i.postimg.cc/3x2bhxWh/dastanay-weburllogo.png';
+export const DASTNAY_LOGO_URL = 'https://i.postimg.cc/BvY59r50/dastanay-weburllogo-transparent.png';
 
 interface DastnayLogoProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'hero';
@@ -13,7 +13,7 @@ interface DastnayLogoProps {
 
 /**
  * Direct reference to the Dastnay brand logo asset using external hosted URL:
- * https://i.postimg.cc/3x2bhxWh/dastanay-weburllogo.png
+ * https://i.postimg.cc/BvY59r50/dastanay-weburllogo-transparent.png
  */
 export const DastnaySvgTile: React.FC<{
   className?: string;
