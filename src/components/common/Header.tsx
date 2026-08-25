@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { Role } from '../../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { DastnayLogo } from './DastnayLogo';
+import { DastnayLogo, DASTNAY_LOGO_URL } from './DastnayLogo';
 
 interface HeaderProps {
   onOpenCart?: () => void;
@@ -60,15 +60,40 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
 
   const notifRef = useRef<HTMLDivElement>(null);
 
-  // Close notifications on click outside
+  // Close notifications on click outside & Keyboard shortcut for Location Modal (Alt+L, Ctrl+L, or L key)
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
         setShowNotifications(false);
       }
     };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isInput =
+        document.activeElement &&
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+
+      // Alt+L, Ctrl+L, or Meta+L (or simple 'L' when not typing)
+      if (
+        (e.altKey && (e.key === 'l' || e.key === 'L')) ||
+        ((e.ctrlKey || e.metaKey) && (e.key === 'l' || e.key === 'L' || e.key === 'k' || e.key === 'K')) ||
+        (!isInput && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === 'l' || e.key === 'L'))
+      ) {
+        e.preventDefault();
+        setShowLocationModal((prev) => !prev);
+      }
+
+      if (e.key === 'Escape') {
+        setShowLocationModal(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const t = dictionary[language];
@@ -122,32 +147,45 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
       <div className="app-container">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
           {/* Brand Logo & Commercial Location Selector */}
-          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
             <div className="flex items-center cursor-pointer shrink-0">
               <div className="sm:hidden">
-                <DastnayLogo size="xs" variant="tile" rounded="md" />
+                <DastnayLogo size="xs" variant="tile" rounded="lg" />
               </div>
               <div className="hidden sm:block">
                 <DastnayLogo size="md" />
               </div>
             </div>
 
-            {/* Location Selector Button */}
+            <div className="hidden sm:block h-6 w-px bg-stone-200 dark:bg-stone-700 shrink-0" />
+
+            {/* Location Selector Button with Shortcut */}
             <button
               id="location-picker-btn"
               onClick={() => setShowLocationModal(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-stone-50 dark:bg-stone-800/80 hover:bg-stone-100 dark:hover:bg-stone-700/80 border border-stone-200 dark:border-stone-700 text-left transition-colors cursor-pointer max-w-[130px] sm:max-w-[220px]"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-800/90 hover:bg-stone-200 dark:hover:bg-stone-700/80 border border-stone-200 dark:border-stone-700 text-left transition-all cursor-pointer shrink-0 shadow-2xs group select-none"
+              title="Change Branch Location (Shortcut: Alt+L or Press L)"
             >
-              <MapPin className="w-3.5 h-3.5 text-[#364FAB] shrink-0" />
-              <div className="min-w-0 flex-1">
-                <span className="text-[9px] sm:text-[10px] text-stone-500 font-medium block leading-none truncate">
+              <div className="w-6 h-6 rounded-lg bg-[#364FAB]/10 dark:bg-[#364FAB]/30 flex items-center justify-center shrink-0">
+                <MapPin className="w-3.5 h-3.5 text-[#364FAB] dark:text-[#E8ECFB]" />
+              </div>
+
+              {/* Branch Text Details */}
+              <div className="flex flex-col justify-center min-w-0 text-left">
+                <span className="text-[9px] sm:text-[10px] font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider leading-none truncate">
                   {currentBranch.city}
                 </span>
-                <span className="text-[11px] sm:text-xs font-bold text-stone-900 dark:text-stone-100 truncate block mt-0.5">
-                  {currentBranch.area}
+                <span className="text-[11px] sm:text-xs font-bold text-stone-900 dark:text-stone-100 truncate block leading-tight mt-0.5 max-w-[90px] xs:max-w-[120px] sm:max-w-[160px] md:max-w-[190px]">
+                  {currentBranch.area || currentBranch.name}
                 </span>
               </div>
-              <ChevronDown className="w-3 h-3 text-stone-400 shrink-0" />
+
+              {/* Shortcut Badge */}
+              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-stone-200/90 dark:bg-stone-700/90 text-stone-600 dark:text-stone-300 border border-stone-300/80 dark:border-stone-600/80 shadow-2xs">
+                Alt+L
+              </kbd>
+
+              <ChevronDown className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500 shrink-0 transition-transform group-hover:translate-y-0.5" />
             </button>
           </div>
 
@@ -300,20 +338,25 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
             >
               {/* Modal Header */}
               <div className="p-4 border-b border-stone-100 dark:border-stone-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#364FAB]" />
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#364FAB]/10 dark:bg-[#364FAB]/30 flex items-center justify-center shrink-0">
+                    <MapPin className="w-4 h-4 text-[#364FAB] dark:text-[#E8ECFB]" />
+                  </div>
                   <div>
-                    <h2 className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100">
-                      Select Pakistani Dining Branch
+                    <h2 className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                      <span>Select Dining Branch</span>
+                      <kbd className="text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-500 border border-stone-200 dark:border-stone-700">
+                        Alt+L
+                      </kbd>
                     </h2>
                     <p className="text-[11px] text-stone-500">
-                      Choose your area to view live tables, local delivery & branch menus
+                      Choose branch to view live tables, local delivery & branch menus
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowLocationModal(false)}
-                  className="p-1 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 cursor-pointer"
+                  className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -366,32 +409,38 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart }) => {
                           setCurrentRestaurantId(b.restaurantId);
                           setShowLocationModal(false);
                         }}
-                        className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-start justify-between cursor-pointer ${
+                        className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-center justify-between cursor-pointer gap-3 ${
                           isSelected
                             ? 'bg-[#F3F5FD] dark:bg-[#22336F]/40 border border-[#364FAB]/40 text-[#364FAB] dark:text-[#E8ECFB]'
-                            : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800/80'
+                            : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800/80 border border-transparent'
                         }`}
                       >
-                        <div className="space-y-0.5">
-                          <div className="flex items-center gap-2">
-                            <span className="font-extrabold text-xs sm:text-sm text-stone-900 dark:text-stone-100">
-                              {b.name}
-                            </span>
-                            <span
-                              className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${
-                                b.isOpen
-                                  ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
-                                  : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300'
-                              }`}
-                            >
-                              {b.isOpen ? 'Open Now' : 'Closed'}
-                            </span>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#364FAB] text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'}`}>
+                            <MapPin className="w-4 h-4" />
                           </div>
-                          <p className="text-[11px] text-stone-500">{b.address}</p>
-                          <p className="text-[10px] text-stone-400 font-mono">🕒 {b.openingHours}</p>
+
+                          <div className="space-y-0.5 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-extrabold text-xs sm:text-sm text-stone-900 dark:text-stone-100 truncate">
+                                {b.name}
+                              </span>
+                              <span
+                                className={`text-[9px] font-bold px-1.5 py-0.2 rounded shrink-0 ${
+                                  b.isOpen
+                                    ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+                                    : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300'
+                                }`}
+                              >
+                                {b.isOpen ? 'Open Now' : 'Closed'}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-stone-500 truncate">{b.address}</p>
+                            <p className="text-[10px] text-stone-400 font-mono">🕒 {b.openingHours}</p>
+                          </div>
                         </div>
 
-                        <div className="text-right shrink-0 ml-3 flex flex-col items-end gap-1">
+                        <div className="text-right shrink-0 ml-2 flex flex-col items-end gap-1">
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                             {b.city}
                           </span>

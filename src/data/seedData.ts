@@ -164,14 +164,33 @@ export const INITIAL_BRANCHES: Branch[] = [
 ];
 
 export const INITIAL_TABLES: Table[] = [
-  { id: 'tbl-1', tableNumber: 'Table 01', capacity: 2, section: 'Terrace Sea-View', status: 'available', qrCodeToken: 'DST-QR-KOL-01' },
-  { id: 'tbl-2', tableNumber: 'Table 02', capacity: 4, section: 'Terrace Sea-View', status: 'occupied', qrCodeToken: 'DST-QR-KOL-02' },
-  { id: 'tbl-3', tableNumber: 'Table 03', capacity: 4, section: 'Indoor AC Deck', status: 'reserved', qrCodeToken: 'DST-QR-KOL-03' },
-  { id: 'tbl-4', tableNumber: 'Table 04', capacity: 6, section: 'Terrace Sea-View', status: 'available', qrCodeToken: 'DST-QR-KOL-04' },
-  { id: 'tbl-5', tableNumber: 'Table 05', capacity: 8, section: 'Executive Family Gazebo', status: 'available', qrCodeToken: 'DST-QR-KOL-05' },
-  { id: 'tbl-6', tableNumber: 'Table 06', capacity: 4, section: 'Indoor AC Deck', status: 'cleaning', qrCodeToken: 'DST-QR-KOL-06' },
-  { id: 'tbl-7', tableNumber: 'Table 07', capacity: 6, section: 'Courtyard Waterside', status: 'available', qrCodeToken: 'DST-QR-KOL-07' },
-  { id: 'tbl-8', tableNumber: 'Table 08', capacity: 10, section: 'VIP Presidential Hall', status: 'out_of_service', qrCodeToken: 'DST-QR-KOL-08' },
+  // Kolachi DHA Phase 8
+  { id: 'tbl-kolachi-1', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 01', capacity: 2, section: 'Terrace Sea-View', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-01' },
+  { id: 'tbl-kolachi-2', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 02', capacity: 4, section: 'Terrace Sea-View', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-02' },
+  { id: 'tbl-kolachi-3', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 03', capacity: 4, section: 'Indoor AC Deck', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-03' },
+  { id: 'tbl-kolachi-4', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 04', capacity: 6, section: 'Terrace Sea-View', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-04' },
+  { id: 'tbl-kolachi-5', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 05', capacity: 8, section: 'Executive Family Gazebo', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-05' },
+  { id: 'tbl-kolachi-6', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 06', capacity: 4, section: 'Indoor AC Deck', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-06' },
+  { id: 'tbl-kolachi-7', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 07', capacity: 6, section: 'Courtyard Waterside', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-07' },
+  { id: 'tbl-kolachi-8', branchId: 'br-kolachi-dha', restaurantId: 'rest-kolachi', tableNumber: 'Table 08', capacity: 10, section: 'VIP Presidential Hall', status: 'available', qrCodeToken: 'DST-QR-KOL-DHA-08' },
+
+  // Kolachi Clifton
+  { id: 'tbl-clif-1', branchId: 'br-kolachi-clifton', restaurantId: 'rest-kolachi', tableNumber: 'Table 01', capacity: 2, section: 'Ocean View Window', status: 'available', qrCodeToken: 'DST-QR-CLIF-01' },
+  { id: 'tbl-clif-2', branchId: 'br-kolachi-clifton', restaurantId: 'rest-kolachi', tableNumber: 'Table 02', capacity: 4, section: 'Main Hall', status: 'available', qrCodeToken: 'DST-QR-CLIF-02' },
+  { id: 'tbl-clif-3', branchId: 'br-kolachi-clifton', restaurantId: 'rest-kolachi', tableNumber: 'Table 03', capacity: 6, section: 'Family Corner', status: 'available', qrCodeToken: 'DST-QR-CLIF-03' },
+  { id: 'tbl-clif-4', branchId: 'br-kolachi-clifton', restaurantId: 'rest-kolachi', tableNumber: 'Table 04', capacity: 8, section: 'VIP Lounge', status: 'available', qrCodeToken: 'DST-QR-CLIF-04' },
+
+  // Bundu Khan Gulberg Lahore
+  { id: 'tbl-bundu-1', branchId: 'br-bundu-gulberg', restaurantId: 'rest-bundukhan', tableNumber: 'Table 01', capacity: 4, section: 'MM Alam Terrace', status: 'available', qrCodeToken: 'DST-QR-BUNDU-01' },
+  { id: 'tbl-bundu-2', branchId: 'br-bundu-gulberg', restaurantId: 'rest-bundukhan', tableNumber: 'Table 02', capacity: 4, section: 'Main Dining Hall', status: 'available', qrCodeToken: 'DST-QR-BUNDU-02' },
+  { id: 'tbl-bundu-3', branchId: 'br-bundu-gulberg', restaurantId: 'rest-bundukhan', tableNumber: 'Table 03', capacity: 8, section: 'Family Hall', status: 'available', qrCodeToken: 'DST-QR-BUNDU-03' },
+  { id: 'tbl-bundu-4', branchId: 'br-bundu-gulberg', restaurantId: 'rest-bundukhan', tableNumber: 'Table 04', capacity: 12, section: 'Executive Dastarkhwan', status: 'available', qrCodeToken: 'DST-QR-BUNDU-04' },
+
+  // Howdy F-7 Islamabad
+  { id: 'tbl-howdy-1', branchId: 'br-howdy-f7', restaurantId: 'rest-howdy', tableNumber: 'Table 01', capacity: 2, section: 'Cowboy Patio', status: 'available', qrCodeToken: 'DST-QR-HOWDY-01' },
+  { id: 'tbl-howdy-2', branchId: 'br-howdy-f7', restaurantId: 'rest-howdy', tableNumber: 'Table 02', capacity: 4, section: 'Saloon Floor', status: 'available', qrCodeToken: 'DST-QR-HOWDY-02' },
+  { id: 'tbl-howdy-3', branchId: 'br-howdy-f7', restaurantId: 'rest-howdy', tableNumber: 'Table 03', capacity: 6, section: 'Ranch Booth', status: 'available', qrCodeToken: 'DST-QR-HOWDY-03' },
+  { id: 'tbl-howdy-4', branchId: 'br-howdy-f7', restaurantId: 'rest-howdy', tableNumber: 'Table 04', capacity: 8, section: 'Sheriff Suite', status: 'available', qrCodeToken: 'DST-QR-HOWDY-04' },
 ];
 
 export const INITIAL_MENU_ITEMS: MenuItem[] = [
@@ -513,7 +532,7 @@ export const INITIAL_RESERVATIONS: Reservation[] = [
     id: 'DST-RES-7821',
     restaurantId: 'rest-kolachi',
     branchId: 'br-kolachi-dha',
-    tableId: 'tbl-3',
+    tableId: 'tbl-kolachi-3',
     tableNumber: 'Table 03',
     customerName: 'Syed Hamza Ali',
     customerPhone: '+92 300 8291029',
@@ -530,7 +549,7 @@ export const INITIAL_RESERVATIONS: Reservation[] = [
     id: 'DST-RES-7822',
     restaurantId: 'rest-kolachi',
     branchId: 'br-kolachi-dha',
-    tableId: 'tbl-2',
+    tableId: 'tbl-kolachi-2',
     tableNumber: 'Table 02',
     customerName: 'Dr. Ayesha Malik',
     customerPhone: '+92 321 7891234',
@@ -550,7 +569,7 @@ export const INITIAL_ORDERS: Order[] = [
     id: 'DST-ORD-9101',
     restaurantId: 'rest-kolachi',
     branchId: 'br-kolachi-dha',
-    tableId: 'tbl-2',
+    tableId: 'tbl-kolachi-2',
     tableNumber: 'Table 02',
     customerName: 'Dr. Ayesha Malik',
     customerPhone: '+92 321 7891234',

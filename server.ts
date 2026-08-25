@@ -358,13 +358,29 @@ async function startServer() {
 
       const guestCount = Number(guests) || 1;
       const checkDate = (date as string) || new Date().toISOString().split('T')[0];
-      const checkTime = (time as string) || '08:30 PM';
+
+      // Dynamic real-time slot fallback if not provided
+      let checkTime = time as string;
+      if (!checkTime) {
+        const now = new Date();
+        let hr = now.getHours();
+        const mins = now.getMinutes();
+        const ampm = hr >= 12 ? 'PM' : 'AM';
+        hr = hr % 12 || 12;
+        const nextMins = mins > 30 ? '00' : '30';
+        checkTime = `${String(hr).padStart(2, '0')}:${nextMins} ${ampm}`;
+      }
 
       // Get all tables for the branch with sufficient capacity
-      const allBranchTables = queryAll(
+      let allBranchTables = queryAll(
         'SELECT * FROM dining_tables WHERE branchId = ? ORDER BY capacity ASC',
         [branchId]
       );
+
+      // Fallback if branch tables haven't been assigned yet
+      if (allBranchTables.length === 0) {
+        allBranchTables = queryAll('SELECT * FROM dining_tables ORDER BY capacity ASC');
+      }
 
       // Find all active bookings for this branch, date, and time
       const activeBookings = queryAll(
@@ -377,7 +393,7 @@ async function startServer() {
       const bookedTableIds = new Set(activeBookings.map((b) => b.tableId));
 
       const availableTables = allBranchTables.filter(
-        (t) => !bookedTableIds.has(t.id) && t.status !== 'dirty'
+        (t) => !bookedTableIds.has(t.id) && t.status !== 'dirty' && t.status !== 'out_of_service'
       );
 
       const suitableTables = availableTables.filter((t) => t.capacity >= guestCount);
@@ -389,6 +405,8 @@ async function startServer() {
         isAvailable: suitableTables.length > 0,
         availableTables,
         suitableTables,
+        time: checkTime,
+        date: checkDate,
       });
     } catch (err: any) {
       res.status(500).json({ error: err.message });

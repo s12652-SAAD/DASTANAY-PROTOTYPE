@@ -436,8 +436,15 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const startTableSession = (tableNumber: string, reservationId?: string) => {
-    const table = tables.find((t) => t.tableNumber.toLowerCase() === tableNumber.toLowerCase());
+  const startTableSession = (tableNumber: string, reservationId?: string, branchId?: string) => {
+    const targetBranch = branchId || currentBranchId;
+    const table =
+      tables.find(
+        (t) =>
+          (!t.branchId || t.branchId === targetBranch) &&
+          t.tableNumber.toLowerCase() === tableNumber.toLowerCase()
+      ) || tables.find((t) => t.tableNumber.toLowerCase() === tableNumber.toLowerCase());
+
     if (!table) {
       return { success: false, message: `Table ${tableNumber} does not exist at this branch.` };
     }
