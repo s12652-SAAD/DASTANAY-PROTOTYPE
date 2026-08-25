@@ -4,7 +4,7 @@ export type Language = 'en' | 'ur_roman';
 
 export type Theme = 'light' | 'dark';
 
-export type TableStatus = 'available' | 'reserved' | 'occupied' | 'cleaning' | 'out_of_service';
+export type TableStatus = 'available' | 'reserved' | 'occupied' | 'cleaning' | 'dirty' | 'out_of_service';
 
 export type ReservationStatus = 'confirmed' | 'checked_in' | 'no_show' | 'cancelled' | 'expired' | 'refunded';
 
@@ -31,12 +31,17 @@ export type StaffStatus = 'On Duty' | 'Off Duty' | 'Break' | 'Absent';
 
 export interface Table {
   id: string;
+  branchId?: string;
+  restaurantId?: string;
   tableNumber: string;
   capacity: number;
   section: string; // e.g. 'Indoor AC', 'Terrace Sea-View', 'Family Hall', 'Courtyard'
   status: TableStatus;
-  qrCodeToken: string;
+  qrCodeToken?: string;
+  activeQrToken?: string;
   currentSessionId?: string;
+  guestName?: string;
+  guestPhone?: string;
 }
 
 export interface MenuItemAddon {
@@ -240,6 +245,7 @@ export interface StaffMember {
   phone: string;
   role: StaffRole;
   status: StaffStatus;
+  assignedTables?: string[];
   clockInTime?: string;
   breakStartTime?: string;
   totalBreakMinutesToday: number;
@@ -278,7 +284,7 @@ export interface NotificationItem {
   targetRole: 'customer' | 'manager' | 'kitchen' | 'admin' | 'all';
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'info' | 'success' | 'warning' | 'error' | 'order' | 'promo';
   timestamp: string;
   orderId?: string;
   tableNumber?: string;

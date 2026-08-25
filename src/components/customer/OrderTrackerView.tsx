@@ -93,16 +93,18 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
       className="max-w-3xl mx-auto space-y-6 pb-10"
     >
       {/* Header Card */}
-      <div className="app-card p-6 sm:p-7 space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-stone-100 dark:border-stone-800 pb-5">
+      <div className="bg-white dark:bg-[#18181B] rounded-xl border border-stone-200 dark:border-stone-800 p-5 sm:p-6 space-y-5 shadow-2xs">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-stone-100 dark:border-stone-800 pb-4">
           <div className="flex items-center gap-3">
-            <DastnayLogo variant="tile" size="sm" rounded="xl" />
+            <div className="w-10 h-10 rounded-lg bg-[#9A2D22] text-[#FEE248] flex items-center justify-center font-extrabold text-sm shadow-2xs">
+              {targetOrder.tableNumber.replace('Table ', 'T')}
+            </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono font-extrabold text-lg text-[#9A2D22] dark:text-[#FEE248]">
+                <span className="font-mono font-bold text-base text-[#9A2D22] dark:text-[#FEE248]">
                   {targetOrder.id}
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300">
+                <span className="px-2 py-0.2 rounded bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-xs font-bold">
                   {targetOrder.tableNumber}
                 </span>
               </div>
@@ -113,82 +115,68 @@ export const OrderTrackerView: React.FC<OrderTrackerViewProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={() => setPrintModalData({ type: 'receipt', order: targetOrder })}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold transition-colors cursor-pointer"
             >
-              <Printer className="w-4 h-4 text-[#9A2D22] dark:text-[#FEE248]" />
-              <span>Tax Invoice Slip</span>
-            </motion.button>
+              <Printer className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#FEE248]" />
+              <span>Tax Invoice</span>
+            </button>
           </div>
         </div>
 
         {/* Live Prep Countdown Clock Banner */}
         {targetOrder.status === 'preparing' || targetOrder.status === 'received' || targetOrder.status === 'confirmed' ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="p-5 rounded-2xl bg-gradient-to-r from-[#591610] via-[#83241A] to-stone-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm border border-amber-500/30"
-          >
+          <div className="p-4 rounded-xl bg-stone-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4 border border-stone-800">
             <div className="space-y-1 text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start gap-2 text-[#FEE248] text-xs font-bold uppercase tracking-wider">
-                <ChefHat className="w-4 h-4 animate-bounce" />
-                <span>Estimated Preparation Target</span>
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 text-[#FEE248] text-xs font-bold uppercase tracking-wider">
+                <ChefHat className="w-4 h-4" />
+                <span>Estimated Preparation</span>
               </div>
               <p className="text-xs text-stone-300">
-                Expected Ready Around: <span className="font-bold text-white">{targetOrder.expectedReadyAt}</span>
+                Ready Around: <span className="font-bold text-white">{targetOrder.expectedReadyAt}</span>
               </p>
             </div>
 
             <div className="text-center sm:text-right">
-              <div className="font-mono text-3xl font-extrabold tracking-widest text-[#FEE248]">
+              <div className="font-mono text-2xl sm:text-3xl font-extrabold tracking-widest text-[#FEE248]">
                 {formatCountdown(remainingSeconds)}
               </div>
-              <span className="text-[10px] text-stone-300 font-medium">Minutes Remaining</span>
+              <span className="text-[10px] text-stone-400">Minutes Remaining</span>
             </div>
-          </motion.div>
+          </div>
         ) : targetOrder.status === 'ready' ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-950 dark:text-amber-200 flex items-center gap-3"
-          >
-            <Sparkles className="w-6 h-6 text-[#9A2D22] dark:text-[#FEE248] shrink-0 animate-pulse" />
+          <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-950 dark:text-amber-200 flex items-center gap-3">
+            <Sparkles className="w-5 h-5 text-[#9A2D22] dark:text-[#FEE248] shrink-0" />
             <div>
-              <span className="font-extrabold text-sm block">Your food is ready!</span>
+              <span className="font-bold text-sm block">Your food is ready!</span>
               <p className="text-xs text-amber-800 dark:text-amber-300">
-                Our staff is bringing the fresh sizzling dishes to {targetOrder.tableNumber} shortly.
+                Our staff is bringing your order to {targetOrder.tableNumber}.
               </p>
             </div>
-          </motion.div>
+          </div>
         ) : targetOrder.status === 'served' || targetOrder.status === 'completed' ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="p-4 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 flex items-center justify-between"
-          >
+          <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-6 h-6 text-[#9A2D22] dark:text-[#FEE248] shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <div>
                 <span className="font-bold text-sm text-stone-900 dark:text-stone-100 block">
                   Food Served. Enjoy your meal!
                 </span>
-                <p className="text-xs text-stone-500">Khana nosh farmayein.</p>
+                <p className="text-xs text-stone-500 font-urdu">کھانا نوش فرمائیں</p>
               </div>
             </div>
 
             {!targetOrder.isReviewed && (
-              <motion.button
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={() => onOpenReviewModal(targetOrder.id)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs cursor-pointer transition-colors"
               >
                 <Star className="w-3.5 h-3.5 fill-[#FEE248] text-[#FEE248]" />
                 <span>Rate & Review</span>
-              </motion.button>
+              </button>
             )}
-          </motion.div>
+          </div>
         ) : null}
 
         {/* Delay Notice Banner if Kitchen flagged delay */}

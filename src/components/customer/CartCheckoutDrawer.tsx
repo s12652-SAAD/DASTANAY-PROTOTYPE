@@ -15,6 +15,9 @@ import {
   ShieldCheck,
   ArrowRight,
   AlertCircle,
+  Tag,
+  CheckCircle2,
+  QrCode,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DastnayLogo } from '../common/DastnayLogo';
@@ -38,6 +41,8 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
     updateCartItemQuantity,
     clearCart,
     currentTableSession,
+    startTableSession,
+    tables,
     branches,
     currentBranchId,
     appliedPromo,
@@ -53,19 +58,22 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
   const t = dictionary[language];
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
+  const [orderType, setOrderType] = useState<'dine_in' | 'takeaway'>('dine_in');
+  const [selectedQuickTable, setSelectedQuickTable] = useState<string>('');
   const [promoCodeInput, setPromoCodeInput] = useState<string>('');
   const [promoMessage, setPromoMessage] = useState<string>('');
   const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
-  const [customerName] = useState<string>('Hamza Ali');
-  const [customerPhone] = useState<string>('+92 300 8291029');
+  const [customerName, setCustomerName] = useState<string>('Syed Hamza Ali');
+  const [customerPhone, setCustomerPhone] = useState<string>('+92 300 8291029');
 
   if (!isOpen) return null;
 
-  const currentBranch = branches.find((b) => b.id === currentBranchId);
+  const currentBranch = branches.find((b) => b.id === currentBranchId) || branches[0];
+  const branchTables = tables.filter((t) => t.branchId === currentBranchId);
   const subtotal = cart.reduce((sum, item) => sum + item.itemTotal, 0);
   const taxRate = currentBranch?.taxRatePercent || 13;
-  const serviceRate = currentBranch?.serviceChargePercent || 5;
+  const serviceRate = orderType === 'dine_in' ? currentBranch?.serviceChargePercent || 5 : 0;
 
   const taxAmount = (subtotal * taxRate) / 100;
   const serviceCharge = (subtotal * serviceRate) / 100;
@@ -83,7 +91,7 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
 
   // Pre-booked table reservation adjustment
   const activeRes = reservations.find(
-    (r) => r.tableId === currentTableSession?.tableId && r.status === 'checked_in'
+    (r) => r.tableId === currentTableSession?.tableId && (r.status === 'checked_in' || r.status === 'confirmed')
   );
   const bookingFeeDeduction = activeRes ? activeRes.bookingFee : 0;
 
@@ -94,349 +102,393 @@ export const CartCheckoutDrawer: React.FC<CartCheckoutDrawerProps> = ({
 
   const pointsToEarn = Math.floor(finalTotal / 10);
 
-  const handleApplyPromo = () => {
+  const handleApplyPromo = (codeToUse?: string) => {
+    const code = (codeToUse || promoCodeInput).trim().toLowerCase();
     setPromoMessage('');
     const match = promotions.find(
-      (p) => p.code.toLowerCase() === promoCodeInput.trim().toLowerCase() && p.isActive
+      (p) => p.code.toLowerCase() === code && p.isActive
     );
     if (!match) {
       setPromoMessage('Invalid voucher code');
       return;
     }
     if (subtotal < match.minSpend) {
-      setPromoMessage(`Minimum spend of Rs. ${match.minSpend} required for this code.`);
+      setPromoMessage(`Minimum spend of Rs. ${match.minSpend} required.`);
       return;
     }
     setAppliedPromo(match);
-    setPromoMessage(`Promo code applied: ${match.title}`);
+    setPromoMessage(`Voucher applied: ${match.title}`);
   };
 
-  const handlePlaceOrderSubmit = () => {
+  const handlePlaceOrderSubmit = async () => {
     setErrorMsg('');
 
-    if (!currentTableSession) {
-      setErrorMsg('Please start a table session or scan your table QR before sending order to kitchen.');
+    if (cart.length === 0) {
+      setErrorMsg('Your cart is empty. Please add Pakistani dishes first.');
       return;
+    }
+
+    if (orderType === 'dine_in' && !currentTableSession) {
+      if (selectedQuickTable) {
+        startTableSession(selectedQuickTable);
+      } else {
+        setErrorMsg('Please select a Table Number or switch to Takeaway.');
+        return;
+      }
     }
 
     setIsPlacingOrder(true);
 
-    setTimeout(() => {
-      const res = placeOrder(paymentMethod, customerPhone, customerName);
+    try {
+      const res = await placeOrder(paymentMethod, customerPhone, customerName);
       setIsPlacingOrder(false);
 
       if (res.success && res.order) {
         onOrderPlaced(res.order);
         onClose();
       } else {
-        setErrorMsg(res.message);
+        setErrorMsg(res.message || 'Order submission failed.');
       }
-    }, 600);
+    } catch (err: any) {
+      setIsPlacingOrder(false);
+      setErrorMsg(err.message || 'Failed to submit order.');
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/50 backdrop-blur-xs flex justify-end">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-xs flex justify-end">
       <motion.div
         initial={{ x: '100%' }}
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
-        transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-        className="bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 w-full max-w-md h-full flex flex-col shadow-2xl border-l border-stone-200 dark:border-stone-800"
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className="w-full max-w-lg bg-white dark:bg-[#18181B] h-full shadow-2xl flex flex-col justify-between border-l border-stone-200 dark:border-stone-800"
       >
-        {/* Top Bar */}
-        <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <DastnayLogo variant="tile" size="xs" rounded="md" />
-            <h3 className="font-extrabold text-base">{t.cart}</h3>
-            <span className="text-xs text-stone-500">
-              ({cart.reduce((s, i) => s + i.quantity, 0)} items)
-            </span>
+        {/* Drawer Header */}
+        <div className="p-4 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between bg-stone-50/50 dark:bg-stone-900/50">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="w-5 h-5 text-[#9A2D22]" />
+            <div>
+              <h2 className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+                Your Pakistani Food Cart
+              </h2>
+              <p className="text-[11px] text-stone-500">{currentBranch.name}</p>
+            </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-xl text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            {cart.length > 0 && (
+              <button
+                onClick={clearCart}
+                className="text-[11px] text-stone-500 hover:text-rose-600 font-semibold cursor-pointer p-1"
+              >
+                Clear Cart
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 text-xs">
+        {/* Drawer Body */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          {/* Table Session Status in Cart */}
-          {currentTableSession ? (
-            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center justify-between">
-              <div>
-                <span className="font-extrabold text-xs text-amber-900 dark:text-amber-300 block">
-                  Delivering to: {currentTableSession.tableNumber}
-                </span>
-                <span className="text-[10px] text-stone-500">
-                  Kitchen will dispatch directly to your table
-                </span>
-              </div>
-              <span className="w-2.5 h-2.5 rounded-full bg-[#E5A324] animate-pulse"></span>
-            </div>
-          ) : (
-            <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-2">
-              <span className="font-bold text-amber-900 dark:text-amber-200 block">
-                No Table Connected Yet
-              </span>
-              <p className="text-[11px] text-amber-800 dark:text-amber-300">
-                Are you sitting at a table? Scan the table QR sticker to link your order.
-              </p>
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={() => {
-                  onClose();
-                  onOpenQRScanner();
-                }}
-                className="w-full py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-bold text-xs cursor-pointer shadow-2xs"
-              >
-                Scan Table QR / Check In
-              </motion.button>
-            </div>
-          )}
-
-          {/* Cart Items List */}
-          {cart.length === 0 ? (
-            <div className="text-center py-16 space-y-3">
-              <ShoppingBag className="w-12 h-12 mx-auto text-stone-300 dark:text-stone-700" />
-              <p className="text-stone-500 font-medium">Your cart is empty.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <div className="flex justify-between items-center text-stone-500 font-bold uppercase tracking-wider text-[10px]">
-                <span>Ordered Items</span>
+          {/* Dine-In vs Takeaway Toggle */}
+          <div className="p-3 rounded-xl bg-stone-100 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-2">
+            <div className="flex items-center justify-between text-xs font-bold text-stone-800 dark:text-stone-200">
+              <span>Order Type</span>
+              <div className="flex items-center gap-1 bg-white dark:bg-stone-900 p-0.5 rounded-lg border border-stone-200 dark:border-stone-700">
                 <button
-                  onClick={clearCart}
-                  className="text-rose-600 hover:underline cursor-pointer flex items-center gap-1"
+                  type="button"
+                  onClick={() => setOrderType('dine_in')}
+                  className={`px-3 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer ${
+                    orderType === 'dine_in'
+                      ? 'bg-[#9A2D22] text-white shadow-2xs'
+                      : 'text-stone-600 dark:text-stone-400'
+                  }`}
                 >
-                  <Trash2 className="w-3 h-3" /> Clear
+                  Dine-In Table
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOrderType('takeaway')}
+                  className={`px-3 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer ${
+                    orderType === 'takeaway'
+                      ? 'bg-[#9A2D22] text-white shadow-2xs'
+                      : 'text-stone-600 dark:text-stone-400'
+                  }`}
+                >
+                  Takeaway / Counter
                 </button>
               </div>
+            </div>
 
-              <div className="divide-y divide-stone-100 dark:divide-stone-800">
-                {cart.map((item) => (
-                  <div key={item.cartItemId} className="py-3 space-y-1.5">
-                    <div className="flex items-start justify-between">
-                      <div className="pr-2">
-                        <span className="font-bold text-stone-900 dark:text-stone-100">
-                          {item.name}
-                        </span>
-                        {item.selectedVariation && (
-                          <span className="block text-[10px] text-stone-500">
-                            Portion: {item.selectedVariation.name}
-                          </span>
-                        )}
-                        {item.selectedAddons.length > 0 && (
-                          <span className="block text-[10px] text-stone-500">
-                            + {item.selectedAddons.map((a) => a.name).join(', ')}
-                          </span>
-                        )}
-                        {item.specialInstructions && (
-                          <span className="block text-[10px] font-bold text-amber-700 dark:text-amber-400">
-                            Note: {item.specialInstructions}
-                          </span>
-                        )}
-                      </div>
-
-                      <span className="font-mono font-bold text-stone-900 dark:text-stone-100 whitespace-nowrap">
-                        Rs. {item.itemTotal.toLocaleString()}
-                      </span>
-                    </div>
-
-                    {/* Quantity controls */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div className="flex items-center gap-2 bg-stone-100 dark:bg-stone-800 px-2 py-1 rounded-lg">
-                        <button
-                          onClick={() => updateCartItemQuantity(item.cartItemId, -1)}
-                          className="p-1 hover:text-rose-600 cursor-pointer"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="font-bold w-4 text-center">{item.quantity}</span>
-                        <button
-                          onClick={() => updateCartItemQuantity(item.cartItemId, 1)}
-                          className="p-1 hover:text-[#9A2D22] cursor-pointer"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
-                      </div>
-
-                      <button
-                        onClick={() => removeFromCart(item.cartItemId)}
-                        className="text-stone-400 hover:text-rose-600 cursor-pointer"
+            {orderType === 'dine_in' && (
+              <div className="pt-2 border-t border-stone-200 dark:border-stone-700">
+                {currentTableSession ? (
+                  <div className="flex items-center justify-between text-xs bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-lg border border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-200">
+                    <span className="font-bold">Active Table: {currentTableSession.tableNumber}</span>
+                    <span className="text-[10px] bg-emerald-200 dark:bg-emerald-900 px-2 py-0.5 rounded font-mono">
+                      Session Active
+                    </span>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-stone-600 dark:text-stone-400 block">
+                      Select Table or Scan QR Code:
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={selectedQuickTable}
+                        onChange={(e) => setSelectedQuickTable(e.target.value)}
+                        className="flex-1 px-3 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-xs font-bold text-stone-900 dark:text-stone-100 outline-none"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <option value="">-- Choose Table Number --</option>
+                        {branchTables.map((t) => (
+                          <option key={t.id} value={t.tableNumber}>
+                            {t.tableNumber} ({t.section} - {t.capacity} Seats)
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={onOpenQRScanner}
+                        className="px-3 py-1.5 rounded-lg bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                      >
+                        <QrCode className="w-3.5 h-3.5" />
+                        <span>QR</span>
                       </button>
                     </div>
                   </div>
-                ))}
+                )}
               </div>
+            )}
+          </div>
+
+          {/* Cart Item List */}
+          {cart.length === 0 ? (
+            <div className="py-12 text-center space-y-2">
+              <ShoppingBag className="w-10 h-10 text-stone-300 dark:text-stone-700 mx-auto" />
+              <p className="text-xs font-bold text-stone-700 dark:text-stone-300">
+                Your cart is empty
+              </p>
+              <p className="text-[11px] text-stone-500">
+                Explore handi karahi, biryani, BBQ platters & fresh naan to add items!
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-stone-100 dark:divide-stone-800 space-y-1">
+              {cart.map((item) => (
+                <div key={item.cartItemId} className="py-3 flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1 space-y-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-extrabold text-xs text-stone-900 dark:text-stone-100">
+                        {item.menuItemName}
+                      </span>
+                    </div>
+
+                    {item.selectedVariation && (
+                      <p className="text-[11px] text-amber-800 dark:text-[#FEE248] font-semibold">
+                        Portion: {item.selectedVariation.name}
+                      </p>
+                    )}
+
+                    {item.selectedAddons && item.selectedAddons.length > 0 && (
+                      <p className="text-[10px] text-stone-500">
+                        Add-ons: {item.selectedAddons.map((a) => a.name).join(', ')}
+                      </p>
+                    )}
+
+                    {item.specialInstructions && (
+                      <p className="text-[10px] text-stone-400 italic">
+                        Note: "{item.specialInstructions}"
+                      </p>
+                    )}
+
+                    <div className="font-mono font-bold text-xs text-[#9A2D22] dark:text-[#FEE248] pt-1">
+                      Rs. {item.itemTotal.toLocaleString()}
+                    </div>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 p-1 rounded-lg border border-stone-200 dark:border-stone-700 shrink-0">
+                    <button
+                      onClick={() => updateCartItemQuantity(item.cartItemId, -1)}
+                      className="p-1 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 cursor-pointer"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="font-extrabold text-xs w-5 text-center text-stone-900 dark:text-stone-100">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() => updateCartItemQuantity(item.cartItemId, 1)}
+                      className="p-1 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
+          {/* Vouchers & Loyalty */}
           {cart.length > 0 && (
-            <>
-              {/* Promo Voucher Code */}
-              <div className="pt-3 border-t border-stone-100 dark:border-stone-800 space-y-2">
-                <label className="font-bold text-stone-700 dark:text-stone-300 block text-[11px]">
-                  Have a Promo Code? (e.g. AZADI14, KOLACHI500)
+            <div className="space-y-3 pt-3 border-t border-stone-100 dark:border-stone-800">
+              {/* Voucher Code */}
+              <div>
+                <label className="text-[11px] font-bold text-stone-700 dark:text-stone-300 block mb-1">
+                  Pakistani Voucher / Promo Code
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Enter Code"
+                    placeholder="Enter code (e.g. DINE20, WELCOME10)"
                     value={promoCodeInput}
                     onChange={(e) => setPromoCodeInput(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 uppercase font-mono tracking-wider outline-none focus:border-[#9A2D22]"
+                    className="flex-1 px-3 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 uppercase"
                   />
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleApplyPromo}
-                    className="px-4 py-2 rounded-xl bg-stone-800 dark:bg-stone-700 hover:bg-stone-900 text-white font-bold cursor-pointer transition-colors"
+                  <button
+                    type="button"
+                    onClick={() => handleApplyPromo()}
+                    className="px-4 py-1.5 rounded-lg bg-stone-800 dark:bg-stone-700 hover:bg-stone-900 text-white font-bold text-xs cursor-pointer"
                   >
                     Apply
-                  </motion.button>
+                  </button>
                 </div>
                 {promoMessage && (
-                  <p
-                    className={`text-[11px] ${
-                      appliedPromo ? 'text-[#9A2D22] dark:text-[#FEE248] font-bold' : 'text-rose-500'
-                    }`}
-                  >
+                  <p className="text-[10px] font-semibold text-[#9A2D22] dark:text-[#FEE248] mt-1">
                     {promoMessage}
                   </p>
                 )}
               </div>
 
-              {/* Loyalty Points Redemption Slider */}
+              {/* DineClub Loyalty Points */}
               {loyalty.pointsBalance > 0 && (
-                <div className="p-3.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-[#E5A324]" />
-                      Redeem dastnay Points
-                    </span>
-                    <span className="text-[11px] font-mono text-stone-500">
-                      Balance: {loyalty.pointsBalance} pts
-                    </span>
+                <div className="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 flex items-center justify-between text-xs">
+                  <div>
+                    <div className="font-extrabold text-amber-900 dark:text-amber-200">
+                      DineClub Points: {loyalty.pointsBalance}
+                    </div>
+                    <div className="text-[10px] text-amber-700 dark:text-amber-400">
+                      100 pts = Rs. 50 discount
+                    </div>
                   </div>
-
-                  <input
-                    type="range"
-                    min="0"
-                    max={Math.min(loyalty.pointsBalance, 1000)}
-                    step="50"
-                    value={redeemedPoints}
-                    onChange={(e) => setRedeemedPoints(Number(e.target.value))}
-                    className="w-full accent-[#9A2D22] cursor-pointer"
-                  />
-
-                  <div className="flex justify-between text-[11px] font-medium text-[#9A2D22] dark:text-[#FEE248]">
-                    <span>Redeeming: {redeemedPoints} Points</span>
-                    <span>Discount: - Rs. {loyaltyDiscount}</span>
-                  </div>
+                  {redeemedPoints > 0 ? (
+                    <button
+                      onClick={() => setRedeemedPoints(0)}
+                      className="text-[11px] font-bold text-rose-600 underline cursor-pointer"
+                    >
+                      Remove (Rs. {loyaltyDiscount})
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setRedeemedPoints(Math.min(loyalty.pointsBalance, 500))}
+                      className="px-3 py-1 bg-[#9A2D22] text-white rounded-lg font-bold text-[11px] cursor-pointer"
+                    >
+                      Redeem Points
+                    </button>
+                  )}
                 </div>
               )}
 
-              {/* Pakistani Payment Methods Selection */}
-              <div className="space-y-2 pt-2 border-t border-stone-100 dark:border-stone-800">
-                <label className="font-bold text-stone-800 dark:text-stone-200 uppercase tracking-wider block text-[11px]">
+              {/* Payment Method Selector */}
+              <div className="space-y-1.5 pt-2">
+                <label className="text-[11px] font-bold text-stone-700 dark:text-stone-300 block">
                   Payment Method
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-4 gap-1.5">
                   {[
-                    { id: 'cash', name: 'Cash to Waiter', icon: <Banknote className="w-4 h-4" /> },
-                    { id: 'jazzcash', name: 'JazzCash Wallet', icon: <Smartphone className="w-4 h-4" /> },
-                    { id: 'easypaisa', name: 'Easypaisa QR', icon: <Smartphone className="w-4 h-4" /> },
-                    { id: 'card', name: 'Debit/Credit Card', icon: <CreditCard className="w-4 h-4" /> },
+                    { id: 'cash', label: 'Cash', icon: <Banknote className="w-3.5 h-3.5" /> },
+                    { id: 'card', label: 'Card', icon: <CreditCard className="w-3.5 h-3.5" /> },
+                    { id: 'jazzcash', label: 'JazzCash', icon: <Smartphone className="w-3.5 h-3.5" /> },
+                    { id: 'easypaisa', label: 'Easypaisa', icon: <Smartphone className="w-3.5 h-3.5" /> },
                   ].map((pm) => (
                     <button
                       key={pm.id}
-                      onClick={() => setPaymentMethod(pm.id as any)}
-                      className={`p-2.5 rounded-xl border flex items-center gap-2 cursor-pointer transition-all ${
+                      type="button"
+                      onClick={() => setPaymentMethod(pm.id as PaymentMethod)}
+                      className={`p-2 rounded-lg border text-center transition-colors flex flex-col items-center gap-1 cursor-pointer ${
                         paymentMethod === pm.id
-                          ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 font-bold text-[#9A2D22] dark:text-[#FEE248]'
-                          : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
+                          ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/40 text-[#9A2D22] dark:text-[#FEE248] font-bold'
+                          : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800'
                       }`}
                     >
                       {pm.icon}
-                      <span>{pm.name}</span>
+                      <span className="text-[10px]">{pm.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Financial Calculation Breakdown */}
-              <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 space-y-1.5">
-                <div className="flex justify-between text-stone-600 dark:text-stone-400">
+              {/* Bill Breakdown */}
+              <div className="bg-stone-50 dark:bg-stone-800/40 rounded-xl p-3 space-y-1.5 text-xs border border-stone-200 dark:border-stone-700 font-mono">
+                <div className="flex justify-between text-stone-600 dark:text-stone-400 font-sans">
                   <span>Subtotal:</span>
-                  <span className="font-mono">Rs. {subtotal.toFixed(0)}</span>
+                  <span>Rs. {subtotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-stone-600 dark:text-stone-400">
-                  <span>Sindh/Punjab GST ({taxRate}%):</span>
-                  <span className="font-mono">Rs. {taxAmount.toFixed(0)}</span>
+                <div className="flex justify-between text-stone-600 dark:text-stone-400 font-sans">
+                  <span>PRA/SRB Tax ({taxRate}%):</span>
+                  <span>Rs. {taxAmount.toFixed(0)}</span>
                 </div>
-                <div className="flex justify-between text-stone-600 dark:text-stone-400">
-                  <span>Service Charge ({serviceRate}%):</span>
-                  <span className="font-mono">Rs. {serviceCharge.toFixed(0)}</span>
-                </div>
-
+                {orderType === 'dine_in' && (
+                  <div className="flex justify-between text-stone-600 dark:text-stone-400 font-sans">
+                    <span>Service Charge ({serviceRate}%):</span>
+                    <span>Rs. {serviceCharge.toFixed(0)}</span>
+                  </div>
+                )}
                 {totalDiscount > 0 && (
-                  <div className="flex justify-between text-[#9A2D22] dark:text-[#FEE248] font-semibold">
-                    <span>Discounts Applied:</span>
-                    <span className="font-mono">- Rs. {totalDiscount.toFixed(0)}</span>
+                  <div className="flex justify-between text-emerald-600 font-sans font-bold">
+                    <span>Discount (Promo + Points):</span>
+                    <span>- Rs. {totalDiscount.toFixed(0)}</span>
                   </div>
                 )}
-
                 {bookingFeeDeduction > 0 && (
-                  <div className="flex justify-between text-[#9A2D22] dark:text-[#FEE248] font-semibold">
-                    <span>Prepaid Reservation Adjusted:</span>
-                    <span className="font-mono">- Rs. {bookingFeeDeduction.toFixed(0)}</span>
+                  <div className="flex justify-between text-amber-700 dark:text-[#FEE248] font-sans font-bold">
+                    <span>Prepaid Table Booking Credit:</span>
+                    <span>- Rs. {bookingFeeDeduction}</span>
                   </div>
                 )}
-
-                <div className="flex justify-between font-extrabold text-sm pt-2 border-t border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100">
-                  <span>{t.bill_total}:</span>
-                  <span className="font-mono text-[#9A2D22] dark:text-[#FEE248] text-base">
-                    Rs. {finalTotal.toFixed(0)}
+                <div className="flex justify-between text-stone-900 dark:text-stone-100 font-bold text-sm pt-2 border-t border-stone-200 dark:border-stone-700 font-sans">
+                  <span>Grand Total Payable:</span>
+                  <span className="text-[#9A2D22] dark:text-[#FEE248] font-mono">
+                    Rs. {finalTotal.toLocaleString()}
                   </span>
                 </div>
-
-                <div className="flex justify-between text-[10px] text-stone-500 pt-1">
-                  <span>Points to Earn on completion:</span>
-                  <span className="font-bold text-[#E5A324]">+{pointsToEarn} dastnay Points</span>
-                </div>
+                <p className="text-[10px] text-amber-700 dark:text-amber-400 font-sans">
+                  ⭐ You will earn +{pointsToEarn} DineClub reward points with this order.
+                </p>
               </div>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Place Order CTA Button */}
+        {/* Drawer Footer Checkout Button */}
         {cart.length > 0 && (
-          <div className="p-4 border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 shrink-0">
+          <div className="p-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/50">
             <motion.button
-              whileTap={{ scale: 0.97 }}
-              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handlePlaceOrderSubmit}
               disabled={isPlacingOrder}
-              className="w-full py-3 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isPlacingOrder ? (
-                <span>Dispatching Order to Kitchen KDS...</span>
+                <span>Sending to Kitchen KDS & Database...</span>
               ) : (
                 <>
                   <ShieldCheck className="w-4 h-4 text-[#FEE248]" />
-                  <span>
-                    {t.order_now} • Rs. {finalTotal.toFixed(0)}
-                  </span>
+                  <span>Place Order • Rs. {finalTotal.toLocaleString()}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

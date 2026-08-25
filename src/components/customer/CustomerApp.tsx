@@ -109,94 +109,82 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
   return (
     <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-1 sm:py-2 space-y-3.5 sm:space-y-5">
       {/* Top Context Bar - Compact & Responsive */}
-      <motion.div
-        initial={{ opacity: 0, y: -6 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="app-card p-3 sm:p-4 md:p-5 flex flex-wrap items-center justify-between gap-2.5 sm:gap-4"
-      >
+      <div className="bg-white dark:bg-[#18181B] rounded-xl border border-stone-200 dark:border-stone-800 p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
         {/* Selected Restaurant & Branch info */}
-        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-          <div className="relative shrink-0">
-            <img
-              src={currentRestaurant.logo}
-              alt={currentRestaurant.name}
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover border border-stone-200 dark:border-stone-700 shadow-xs"
-            />
-            <div className="absolute -bottom-1 -right-1 ring-2 ring-white dark:ring-stone-900 rounded-md shadow-xs">
-              <DastnayLogo variant="tile" size="xs" rounded="sm" className="w-4 h-4 !rounded-[4px]" />
-            </div>
-          </div>
+        <div className="flex items-center gap-3 min-w-0">
+          <img
+            src={currentRestaurant.logo}
+            alt={currentRestaurant.name}
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-cover border border-stone-200 dark:border-stone-700 shrink-0"
+          />
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="font-extrabold text-xs sm:text-base text-stone-900 dark:text-stone-100 truncate">
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100 truncate">
                 {currentRestaurant.name}
               </span>
-              <span className="app-pill text-[10px] sm:text-xs shrink-0">{currentBranch.city}</span>
+              <span className="px-1.5 py-0.2 rounded bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-[10px] font-semibold shrink-0">
+                {currentBranch.city}
+              </span>
             </div>
-            <p className="text-[11px] sm:text-xs text-[#9A2D22] dark:text-[#E5A324] font-semibold mt-0.5 truncate">
+            <p className="text-xs text-stone-500 font-medium truncate">
               {currentBranch.name} • {currentBranch.area}
             </p>
           </div>
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 ml-auto sm:ml-0">
+        <div className="flex items-center gap-2 shrink-0 ml-auto sm:ml-0">
           {currentTableSession ? (
-            <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/50 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl border border-amber-300 dark:border-amber-700">
+            <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/50 px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-700">
               <span className="w-2 h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
-              <span className="text-[11px] sm:text-xs font-bold text-amber-900 dark:text-amber-300">
+              <span className="text-xs font-bold text-amber-900 dark:text-amber-300">
                 {currentTableSession.tableNumber}
               </span>
               <button
                 onClick={() => endTableSession(currentTableSession.tableId)}
-                className="text-[10px] sm:text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-bold flex items-center gap-0.5 cursor-pointer ml-1"
+                className="text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-bold flex items-center gap-0.5 cursor-pointer ml-1"
                 title="End Table Session"
               >
                 <LogOut className="w-3 h-3" />
-                <span className="hidden sm:inline">End</span>
+                <span>End</span>
               </button>
             </div>
           ) : (
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.02 }}
+            <button
               onClick={onOpenQRScanner}
               title="Scan Table QR"
-              className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-all cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
             >
-              <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#9A2D22] dark:text-[#E5A324]" />
-              <span className="hidden xs:inline sm:inline">{t.scan_qr}</span>
-            </motion.button>
+              <QrCode className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#E5A324]" />
+              <span>{t.scan_qr}</span>
+            </button>
           )}
 
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
+          <button
             onClick={() => setActiveTab('reserve')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'reserve'
-                ? 'bg-[#9A2D22] text-white shadow-xs'
+                ? 'bg-[#9A2D22] text-white'
                 : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-stone-700'
             }`}
           >
-            <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#9A2D22] dark:text-[#E5A324]" />
-            <span className="hidden xs:inline sm:inline">{t.book_table}</span>
-          </motion.button>
+            <CalendarDays className="w-3.5 h-3.5 text-[#9A2D22] dark:text-[#E5A324]" />
+            <span>{t.book_table}</span>
+          </button>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Navigation Sub-Tabs - Horizontal scrollable & fitted */}
-      <div className="flex items-center gap-1 sm:gap-1.5 p-1 bg-stone-100 dark:bg-stone-800/90 rounded-xl border border-stone-200 dark:border-stone-700/80 overflow-x-auto scrollbar-none">
+      {/* Navigation Tabs */}
+      <div className="flex items-center gap-1 p-1 bg-stone-100 dark:bg-stone-800/90 rounded-lg border border-stone-200 dark:border-stone-700 overflow-x-auto no-scrollbar">
         {tabs.map((tab) => {
           const active = activeTab === tab.id;
           return (
-            <motion.button
+            <button
               key={tab.id}
-              whileTap={{ scale: 0.96 }}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all relative cursor-pointer shrink-0 ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
                 active
-                  ? 'bg-white dark:bg-stone-700 text-[#9A2D22] dark:text-[#FEE248] shadow-xs'
+                  ? 'bg-white dark:bg-stone-700 text-[#9A2D22] dark:text-[#FEE248] shadow-2xs'
                   : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
               }`}
             >
@@ -204,9 +192,9 @@ export const CustomerApp: React.FC<CustomerAppProps> = ({
               <span className="hidden sm:inline">{tab.label}</span>
               <span className="sm:hidden">{tab.mobileLabel}</span>
               {tab.id === 'track' && activeOrdersCount > 0 && (
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
+                <span className="w-2 h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
               )}
-            </motion.button>
+            </button>
           );
         })}
       </div>

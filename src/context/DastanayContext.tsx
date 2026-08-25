@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
   Role,
   Language,
@@ -69,6 +69,8 @@ interface DastanayContextType {
   loyaltyHistory: LoyaltyTransaction[];
   auditLogs: AuditLog[];
   notifications: NotificationItem[];
+  isLoading: boolean;
+  refreshData: () => Promise<void>;
 
   // Customer Cart
   cart: CartItem[];
@@ -82,12 +84,12 @@ interface DastanayContextType {
   setRedeemedPoints: (pts: number) => void;
 
   // Actions
-  createReservation: (resData: Omit<Reservation, 'id' | 'createdAt' | 'status'>) => { success: boolean; message: string; reservation?: Reservation };
-  cancelReservation: (reservationId: string, reason?: string) => { success: boolean; message: string };
-  checkInReservation: (reservationId: string) => { success: boolean; message: string };
+  createReservation: (resData: Omit<Reservation, 'id' | 'createdAt' | 'status'>) => Promise<{ success: boolean; message: string; reservation?: Reservation }> | { success: boolean; message: string; reservation?: Reservation };
+  cancelReservation: (reservationId: string, reason?: string) => Promise<{ success: boolean; message: string }> | { success: boolean; message: string };
+  checkInReservation: (reservationId: string) => Promise<{ success: boolean; message: string }> | { success: boolean; message: string };
   startTableSession: (tableNumber: string, reservationId?: string) => { success: boolean; message: string; table?: Table };
   endTableSession: (tableId: string) => void;
-  placeOrder: (paymentMethod: PaymentMethod, customerPhone?: string, customerName?: string) => { success: boolean; message: string; order?: Order };
+  placeOrder: (paymentMethod: PaymentMethod, customerPhone?: string, customerName?: string) => Promise<{ success: boolean; message: string; order?: Order }> | { success: boolean; message: string; order?: Order };
   updateOrderStatus: (orderId: string, status: Order['status'], delayMinutes?: number, delayReason?: string) => void;
   completeOrderPayment: (orderId: string, method: PaymentMethod, staffName?: string) => void;
   processRefund: (orderId: string, refundAmount: number, reason: string, staffName: string) => void;
@@ -130,64 +132,25 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
   const [networkStatus, setNetworkStatus] = useState<'online' | 'weak' | 'offline'>('online');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Selected Scope
   const [currentRestaurantId, setCurrentRestaurantId] = useState<string>('rest-kolachi');
   const [currentBranchId, setCurrentBranchId] = useState<string>('br-kolachi-dha');
   const [currentTableSession, setCurrentTableSession] = useState<{ tableId: string; tableNumber: string; sessionId: string } | null>(null);
 
-  // Core Data
-  const [restaurants, setRestaurants] = useState<Restaurant[]>(() => {
-    const saved = localStorage.getItem('dst_restaurants');
-    return saved ? JSON.parse(saved) : INITIAL_RESTAURANTS;
-  });
-
-  const [branches, setBranches] = useState<Branch[]>(() => {
-    const saved = localStorage.getItem('dst_branches');
-    return saved ? JSON.parse(saved) : INITIAL_BRANCHES;
-  });
-
-  const [tables, setTables] = useState<Table[]>(() => {
-    const saved = localStorage.getItem('dst_tables');
-    return saved ? JSON.parse(saved) : INITIAL_TABLES;
-  });
-
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(() => {
-    const saved = localStorage.getItem('dst_menu_items');
-    return saved ? JSON.parse(saved) : INITIAL_MENU_ITEMS;
-  });
-
-  const [inventory, setInventory] = useState<BranchInventoryItem[]>(() => {
-    const saved = localStorage.getItem('dst_inventory');
-    return saved ? JSON.parse(saved) : INITIAL_INVENTORY;
-  });
-
-  const [staff, setStaff] = useState<StaffMember[]>(() => {
-    const saved = localStorage.getItem('dst_staff');
-    return saved ? JSON.parse(saved) : INITIAL_STAFF;
-  });
-
-  const [reservations, setReservations] = useState<Reservation[]>(() => {
-    const saved = localStorage.getItem('dst_reservations');
-    return saved ? JSON.parse(saved) : INITIAL_RESERVATIONS;
-  });
-
-  const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem('dst_orders');
-    return saved ? JSON.parse(saved) : INITIAL_ORDERS;
-  });
-
-  const [reviews, setReviews] = useState<Review[]>(() => {
-    const saved = localStorage.getItem('dst_reviews');
-    return saved ? JSON.parse(saved) : INITIAL_REVIEWS;
-  });
-
-  const [promotions] = useState<Promotion[]>(INITIAL_PROMOTIONS);
-  const [loyalty, setLoyalty] = useState<LoyaltyAccount>(() => {
-    const saved = localStorage.getItem('dst_loyalty');
-    return saved ? JSON.parse(saved) : INITIAL_LOYALTY;
-  });
-
+  // Core Data loaded from SQLite API
+  const [restaurants, setRestaurants] = useState<Restaurant[]>(INITIAL_RESTAURANTS);
+  const [branches, setBranches] = useState<Branch[]>(INITIAL_BRANCHES);
+  const [tables, setTables] = useState<Table[]>(INITIAL_TABLES);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(INITIAL_MENU_ITEMS);
+  const [inventory, setInventory] = useState<BranchInventoryItem[]>(INITIAL_INVENTORY);
+  const [staff, setStaff] = useState<StaffMember[]>(INITIAL_STAFF);
+  const [reservations, setReservations] = useState<Reservation[]>(INITIAL_RESERVATIONS);
+  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
+  const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
+  const [promotions, setPromotions] = useState<Promotion[]>(INITIAL_PROMOTIONS);
+  const [loyalty, setLoyalty] = useState<LoyaltyAccount>(INITIAL_LOYALTY);
   const [loyaltyHistory, setLoyaltyHistory] = useState<LoyaltyTransaction[]>([
     {
       id: 'ltx-1',
@@ -197,30 +160,30 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       orderId: 'DST-ORD-9101',
       description: 'Points earned on Kolachi DHA order',
       timestamp: '2026-08-14 07:45 PM',
-    }
+    },
   ]);
-
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
-    const saved = localStorage.getItem('dst_audit_logs');
-    return saved ? JSON.parse(saved) : INITIAL_AUDIT_LOGS;
-  });
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(INITIAL_AUDIT_LOGS);
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([
     {
       id: 'notif-1',
       targetRole: 'all',
       title: 'Welcome to Dastanay',
-      message: 'Explore authentic dining across Karachi, Lahore & Islamabad.',
+      message: 'Pakistan’s premier restaurant ecosystem with live table booking & kitchen KDS.',
       type: 'info',
       timestamp: 'Just now',
       read: false,
-    }
+    },
   ]);
 
   // Cart State
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('dst_cart');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('dst_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
   const [appliedPromo, setAppliedPromo] = useState<Promotion | null>(null);
   const [redeemedPoints, setRedeemedPoints] = useState<number>(0);
@@ -228,21 +191,58 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Printing state
   const [printModalData, setPrintModalData] = useState<{ type: 'kot' | 'receipt' | 'bar'; order: Order } | null>(null);
 
-  // LocalStorage sync
+  // Fetch all initial data from SQLite backend API
+  const refreshData = useCallback(async () => {
+    try {
+      const [restRes, branchRes, tableRes, menuRes, invRes, staffRes, bookRes, ordRes, revRes, promoRes, auditRes] =
+        await Promise.all([
+          fetch('/api/restaurants').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/branches').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/tables').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/menu').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/inventory').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/staff').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/bookings').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/orders').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/reviews').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/promotions').then((r) => (r.ok ? r.json() : null)),
+          fetch('/api/audit-logs').then((r) => (r.ok ? r.json() : null)),
+        ]);
+
+      if (restRes) setRestaurants(restRes);
+      if (branchRes) setBranches(branchRes);
+      if (tableRes) setTables(tableRes);
+      if (menuRes) setMenuItems(menuRes);
+      if (invRes) setInventory(invRes);
+      if (staffRes) setStaff(staffRes);
+      if (bookRes) setReservations(bookRes);
+      if (ordRes) setOrders(ordRes);
+      if (revRes) setReviews(revRes);
+      if (promoRes) setPromotions(promoRes);
+      if (auditRes) setAuditLogs(auditRes);
+
+      setIsLoading(false);
+    } catch (err) {
+      console.warn('Backend sync failed, using fallback data:', err);
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    localStorage.setItem('dst_restaurants', JSON.stringify(restaurants));
-    localStorage.setItem('dst_branches', JSON.stringify(branches));
-    localStorage.setItem('dst_tables', JSON.stringify(tables));
-    localStorage.setItem('dst_menu_items', JSON.stringify(menuItems));
-    localStorage.setItem('dst_inventory', JSON.stringify(inventory));
-    localStorage.setItem('dst_staff', JSON.stringify(staff));
-    localStorage.setItem('dst_reservations', JSON.stringify(reservations));
-    localStorage.setItem('dst_orders', JSON.stringify(orders));
-    localStorage.setItem('dst_reviews', JSON.stringify(reviews));
-    localStorage.setItem('dst_loyalty', JSON.stringify(loyalty));
-    localStorage.setItem('dst_audit_logs', JSON.stringify(auditLogs));
-    localStorage.setItem('dst_cart', JSON.stringify(cart));
-  }, [restaurants, branches, tables, menuItems, inventory, staff, reservations, orders, reviews, loyalty, auditLogs, cart]);
+    refreshData();
+    // Background polling every 8s for live multi-user / KDS updates
+    const interval = setInterval(refreshData, 8000);
+    return () => clearInterval(interval);
+  }, [refreshData]);
+
+  // Cart local persistence
+  useEffect(() => {
+    try {
+      localStorage.setItem('dst_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [cart]);
 
   // Handle Theme class on body
   useEffect(() => {
@@ -254,43 +254,28 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [theme]);
 
-  // Helper to add notification & play subtle tone
-  const addNotification = (notif: Omit<NotificationItem, 'id' | 'timestamp' | 'read'>) => {
-    const newNotif: NotificationItem = {
-      ...notif,
-      id: 'notif-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      read: false,
-    };
-    setNotifications((prev) => [newNotif, ...prev.slice(0, 40)]);
-  };
-
-  const addAuditLog = (entry: Omit<AuditLog, 'id' | 'timestamp'>) => {
-    const newLog: AuditLog = {
-      ...entry,
-      id: 'aud-' + Date.now(),
-      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    };
-    setAuditLogs((prev) => [newLog, ...prev]);
-  };
-
-  // Cart operations
+  // Cart Handlers
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
-      const existingIdx = prev.findIndex(
+      const existing = prev.find(
         (i) =>
           i.menuItemId === item.menuItemId &&
           i.selectedVariation?.id === item.selectedVariation?.id &&
-          JSON.stringify(i.selectedAddons) === JSON.stringify(item.selectedAddons) &&
+          JSON.stringify(i.selectedAddons?.map((a) => a.id).sort()) ===
+            JSON.stringify(item.selectedAddons?.map((a) => a.id).sort()) &&
           i.specialInstructions === item.specialInstructions
       );
-      if (existingIdx > -1) {
-        const next = [...prev];
-        const nextQty = next[existingIdx].quantity + item.quantity;
-        const singlePrice = next[existingIdx].itemTotal / next[existingIdx].quantity;
-        next[existingIdx].quantity = nextQty;
-        next[existingIdx].itemTotal = singlePrice * nextQty;
-        return next;
+
+      if (existing) {
+        return prev.map((i) =>
+          i.cartItemId === existing.cartItemId
+            ? {
+                ...i,
+                quantity: i.quantity + item.quantity,
+                itemTotal: (i.itemTotal / i.quantity) * (i.quantity + item.quantity),
+              }
+            : i
+        );
       }
       return [...prev, item];
     });
@@ -305,13 +290,13 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       prev
         .map((item) => {
           if (item.cartItemId === cartItemId) {
-            const nextQty = item.quantity + delta;
-            if (nextQty <= 0) return null;
-            const singlePrice = item.itemTotal / item.quantity;
+            const newQty = item.quantity + delta;
+            if (newQty <= 0) return null;
+            const unitPrice = item.itemTotal / item.quantity;
             return {
               ...item,
-              quantity: nextQty,
-              itemTotal: singlePrice * nextQty,
+              quantity: newQty,
+              itemTotal: unitPrice * newQty,
             };
           }
           return item;
@@ -326,845 +311,530 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setRedeemedPoints(0);
   };
 
-  // 1. Table Reservation
-  const createReservation = (resData: Omit<Reservation, 'id' | 'createdAt' | 'status'>) => {
-    // Check if table is available for branch
-    const table = tables.find((t) => t.id === resData.tableId);
-    if (!table || table.status === 'occupied' || table.status === 'out_of_service') {
+  // ----------------------------------------------------
+  // REAL-TIME TABLE RESERVATIONS
+  // ----------------------------------------------------
+  const createReservation = async (resData: Omit<Reservation, 'id' | 'createdAt' | 'status'>) => {
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        return {
+          success: false,
+          message: data.error || data.message || 'Table reservation failed. Please try again.',
+        };
+      }
+
+      const createdRes: Reservation = data.reservation;
+
+      // Optimistically update local state
+      setReservations((prev) => [createdRes, ...prev]);
+      setTables((prev) =>
+        prev.map((t) =>
+          t.id === createdRes.tableId
+            ? { ...t, status: 'reserved', guestName: createdRes.customerName, guestPhone: createdRes.customerPhone }
+            : t
+        )
+      );
+
+      // Trigger user notification
+      const newNotif: NotificationItem = {
+        id: `notif-${Date.now()}`,
+        targetRole: 'customer',
+        title: 'Table Reserved Successfully',
+        message: `Your table ${createdRes.tableNumber} is reserved for ${createdRes.time} on ${createdRes.date}. (ID: ${createdRes.id})`,
+        type: 'success',
+        timestamp: 'Just now',
+        read: false,
+      };
+      setNotifications((prev) => [newNotif, ...prev]);
+
       return {
-        success: false,
-        message: 'This table was just booked by another customer. Please select another table.',
+        success: true,
+        message: 'Table reservation confirmed successfully in database!',
+        reservation: createdRes,
+      };
+    } catch (err: any) {
+      console.error('Reservation error:', err);
+      // Fallback local creation if offline
+      const id = `DST-RES-${Math.floor(100000 + Math.random() * 900000)}`;
+      const fallbackRes: Reservation = {
+        ...resData,
+        id,
+        status: 'confirmed',
+        createdAt: new Date().toISOString(),
+      };
+      setReservations((prev) => [fallbackRes, ...prev]);
+      return {
+        success: true,
+        message: 'Table reservation recorded successfully.',
+        reservation: fallbackRes,
       };
     }
-
-    const resId = `DST-RES-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newReservation: Reservation = {
-      ...resData,
-      id: resId,
-      status: 'confirmed',
-      createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
-    setReservations((prev) => [newReservation, ...prev]);
-
-    // Update table status to reserved
-    setTables((prev) =>
-      prev.map((t) => (t.id === resData.tableId ? { ...t, status: 'reserved' } : t))
-    );
-
-    addNotification({
-      targetRole: 'all',
-      title: 'Reservation Confirmed',
-      message: `Reservation ${resId} confirmed for ${resData.customerName} at ${resData.tableNumber}.`,
-      type: 'success',
-      tableNumber: resData.tableNumber,
-    });
-
-    addAuditLog({
-      userName: resData.customerName,
-      userRole: 'Customer',
-      action: 'RESERVATION_CREATED',
-      entity: 'Reservation',
-      entityId: resId,
-      newValue: `Table ${resData.tableNumber}, ${resData.guests} guests, Fee: Rs. ${resData.bookingFee}`,
-      branchId: resData.branchId,
-    });
-
-    return {
-      success: true,
-      message: 'Table booked successfully! Your reservation ID is ' + resId,
-      reservation: newReservation,
-    };
   };
 
-  const cancelReservation = (reservationId: string, reason?: string) => {
-    const res = reservations.find((r) => r.id === reservationId);
-    if (!res) return { success: false, message: 'Reservation not found' };
+  const cancelReservation = async (reservationId: string, reason?: string) => {
+    try {
+      const response = await fetch(`/api/bookings/${reservationId}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason }),
+      });
+      const data = await response.json();
 
-    setReservations((prev) =>
-      prev.map((r) =>
-        r.id === reservationId ? { ...r, status: 'cancelled', cancellationReason: reason } : r
-      )
-    );
-
-    // Free up table
-    setTables((prev) =>
-      prev.map((t) => (t.id === res.tableId ? { ...t, status: 'available' } : t))
-    );
-
-    addNotification({
-      targetRole: 'all',
-      title: 'Reservation Cancelled',
-      message: `Reservation ${reservationId} for ${res.tableNumber} has been cancelled.`,
-      type: 'warning',
-      tableNumber: res.tableNumber,
-    });
-
-    addAuditLog({
-      userName: 'Customer / Staff',
-      userRole: 'System',
-      action: 'RESERVATION_CANCELLED',
-      entity: 'Reservation',
-      entityId: reservationId,
-      newValue: reason || 'Cancelled by user',
-      branchId: res.branchId,
-    });
-
-    return { success: true, message: 'Reservation has been cancelled.' };
-  };
-
-  const checkInReservation = (reservationId: string) => {
-    const res = reservations.find((r) => r.id === reservationId);
-    if (!res) return { success: false, message: 'Reservation not found' };
-
-    const sessionId = `DST-SESS-${Math.floor(10000 + Math.random() * 90000)}`;
-
-    setReservations((prev) =>
-      prev.map((r) => (r.id === reservationId ? { ...r, status: 'checked_in' } : r))
-    );
-
-    setTables((prev) =>
-      prev.map((t) =>
-        t.id === res.tableId ? { ...t, status: 'occupied', currentSessionId: sessionId } : t
-      )
-    );
-
-    addNotification({
-      targetRole: 'all',
-      title: 'Guest Checked In',
-      message: `${res.customerName} checked in for ${res.tableNumber}.`,
-      type: 'success',
-      tableNumber: res.tableNumber,
-    });
-
-    addAuditLog({
-      userName: 'Branch Manager',
-      userRole: 'Manager',
-      action: 'RESERVATION_CHECKED_IN',
-      entity: 'Reservation',
-      entityId: reservationId,
-      newValue: `Table ${res.tableNumber} occupied for ${res.customerName}`,
-      branchId: res.branchId,
-    });
-
-    return { success: true, message: `${res.customerName} successfully checked in at ${res.tableNumber}.` };
-  };
-
-  // 2. Table Session Check-In
-  const startTableSession = (tableNumber: string, reservationId?: string) => {
-    const table = tables.find(
-      (t) => t.tableNumber.toLowerCase() === tableNumber.toLowerCase() || t.id === tableNumber
-    );
-    if (!table) {
-      return { success: false, message: 'Table not found in this branch.' };
-    }
-    if (table.status === 'out_of_service') {
-      return { success: false, message: 'This table is currently out of service.' };
-    }
-
-    const sessionId = `DST-SESS-${Math.floor(10000 + Math.random() * 90000)}`;
-
-    setTables((prev) =>
-      prev.map((t) =>
-        t.id === table.id
-          ? { ...t, status: 'occupied', currentSessionId: sessionId }
-          : t
-      )
-    );
-
-    if (reservationId) {
       setReservations((prev) =>
-        prev.map((r) => (r.id === reservationId ? { ...r, status: 'checked_in' } : r))
+        prev.map((r) => (r.id === reservationId ? { ...r, status: 'cancelled', cancellationReason: reason } : r))
       );
+
+      const targetRes = reservations.find((r) => r.id === reservationId);
+      if (targetRes) {
+        setTables((prev) =>
+          prev.map((t) =>
+            t.id === targetRes.tableId ? { ...t, status: 'available', guestName: undefined, guestPhone: undefined } : t
+          )
+        );
+      }
+
+      return { success: true, message: 'Reservation cancelled and table freed.' };
+    } catch (err: any) {
+      return { success: false, message: err.message };
+    }
+  };
+
+  const checkInReservation = async (reservationId: string) => {
+    try {
+      const response = await fetch(`/api/bookings/${reservationId}/checkin`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+
+      if (data.success && data.reservation) {
+        setReservations((prev) =>
+          prev.map((r) => (r.id === reservationId ? { ...r, status: 'checked_in' } : r))
+        );
+        if (data.table) {
+          setTables((prev) => prev.map((t) => (t.id === data.table.id ? data.table : t)));
+        }
+        if (data.sessionId) {
+          setCurrentTableSession({
+            tableId: data.reservation.tableId,
+            tableNumber: data.reservation.tableNumber,
+            sessionId: data.sessionId,
+          });
+        }
+        return { success: true, message: 'Guest checked in. Table session activated.' };
+      }
+      return { success: false, message: 'Check-in failed.' };
+    } catch (err: any) {
+      return { success: false, message: err.message };
+    }
+  };
+
+  const startTableSession = (tableNumber: string, reservationId?: string) => {
+    const table = tables.find((t) => t.tableNumber.toLowerCase() === tableNumber.toLowerCase());
+    if (!table) {
+      return { success: false, message: `Table ${tableNumber} does not exist at this branch.` };
     }
 
+    const sessionId = `sess-${Date.now()}`;
     setCurrentTableSession({
       tableId: table.id,
       tableNumber: table.tableNumber,
       sessionId,
     });
 
-    addNotification({
-      targetRole: 'manager',
-      title: 'Table Session Started',
-      message: `Table ${table.tableNumber} is now occupied and active.`,
-      type: 'info',
-      tableNumber: table.tableNumber,
-    });
+    updateTableStatus(table.id, 'occupied');
 
-    return {
-      success: true,
-      message: `Session started at ${table.tableNumber}. You can now browse menu and order directly.`,
-      table,
-    };
+    if (reservationId) {
+      checkInReservation(reservationId);
+    }
+
+    return { success: true, message: `Table ${table.tableNumber} session active!`, table };
   };
 
   const endTableSession = (tableId: string) => {
-    setTables((prev) =>
-      prev.map((t) =>
-        t.id === tableId
-          ? { ...t, status: 'cleaning', currentSessionId: undefined }
-          : t
-      )
-    );
-    if (currentTableSession?.tableId === tableId) {
-      setCurrentTableSession(null);
-    }
+    setCurrentTableSession(null);
+    updateTableStatus(tableId, 'dirty');
   };
 
-  // 3. Order Placement & Stock Safety
-  const placeOrder = (
-    paymentMethod: PaymentMethod,
-    customerPhone: string = '+92 300 1234567',
-    customerName: string = 'Syed Ahmed'
-  ) => {
+  // ----------------------------------------------------
+  // REAL-TIME ORDERS & CHECKOUT
+  // ----------------------------------------------------
+  const placeOrder = async (paymentMethod: PaymentMethod, customerPhone?: string, customerName?: string) => {
     if (cart.length === 0) {
       return { success: false, message: 'Your cart is empty.' };
     }
 
-    // Check branch open
-    const currentBranch = branches.find((b) => b.id === currentBranchId);
-    if (currentBranch && !currentBranch.isOpen) {
-      return { success: false, message: 'This restaurant branch is currently closed for new orders.' };
-    }
+    try {
+      const payload = {
+        restaurantId: currentRestaurantId,
+        branchId: currentBranchId,
+        tableId: currentTableSession?.tableId,
+        tableNumber: currentTableSession?.tableNumber,
+        customerName: customerName || 'Hamza Ali',
+        customerPhone: customerPhone || '+92 300 8291029',
+        items: cart,
+        paymentMethod,
+        appliedPromoCode: appliedPromo?.code,
+        redeemedPoints,
+      };
 
-    // Transaction-safe stock check
-    for (const item of cart) {
-      const inv = inventory.find(
-        (i) => i.menuItemId === item.menuItemId && i.branchId === currentBranchId
-      );
-      if (inv) {
-        if (!inv.isAvailableAtBranch || inv.stockQuantity < item.quantity) {
-          return {
-            success: false,
-            message: `Sorry, ${item.name} is currently out of stock or insufficient quantity (Only ${inv.stockQuantity} remaining).`,
-          };
-        }
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        return {
+          success: false,
+          message: data.error || data.message || 'Order submission failed.',
+        };
       }
+
+      const createdOrder: Order = data.order;
+      setOrders((prev) => [createdOrder, ...prev]);
+
+      // Trigger notifications
+      const notif: NotificationItem = {
+        id: `notif-${Date.now()}`,
+        targetRole: 'kitchen',
+        title: `New Order: ${createdOrder.id}`,
+        message: `Order received for Table ${createdOrder.tableNumber || 'Takeaway'} (${createdOrder.items.length} items)`,
+        type: 'order',
+        timestamp: 'Just now',
+        read: false,
+      };
+      setNotifications((prev) => [notif, ...prev]);
+
+      // Clear cart
+      clearCart();
+
+      return {
+        success: true,
+        message: 'Order placed and sent to the kitchen KDS!',
+        order: createdOrder,
+      };
+    } catch (err: any) {
+      console.error('Order error:', err);
+      // Fallback
+      return { success: false, message: err.message || 'Failed to place order.' };
     }
-
-    // Calculate financials
-    const subtotal = cart.reduce((sum, item) => sum + item.itemTotal, 0);
-    const taxRate = currentBranch?.taxRatePercent || 13;
-    const serviceRate = currentBranch?.serviceChargePercent || 5;
-
-    const discountAmount = appliedPromo
-      ? appliedPromo.discountType === 'percentage'
-        ? Math.min((subtotal * appliedPromo.discountValue) / 100, appliedPromo.maxDiscount || 99999)
-        : appliedPromo.discountValue
-      : 0;
-
-    const loyaltyDiscount = redeemedPoints > 0 ? (redeemedPoints / 100) * 50 : 0;
-    const totalDiscount = discountAmount + loyaltyDiscount;
-
-    const taxAmount = (subtotal * taxRate) / 100;
-    const serviceCharge = (subtotal * serviceRate) / 100;
-
-    // Check if table has a reservation booking fee to deduct
-    const currentTableId = currentTableSession?.tableId || 'tbl-1';
-    const currentTableNum = currentTableSession?.tableNumber || 'Table 01';
-    const activeRes = reservations.find(
-      (r) => r.tableId === currentTableId && r.status === 'checked_in'
-    );
-    const bookingFeeDeduction = activeRes ? activeRes.bookingFee : 0;
-
-    const total = Math.max(0, subtotal + taxAmount + serviceCharge - totalDiscount - bookingFeeDeduction);
-
-    // Calculate maximum prep time among items
-    let maxPrepMinutes = 15;
-    for (const cItem of cart) {
-      const mItem = menuItems.find((m) => m.id === cItem.menuItemId);
-      if (mItem && mItem.prepTimeMinutes > maxPrepMinutes) {
-        maxPrepMinutes = mItem.prepTimeMinutes;
-      }
-    }
-
-    // Expected ready timestamp
-    const now = new Date();
-    const readyDate = new Date(now.getTime() + maxPrepMinutes * 60000);
-    const readyTimeStr = readyDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    const orderId = `DST-ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-    const paymentId = `PAY-${paymentMethod.toUpperCase()}-${Math.floor(100000 + Math.random() * 900000)}`;
-
-    const newOrderItems = cart.map((c) => ({
-      menuItemId: c.menuItemId,
-      name: c.name,
-      quantity: c.quantity,
-      unitPrice: c.itemTotal / c.quantity,
-      selectedVariation: c.selectedVariation?.name,
-      selectedAddons: c.selectedAddons.map((a) => a.name),
-      specialInstructions: c.specialInstructions,
-      totalPrice: c.itemTotal,
-    }));
-
-    const pointsEarned = Math.floor(total / 10);
-
-    const newOrder: Order = {
-      id: orderId,
-      restaurantId: currentRestaurantId,
-      branchId: currentBranchId,
-      tableId: currentTableId,
-      tableNumber: currentTableNum,
-      customerName,
-      customerPhone,
-      items: newOrderItems,
-      subtotal,
-      taxAmount,
-      serviceCharge,
-      discountAmount: totalDiscount,
-      bookingFeeDeduction,
-      total,
-      status: 'received',
-      paymentMethod,
-      paymentStatus: paymentMethod === 'cash' ? 'pending' : 'paid',
-      paymentId,
-      transactionRef: `TXN-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
-      createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      estimatedPrepMinutes: maxPrepMinutes,
-      expectedReadyAt: readyTimeStr,
-      pointsEarned,
-    };
-
-    // Deduct stock safely
-    setInventory((prev) =>
-      prev.map((inv) => {
-        const matchingCart = cart.find(
-          (c) => c.menuItemId === inv.menuItemId && inv.branchId === currentBranchId
-        );
-        if (matchingCart) {
-          const nextStock = Math.max(0, inv.stockQuantity - matchingCart.quantity);
-          // Check if low stock
-          if (nextStock <= inv.lowStockThreshold && nextStock > 0) {
-            addNotification({
-              targetRole: 'manager',
-              title: 'Low Stock Alert',
-              message: `${matchingCart.name} reached ${nextStock} items remaining.`,
-              type: 'warning',
-            });
-          } else if (nextStock === 0) {
-            addNotification({
-              targetRole: 'manager',
-              title: 'Item Out of Stock',
-              message: `${matchingCart.name} is now 0 stock and marked unavailable.`,
-              type: 'error',
-            });
-          }
-          return {
-            ...inv,
-            stockQuantity: nextStock,
-            isAvailableAtBranch: nextStock > 0,
-          };
-        }
-        return inv;
-      })
-    );
-
-    // Save order
-    setOrders((prev) => [newOrder, ...prev]);
-
-    // Handle Loyalty Points if redeemed
-    if (redeemedPoints > 0) {
-      setLoyalty((prev) => ({
-        ...prev,
-        pointsBalance: Math.max(0, prev.pointsBalance - redeemedPoints),
-        totalRedeemed: prev.totalRedeemed + redeemedPoints,
-      }));
-      setLoyaltyHistory((prev) => [
-        {
-          id: 'ltx-' + Date.now(),
-          customerId: 'cust-current-user',
-          type: 'redeem',
-          points: redeemedPoints,
-          orderId,
-          description: `Redeemed on order ${orderId}`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-        ...prev,
-      ]);
-    }
-
-    // Auto-trigger thermal KOT ticket for the kitchen
-    setPrintModalData({ type: 'kot', order: newOrder });
-
-    addNotification({
-      targetRole: 'all',
-      title: 'Order Placed Successfully',
-      message: `Order #${orderId} sent to kitchen for ${currentTableNum}. Estimated prep: ${maxPrepMinutes} mins.`,
-      type: 'success',
-      orderId,
-      tableNumber: currentTableNum,
-    });
-
-    addAuditLog({
-      userName: customerName,
-      userRole: 'Customer',
-      action: 'ORDER_PLACED',
-      entity: 'Order',
-      entityId: orderId,
-      newValue: `Total: Rs. ${total.toFixed(0)}, Items: ${newOrderItems.length}, Method: ${paymentMethod}`,
-      branchId: currentBranchId,
-    });
-
-    clearCart();
-
-    return {
-      success: true,
-      message: `Order #${orderId} placed successfully!`,
-      order: newOrder,
-    };
   };
 
-  // 4. Update Order Status in Kitchen/Serving
-  const updateOrderStatus = (
+  const updateOrderStatus = async (
     orderId: string,
     status: Order['status'],
     delayMinutes?: number,
     delayReason?: string
   ) => {
-    setOrders((prev) =>
-      prev.map((ord) => {
-        if (ord.id === orderId) {
-          const updated: Order = {
-            ...ord,
-            status,
-            delayMinutes: delayMinutes !== undefined ? (ord.delayMinutes || 0) + delayMinutes : ord.delayMinutes,
-            delayReason: delayReason || ord.delayReason,
-          };
-          if (status === 'preparing' && !ord.prepStartedAt) {
-            updated.prepStartedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          }
-          if (status === 'completed' && ord.paymentStatus === 'paid' && !ord.isReviewed) {
-            // award loyalty points
-            setLoyalty((l) => ({
-              ...l,
-              pointsBalance: l.pointsBalance + ord.pointsEarned,
-              totalEarned: l.totalEarned + ord.pointsEarned,
-            }));
-            setLoyaltyHistory((lh) => [
-              {
-                id: 'ltx-' + Date.now(),
-                customerId: 'cust-current-user',
-                type: 'earn',
-                points: ord.pointsEarned,
-                orderId: ord.id,
-                description: `Earned from completed order ${ord.id}`,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              },
-              ...lh,
-            ]);
-          }
-          return updated;
-        }
-        return ord;
-      })
-    );
-
-    const targetOrder = orders.find((o) => o.id === orderId);
-    const tableNum = targetOrder?.tableNumber || 'Table';
-
-    let notifTitle = `Order Status: ${status}`;
-    let notifMsg = `Order #${orderId} is now ${status}`;
-
-    if (status === 'ready') {
-      notifTitle = 'Your food is ready!';
-      notifMsg = `Order #${orderId} for ${tableNum} is freshly prepared and being dispatched to your table.`;
-    } else if (status === 'served') {
-      notifTitle = 'Order Served';
-      notifMsg = `Your order has been served. Enjoy your meal!`;
-    } else if (delayMinutes) {
-      notifTitle = 'Kitchen Delay Notice';
-      notifMsg = `Order #${orderId} has a brief ${delayMinutes} min delay: ${delayReason || 'Quality preparation'}.`;
-    }
-
-    addNotification({
-      targetRole: 'all',
-      title: notifTitle,
-      message: notifMsg,
-      type: status === 'ready' || status === 'served' ? 'success' : 'info',
-      orderId,
-      tableNumber: tableNum,
-    });
-  };
-
-  const completeOrderPayment = (orderId: string, method: PaymentMethod, staffName: string = 'Muhammad Bilal (Cashier)') => {
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === orderId
-          ? {
-              ...o,
-              paymentStatus: 'paid',
-              paymentMethod: method,
-              status: o.status === 'served' ? 'completed' : o.status,
-            }
-          : o
-      )
-    );
-
-    const ord = orders.find((o) => o.id === orderId);
-    if (ord) {
-      addAuditLog({
-        userName: staffName,
-        userRole: 'Cashier',
-        action: 'PAYMENT_CONFIRMED',
-        entity: 'Payment',
-        entityId: ord.paymentId,
-        newValue: `Amount: Rs. ${ord.total.toFixed(0)}, Method: ${method}`,
-        branchId: ord.branchId,
+    try {
+      const response = await fetch(`/api/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, delayMinutes, delayReason }),
       });
+      const data = await response.json();
 
-      addNotification({
-        targetRole: 'all',
-        title: 'Payment Confirmed',
-        message: `Payment of Rs. ${ord.total.toFixed(0)} received for ${ord.tableNumber} via ${method.toUpperCase()}.`,
-        type: 'success',
-        orderId,
-        tableNumber: ord.tableNumber,
-      });
-
-      // Auto-trigger Customer Bill Receipt
-      setPrintModalData({ type: 'receipt', order: { ...ord, paymentStatus: 'paid' } });
+      if (response.ok) {
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? data : o)));
+      }
+    } catch (err) {
+      console.error('Update status error:', err);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
     }
   };
 
-  const processRefund = (orderId: string, refundAmount: number, reason: string, staffName: string) => {
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === orderId
-          ? {
-              ...o,
-              paymentStatus: 'refunded',
-              status: 'refunded',
-            }
-          : o
-      )
-    );
+  const completeOrderPayment = async (orderId: string, method: PaymentMethod, staffName?: string) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}/payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentMethod: method, paymentStatus: 'paid' }),
+      });
+      const data = await response.json();
 
-    const ord = orders.find((o) => o.id === orderId);
-
-    addAuditLog({
-      userName: staffName,
-      userRole: 'Branch Manager',
-      action: 'REFUND_PROCESSED',
-      entity: 'OrderRefund',
-      entityId: orderId,
-      newValue: `Refund: Rs. ${refundAmount}, Reason: ${reason}`,
-      branchId: ord?.branchId,
-    });
-
-    addNotification({
-      targetRole: 'all',
-      title: 'Refund Processed',
-      message: `Refund of Rs. ${refundAmount} authorized for Order #${orderId}. Reason: ${reason}`,
-      type: 'warning',
-      orderId,
-    });
+      if (response.ok) {
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? data : o)));
+      }
+    } catch (err) {
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, paymentStatus: 'paid', paymentMethod: method } : o))
+      );
+    }
   };
 
-  const submitReview = (
+  const processRefund = async (orderId: string, refundAmount: number, reason: string, staffName: string) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}/refund`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refundReason: reason, managerName: staffName }),
+      });
+      const data = await response.json();
+
+      if (response.ok && data.order) {
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? data.order : o)));
+      }
+    } catch (err) {
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === orderId ? { ...o, status: 'cancelled', paymentStatus: 'refunded', refundReason: reason } : o
+        )
+      );
+    }
+  };
+
+  // ----------------------------------------------------
+  // REVIEWS & REPUTATION
+  // ----------------------------------------------------
+  const submitReview = async (
     orderId: string,
     foodRating: number,
     serviceRating: number,
     staffRating: number,
     comment: string
   ) => {
-    const ord = orders.find((o) => o.id === orderId);
-    const overall = Number(((foodRating + serviceRating + staffRating) / 3).toFixed(1));
+    try {
+      const ord = orders.find((o) => o.id === orderId);
+      const overall = Number(((foodRating + serviceRating + staffRating) / 3).toFixed(1));
 
-    const newRev: Review = {
-      id: 'rev-' + Date.now(),
-      restaurantId: ord?.restaurantId || currentRestaurantId,
-      branchId: ord?.branchId || currentBranchId,
-      orderId,
-      customerName: ord?.customerName || 'Happy Customer',
-      foodRating,
-      serviceRating,
-      staffRating,
-      overallRating: overall,
-      comment,
-      createdAt: new Date().toISOString().split('T')[0],
-      status: 'published',
-    };
+      const payload = {
+        restaurantId: ord?.restaurantId || currentRestaurantId,
+        branchId: ord?.branchId || currentBranchId,
+        orderId,
+        customerName: ord?.customerName || 'Hamza Ali',
+        foodRating,
+        serviceRating,
+        staffRating,
+        overallRating: overall,
+        comment,
+      };
 
-    setReviews((prev) => [newRev, ...prev]);
+      const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-    // Mark order as reviewed
-    setOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, isReviewed: true } : o))
-    );
-
-    addNotification({
-      targetRole: 'manager',
-      title: 'New Customer Review',
-      message: `${newRev.customerName} rated ${overall} Stars: "${comment.substring(0, 45)}..."`,
-      type: 'success',
-      orderId,
-    });
-  };
-
-  // Branch & Table operations
-  const toggleBranchStatus = (branchId: string, isOpen: boolean, reason?: string) => {
-    setBranches((prev) =>
-      prev.map((b) => (b.id === branchId ? { ...b, isOpen, closureReason: reason } : b))
-    );
-
-    addAuditLog({
-      userName: 'Branch Manager',
-      userRole: 'Manager',
-      action: isOpen ? 'BRANCH_OPENED' : 'BRANCH_CLOSED',
-      entity: 'Branch',
-      entityId: branchId,
-      newValue: isOpen ? 'Open' : `Closed: ${reason || 'Manual'}`,
-      branchId,
-    });
-
-    addNotification({
-      targetRole: 'all',
-      title: isOpen ? 'Branch Opened' : 'Branch Closed',
-      message: `Branch status changed to ${isOpen ? 'OPEN' : 'CLOSED'}${reason ? ' (' + reason + ')' : ''}`,
-      type: isOpen ? 'success' : 'warning',
-    });
-  };
-
-  const updateTableStatus = (tableId: string, status: Table['status']) => {
-    setTables((prev) =>
-      prev.map((t) => (t.id === tableId ? { ...t, status } : t))
-    );
-  };
-
-  const regenerateTableQR = (tableId: string) => {
-    const newToken = `DST-QR-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-    setTables((prev) =>
-      prev.map((t) => (t.id === tableId ? { ...t, qrCodeToken: newToken } : t))
-    );
-    addNotification({
-      targetRole: 'manager',
-      title: 'QR Code Regenerated',
-      message: `Security token refreshed for Table. Previous QR invalidated.`,
-      type: 'info',
-    });
-  };
-
-  // Stock operations
-  const updateStock = (menuItemId: string, branchId: string, quantity: number) => {
-    setInventory((prev) => {
-      const idx = prev.findIndex(
-        (i) => i.menuItemId === menuItemId && i.branchId === branchId
-      );
-      if (idx > -1) {
-        const next = [...prev];
-        const prevQty = next[idx].stockQuantity;
-        next[idx] = {
-          ...next[idx],
-          stockQuantity: quantity,
-          isAvailableAtBranch: quantity > 0,
-        };
-
-        addAuditLog({
-          userName: 'Branch Manager',
-          userRole: 'Manager',
-          action: 'STOCK_RESTOCKED',
-          entity: 'BranchInventory',
-          entityId: menuItemId,
-          previousValue: prevQty.toString(),
-          newValue: quantity.toString(),
-          branchId,
-        });
-
-        return next;
-      } else {
-        return [
-          ...prev,
-          {
-            menuItemId,
-            branchId,
-            stockQuantity: quantity,
-            isAvailableAtBranch: quantity > 0,
-            lowStockThreshold: 5,
-          },
-        ];
+      const data = await response.json();
+      if (response.ok) {
+        setReviews((prev) => [data, ...prev]);
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, isReviewed: true } : o)));
       }
-    });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const toggleItemBranchAvailability = (menuItemId: string, branchId: string, isAvailable: boolean) => {
-    setInventory((prev) => {
-      const idx = prev.findIndex(
-        (i) => i.menuItemId === menuItemId && i.branchId === branchId
-      );
-      if (idx > -1) {
-        const next = [...prev];
-        next[idx] = { ...next[idx], isAvailableAtBranch: isAvailable };
-        return next;
+  // ----------------------------------------------------
+  // MANAGER & STAFF ACTIONS
+  // ----------------------------------------------------
+  const toggleBranchStatus = async (branchId: string, isOpen: boolean, reason?: string) => {
+    try {
+      const response = await fetch(`/api/branches/${branchId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isOpen, closureReason: reason }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setBranches((prev) => prev.map((b) => (b.id === branchId ? data : b)));
       }
-      return [
-        ...prev,
-        {
-          menuItemId,
-          branchId,
-          stockQuantity: 10,
-          isAvailableAtBranch: isAvailable,
-          lowStockThreshold: 5,
-        },
-      ];
-    });
-
-    addAuditLog({
-      userName: 'Branch Manager',
-      userRole: 'Manager',
-      action: isAvailable ? 'ITEM_ENABLED' : 'ITEM_DISABLED',
-      entity: 'MenuItem',
-      entityId: menuItemId,
-      newValue: isAvailable ? 'Available' : 'Unavailable',
-      branchId,
-    });
+    } catch (err) {
+      setBranches((prev) =>
+        prev.map((b) => (b.id === branchId ? { ...b, isOpen, closureReason: reason } : b))
+      );
+    }
   };
 
-  const updateMenuItemPrice = (menuItemId: string, newPrice: number) => {
-    setMenuItems((prev) =>
-      prev.map((item) => {
-        if (item.id === menuItemId) {
-          addAuditLog({
-            userName: 'Restaurant Owner',
-            userRole: 'Owner',
-            action: 'PRICE_UPDATE',
-            entity: 'MenuItem',
-            entityId: menuItemId,
-            previousValue: `Rs. ${item.basePrice}`,
-            newValue: `Rs. ${newPrice}`,
-          });
-          return { ...item, basePrice: newPrice };
-        }
-        return item;
-      })
-    );
+  const updateTableStatus = async (tableId: string, status: Table['status']) => {
+    try {
+      const response = await fetch(`/api/tables/${tableId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setTables((prev) => prev.map((t) => (t.id === tableId ? data : t)));
+      }
+    } catch (err) {
+      setTables((prev) => prev.map((t) => (t.id === tableId ? { ...t, status } : t)));
+    }
   };
 
-  const createMenuItem = (newItem: Omit<MenuItem, 'id'>) => {
-    const id = `item-${Date.now()}`;
-    const itemWithId: MenuItem = { ...newItem, id };
-    setMenuItems((prev) => [itemWithId, ...prev]);
-
-    // Add to all branches inventory with default 20 stock
-    setInventory((prev) => [
-      ...prev,
-      {
-        menuItemId: id,
-        branchId: currentBranchId,
-        stockQuantity: 20,
-        isAvailableAtBranch: true,
-        lowStockThreshold: 5,
-      },
-    ]);
-
-    addAuditLog({
-      userName: 'Restaurant Owner',
-      userRole: 'Owner',
-      action: 'MENU_ITEM_CREATED',
-      entity: 'MenuItem',
-      entityId: id,
-      newValue: `${newItem.name} (Rs. ${newItem.basePrice})`,
-    });
+  const regenerateTableQR = async (tableId: string) => {
+    try {
+      const response = await fetch(`/api/tables/${tableId}/regenerate-qr`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setTables((prev) => prev.map((t) => (t.id === tableId ? data : t)));
+      }
+    } catch (err) {
+      const newToken = `DST-QR-${Date.now()}`;
+      setTables((prev) => prev.map((t) => (t.id === tableId ? { ...t, activeQrToken: newToken } : t)));
+    }
   };
 
-  const updateStaffDuty = (staffId: string, newStatus: StaffStatus) => {
-    setStaff((prev) =>
-      prev.map((s) => {
-        if (s.id === staffId) {
-          const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          const updated: StaffMember = { ...s, status: newStatus };
-          if (newStatus === 'On Duty') {
-            updated.clockInTime = nowStr;
-          } else if (newStatus === 'Break') {
-            updated.breakStartTime = nowStr;
-          } else if (newStatus === 'Off Duty') {
-            updated.breakStartTime = undefined;
-          }
-          return updated;
-        }
-        return s;
-      })
-    );
+  const updateStock = async (menuItemId: string, branchId: string, quantity: number) => {
+    const inv = inventory.find((i) => i.menuItemId === menuItemId && i.branchId === branchId);
+    if (!inv) return;
 
-    const member = staff.find((s) => s.id === staffId);
-    addAuditLog({
-      userName: member?.name || 'Staff',
-      userRole: member?.role || 'Staff',
-      action: 'DUTY_STATUS_CHANGED',
-      entity: 'StaffDuty',
-      entityId: staffId,
-      newValue: newStatus,
-      branchId: member?.branchId,
-    });
+    try {
+      const response = await fetch(`/api/inventory/${inv.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stockQuantity: quantity, isSoldOut: quantity <= 0 }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setInventory((prev) => prev.map((i) => (i.id === inv.id ? data : i)));
+      }
+    } catch (err) {
+      setInventory((prev) =>
+        prev.map((i) => (i.id === inv.id ? { ...i, stockQuantity: quantity, isSoldOut: quantity <= 0 } : i))
+      );
+    }
   };
 
-  // Admin Actions
+  const toggleItemBranchAvailability = async (menuItemId: string, branchId: string, isAvailable: boolean) => {
+    const inv = inventory.find((i) => i.menuItemId === menuItemId && i.branchId === branchId);
+    if (!inv) return;
+
+    try {
+      const response = await fetch(`/api/inventory/${inv.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isAvailableInBranch: isAvailable }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setInventory((prev) => prev.map((i) => (i.id === inv.id ? data : i)));
+      }
+    } catch (err) {
+      setInventory((prev) =>
+        prev.map((i) => (i.id === inv.id ? { ...i, isAvailableInBranch: isAvailable } : i))
+      );
+    }
+  };
+
+  const updateMenuItemPrice = async (menuItemId: string, newPrice: number) => {
+    try {
+      const response = await fetch(`/api/menu/${menuItemId}/price`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ price: newPrice }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMenuItems((prev) => prev.map((m) => (m.id === menuItemId ? data : m)));
+      }
+    } catch (err) {
+      setMenuItems((prev) => prev.map((m) => (m.id === menuItemId ? { ...m, basePrice: newPrice } : m)));
+    }
+  };
+
+  const createMenuItem = async (newItem: Omit<MenuItem, 'id'>) => {
+    try {
+      const response = await fetch('/api/menu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newItem),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMenuItems((prev) => [...prev, data]);
+        refreshData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateStaffDuty = async (staffId: string, status: StaffStatus) => {
+    try {
+      const response = await fetch(`/api/staff/${staffId}/duty`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setStaff((prev) => prev.map((s) => (s.id === staffId ? data : s)));
+      }
+    } catch (err) {
+      setStaff((prev) => prev.map((s) => (s.id === staffId ? { ...s, status } : s)));
+    }
+  };
+
+  // ----------------------------------------------------
+  // ADMIN ACTIONS
+  // ----------------------------------------------------
   const approveRestaurant = (restaurantId: string) => {
     setRestaurants((prev) =>
       prev.map((r) => (r.id === restaurantId ? { ...r, isApproved: true, isSuspended: false } : r))
     );
-    addNotification({
-      targetRole: 'admin',
-      title: 'Restaurant Approved',
-      message: 'Restaurant registration approved for platform listing.',
-      type: 'success',
-    });
   };
 
   const suspendRestaurant = (restaurantId: string) => {
     setRestaurants((prev) =>
-      prev.map((r) => (r.id === restaurantId ? { ...r, isSuspended: !r.isSuspended } : r))
+      prev.map((r) => (r.id === restaurantId ? { ...r, isSuspended: true } : r))
     );
   };
 
-  const createRestaurant = (data: Partial<Restaurant>) => {
-    const newRest: Restaurant = {
-      id: `rest-${Date.now()}`,
-      name: data.name || 'New Restaurant',
-      slug: (data.name || 'new').toLowerCase().replace(/\s+/g, '-'),
-      tagline: data.tagline || 'Fine Pakistani Dining',
-      cuisine: data.cuisine || ['Pakistani'],
-      rating: 5.0,
-      reviewCount: 0,
-      priceRange: data.priceRange || 'PKR PKR',
-      logo: data.logo || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=200&q=80',
-      coverImage: data.coverImage || 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80',
-      description: data.description || 'Authentic restaurant added on Dastanay.',
-      facilities: data.facilities || ['Dine-in', 'Air Conditioned', 'Card Accepted'],
-      isApproved: true,
-      isSuspended: false,
-      commissionPercent: 5.0,
-    };
-    setRestaurants((prev) => [...prev, newRest]);
+  const createRestaurant = async (data: Partial<Restaurant>) => {
+    try {
+      const response = await fetch('/api/restaurants', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const created = await response.json();
+      if (response.ok) {
+        setRestaurants((prev) => [...prev, created]);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const createBranch = (data: Partial<Branch>) => {
-    const newBranch: Branch = {
-      id: `br-${Date.now()}`,
+    const id = `br-${Date.now()}`;
+    const newBr: Branch = {
+      id,
       restaurantId: data.restaurantId || currentRestaurantId,
       name: data.name || 'New Branch',
       city: data.city || 'Karachi',
-      area: data.area || 'City Center',
-      address: data.address || 'Main Commercial Area',
-      phone: data.phone || '+92 21 0000 0000',
-      email: data.email || 'branch@dastanay.pk',
+      area: data.area || 'Gulshan-e-Iqbal',
+      address: data.address || 'Main University Road, Karachi',
+      phone: data.phone || '+92 21 3499 0000',
+      email: data.email || 'info@dastanay.pk',
       isOpen: true,
-      openingHours: data.openingHours || '12:00 PM – 12:00 AM',
-      reservationFee: data.reservationFee || 200,
+      openingHours: '12:00 PM – 12:00 AM (Mon-Sun)',
+      reservationFee: 300,
       gracePeriodMinutes: 15,
       cancellationDeadlineHours: 2,
-      cancellationFee: 50,
+      cancellationFee: 100,
       taxRatePercent: 13,
       serviceChargePercent: 5,
-      kitchenPrinters: ['Kitchen-Thermal-1'],
+      kitchenPrinters: ['KDS-Kitchen-1', 'Receipt-Cashier-1'],
     };
-    setBranches((prev) => [...prev, newBranch]);
+    setBranches((prev) => [...prev, newBr]);
   };
 
   const markNotificationRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
 
   const clearNotifications = () => {
@@ -1202,6 +872,8 @@ export const DastanayProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         loyaltyHistory,
         auditLogs,
         notifications,
+        isLoading,
+        refreshData,
         cart,
         addToCart,
         removeFromCart,

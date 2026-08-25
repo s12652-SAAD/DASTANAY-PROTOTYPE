@@ -5,46 +5,55 @@
 @layer base {
   html {
     color-scheme: light;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
   html.dark {
     color-scheme: dark;
   }
   body {
-    @apply antialiased bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-[#9A2D22] selection:text-[#FEE248] font-sans;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    @apply antialiased bg-[#F8F9FA] dark:bg-[#121212] text-[#1C1917] dark:text-[#F4F4F5] selection:bg-[#9A2D22] selection:text-[#FEE248] font-sans;
+    transition: background-color 0.15s ease, color 0.15s ease;
   }
 }
 
-/* Dastnay Signature Theme Utilities */
-.bg-dastnay-gradient {
-  background: linear-gradient(145deg, #882421 0%, #B8531E 45%, #E5A324 100%);
+/* Primary Brand Palette: Authentic Pakistani Culinary Crimson & Saffron */
+:root {
+  --brand-primary: #9A2D22;
+  --brand-primary-hover: #83241A;
+  --brand-secondary: #E5A324;
+  --brand-accent: #B8531E;
 }
 
-.bg-dastnay-gradient-subtle {
-  background: linear-gradient(145deg, rgba(136, 36, 33, 0.08) 0%, rgba(184, 83, 30, 0.05) 50%, rgba(229, 163, 36, 0.08) 100%);
+/* Commercial Food-Commerce Cards and Controls */
+.food-card {
+  @apply bg-white dark:bg-[#1C1917] rounded-xl border border-stone-200 dark:border-stone-800 transition-all duration-150;
 }
 
-.text-dastnay-saffron {
-  color: #FEE248;
+.food-card:hover {
+  @apply border-stone-300 dark:border-stone-700 shadow-xs;
 }
 
-.text-dastnay-crimson {
-  color: #9A2D22;
-}
-
-/* Clean, modern card and pill utility classes */
 .app-card {
-  @apply bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/80 dark:border-stone-800 shadow-xs transition-all duration-200;
+  @apply bg-white dark:bg-[#1C1917] rounded-xl border border-stone-200 dark:border-stone-800 shadow-2xs;
 }
 
 .app-pill {
-  @apply px-3 py-1 bg-stone-100 dark:bg-stone-800 text-[11px] font-semibold rounded-full text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-700 inline-flex items-center gap-1.5;
+  @apply px-2.5 py-1 bg-stone-100 dark:bg-stone-800 text-[11px] font-semibold rounded-md text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 inline-flex items-center gap-1.5;
 }
 
-/* Custom scrollbars for dense POS & KDS dashboards */
+/* Button & Action Styles */
+.btn-primary {
+  @apply bg-[#9A2D22] hover:bg-[#83241A] active:bg-[#6D1B13] text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center gap-2 shadow-2xs;
+}
+
+.btn-secondary {
+  @apply bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer inline-flex items-center justify-center gap-2;
+}
+
+/* Custom scrollbars for dense POS, KDS & horizontal categories */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -52,12 +61,21 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(168, 162, 158, 0.3);
-  border-radius: 9999px;
+  background: rgba(168, 162, 158, 0.4);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 162, 158, 0.6);
+  background: rgba(168, 162, 158, 0.7);
+}
+
+/* Hide scrollbar for horizontal categories while keeping touch scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Thermal printer print media rules for 80mm roll POS tickets */

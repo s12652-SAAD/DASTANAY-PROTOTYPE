@@ -16,6 +16,9 @@ import {
   Utensils,
   ShieldCheck,
   Sparkles,
+  ChevronRight,
+  Star,
+  MapPin,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DastnayLogo } from '../common/DastnayLogo';
@@ -72,6 +75,21 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
   });
 
   const handleOpenCustomizer = (item: MenuItem) => {
+    // If item has no addons or variations, add directly or open modal
+    if ((!item.variations || item.variations.length === 0) && (!item.addons || item.addons.length === 0)) {
+      addToCart({
+        cartItemId: `cart-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+        menuItemId: item.id,
+        name: item.name,
+        basePrice: item.basePrice,
+        quantity: 1,
+        itemTotal: item.basePrice,
+      });
+      setAddedToast(`Added 1x ${item.name} to cart`);
+      setTimeout(() => setAddedToast(''), 2500);
+      return;
+    }
+
     setActiveItem(item);
     setSelectedVariation(item.variations?.[0]);
     setSelectedAddons([]);
@@ -121,22 +139,25 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
     setActiveItem(null);
   };
 
+  const cartTotalItems = cart.reduce((s, i) => s + i.quantity, 0);
+  const cartTotalAmount = cart.reduce((s, i) => s + i.itemTotal, 0);
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 pb-16">
       {/* Toast Alert */}
       <AnimatePresence>
         {addedToast && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 bg-[#9A2D22] text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-bold"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 15 }}
+            className="fixed bottom-6 right-6 z-50 bg-[#9A2D22] text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-xs font-bold"
           >
             <Check className="w-4 h-4 text-[#FEE248]" />
             <span>{addedToast}</span>
             <button
               onClick={onOpenCart}
-              className="ml-2 px-2.5 py-1 bg-[#FEE248] text-stone-900 rounded-lg text-[11px] font-black hover:bg-yellow-300 cursor-pointer transition-colors"
+              className="ml-2 px-2.5 py-1 bg-[#FEE248] text-stone-900 rounded-md text-[11px] font-extrabold hover:bg-yellow-300 cursor-pointer"
             >
               View Cart
             </button>
@@ -144,278 +165,249 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
         )}
       </AnimatePresence>
 
-      {/* Main Menu Branding Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: -4 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="app-card p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-gradient-to-br from-stone-900 via-[#832822] to-[#9B341F] text-white shadow-md border-0 relative overflow-hidden"
-      >
-        <div className="flex items-center gap-3.5 z-10">
-          <DastnayLogo variant="tile" size="md" rounded="xl" className="shadow-md shrink-0" />
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5">
-                <span>{currentRestaurant.name}</span>
-                <span className="text-[#FEE158] font-serif font-normal text-xs sm:text-sm">
-                  (Live Menu)
-                </span>
-              </h2>
-              <span className="px-2 py-0.5 rounded-md bg-white/20 text-[#FEE158] text-[10px] font-bold uppercase tracking-wider">
-                {currentBranch.area}
-              </span>
+      {/* 1. Practical Commercial Restaurant Header */}
+      <div className="bg-white dark:bg-[#18181B] rounded-xl border border-stone-200 dark:border-stone-800 p-4 sm:p-5 shadow-2xs">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-800 shrink-0 border border-stone-200 dark:border-stone-700">
+              <img
+                src={currentRestaurant.logo}
+                alt={currentRestaurant.name}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-amber-100/90 font-medium">
-              <span className="flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#FEE158]" />
-                100% Halal Certified
-              </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <Flame className="w-3.5 h-3.5 text-[#FEE158]" />
-                Fresh Charcoal & Handi
-              </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-[#FEE158]" />
-                10-25m Prep
-              </span>
-            </div>
-          </div>
-        </div>
 
-        {/* Right Action / Table status pill */}
-        <div className="flex items-center gap-2 z-10 self-end md:self-auto shrink-0">
-          {currentTableSession ? (
-            <div className="flex items-center gap-2 bg-black/30 border border-white/20 rounded-xl px-3 py-1.5 text-xs font-bold">
-              <span className="w-2 h-2 rounded-full bg-[#FEE158] animate-pulse"></span>
-              <span>{currentTableSession.tableNumber} Active</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1.5 bg-white/15 border border-white/20 rounded-xl px-3 py-1.5 text-xs font-semibold text-amber-100">
-              <Sparkles className="w-3.5 h-3.5 text-[#FEE158]" />
-              <span>dastnay Live Kitchen</span>
-            </div>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Table Session Banner if active */}
-      {currentTableSession ? (
-        <motion.div
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="app-card p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 bg-amber-50/50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-[#9A2D22] text-[#FEE248] font-extrabold flex items-center justify-center text-sm shadow-xs">
-              {currentTableSession.tableNumber.replace('Table ', 'T')}
-            </div>
-            <div>
+            <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-sm text-stone-900 dark:text-stone-100">
-                  {currentTableSession.tableNumber} Active
-                </span>
-                <span className="app-pill bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 border-amber-300">
-                  Direct Kitchen Ordering
+                <h1 className="text-lg sm:text-xl font-extrabold text-stone-900 dark:text-stone-100">
+                  {currentRestaurant.name}
+                </h1>
+                <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
+                  Halal
                 </span>
               </div>
-              <p className="text-xs text-stone-500 font-mono">Session: {currentTableSession.sessionId}</p>
+
+              <div className="flex flex-wrap items-center gap-2 text-xs text-stone-500">
+                <span className="flex items-center gap-1 font-semibold text-stone-800 dark:text-stone-200">
+                  <Star className="w-3.5 h-3.5 fill-[#E5A324] text-[#E5A324]" />
+                  {currentRestaurant.rating} ({currentRestaurant.reviewCount} reviews)
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-[#9A2D22]" />
+                  {currentBranch.name}, {currentBranch.city}
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" />
+                  Avg Prep: 15-25 mins
+                </span>
+              </div>
             </div>
           </div>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
-            onClick={onOpenCart}
-            className="px-4 py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold shadow-xs cursor-pointer"
-          >
-            Review Cart & Order
-          </motion.button>
-        </motion.div>
-      ) : (
-        <div className="app-card p-3.5 bg-amber-50/60 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2.5 text-amber-800 dark:text-amber-300">
-            <AlertCircle className="w-4 h-4 shrink-0 text-[#9A2D22]" />
-            <span>Browsing menu in preview mode. Check in or scan QR at your table to place kitchen orders.</span>
+
+          {/* Active Table Session status */}
+          <div className="flex items-center gap-2 self-stretch sm:self-auto">
+            {currentTableSession ? (
+              <div className="flex-1 sm:flex-initial flex items-center justify-between sm:justify-start gap-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 rounded-lg px-3 py-2 text-xs font-bold text-amber-900 dark:text-[#FEE248]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#E5A324] animate-pulse"></span>
+                  <span>{currentTableSession.tableNumber} Active Session</span>
+                </div>
+                <button
+                  onClick={onOpenCart}
+                  className="underline text-[11px] font-semibold hover:opacity-80 cursor-pointer"
+                >
+                  Order
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg px-3 py-2 text-xs font-medium text-stone-700 dark:text-stone-300">
+                <Utensils className="w-3.5 h-3.5 text-[#9A2D22]" />
+                <span>Dine-in & Takeaway Live Menu</span>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Category Tabs & Search Bar */}
+      {/* 2. Sticky Category Bar & Search */}
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          {/* Categories in clean pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
-            {categories.map((cat) => (
-              <motion.button
-                key={cat}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                  selectedCategory === cat
-                    ? 'bg-[#9A2D22] text-white shadow-xs'
-                    : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700'
-                }`}
-              >
-                {cat}
-              </motion.button>
-            ))}
+          {/* Horizontal category tabs */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full no-scrollbar">
+            {categories.map((cat) => {
+              const isSelected = selectedCategory === cat;
+              const count =
+                cat === 'All'
+                  ? restMenuItems.length
+                  : restMenuItems.filter((i) => i.category === cat).length;
+
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors cursor-pointer flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-[#9A2D22] text-white'
+                      : 'bg-white dark:bg-[#18181B] text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700'
+                  }`}
+                >
+                  <span>{cat}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded font-normal ${
+                      isSelected ? 'bg-white/20 text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-500'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Search */}
-          <div className="relative min-w-[240px]">
-            <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-2.5" />
+          {/* Search within menu */}
+          <div className="relative min-w-[220px]">
+            <Search className="w-3.5 h-3.5 text-stone-400 absolute left-3 top-2.5" />
             <input
               type="text"
-              placeholder="Search dishes or items..."
+              placeholder="Search dishes in menu..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22] shadow-2xs"
+              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-[#18181B] text-stone-900 dark:text-stone-100 outline-none focus:border-[#9A2D22]"
             />
           </div>
         </div>
       </div>
 
-      {/* Menu Items Grid */}
-      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <AnimatePresence>
-          {filteredItems.map((item) => {
-            // Check branch inventory stock
-            const inv = inventory.find(
-              (i) => i.menuItemId === item.id && i.branchId === currentBranchId
-            );
-            const stockQty = inv ? inv.stockQuantity : 10;
-            const isBranchAvailable = inv ? inv.isAvailableAtBranch && stockQty > 0 : true;
-            const isLowStock = stockQty > 0 && stockQty <= (item.lowStockThreshold || 5);
+      {/* 3. Food Dishes Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filteredItems.map((item) => {
+          const inv = inventory.find(
+            (i) => i.menuItemId === item.id && i.branchId === currentBranchId
+          );
+          const stockQty = inv ? inv.stockQuantity : 10;
+          const isBranchAvailable = inv ? inv.isAvailableAtBranch && stockQty > 0 : true;
+          const isLowStock = stockQty > 0 && stockQty <= (item.lowStockThreshold || 5);
 
-            return (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                key={item.id}
-                className={`app-card p-4 transition-all flex flex-col sm:flex-row gap-4 justify-between group ${
-                  !isBranchAvailable
-                    ? 'opacity-60 bg-stone-50 dark:bg-stone-900/40'
-                    : 'hover:border-[#9A2D22]/60 dark:hover:border-[#E5A324]/60 hover:shadow-sm'
-                }`}
-              >
-                <div className="flex-1 space-y-2 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h4 className="font-extrabold text-sm sm:text-base text-stone-900 dark:text-stone-100">
-                          {item.name}
-                        </h4>
-                        <p className="text-xs font-semibold text-[#9A2D22] dark:text-[#E5A324] font-serif">
-                          {item.nameUrdu}
-                        </p>
-                      </div>
+          const inCart = cart.find((c) => c.menuItemId === item.id);
+          const inCartCount = inCart ? inCart.quantity : 0;
 
-                      {/* Stock Badges */}
-                      {!isBranchAvailable ? (
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
-                          {t.out_of_stock}
-                        </span>
-                      ) : isLowStock ? (
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                          Only {stockQty} Left
-                        </span>
-                      ) : null}
+          return (
+            <div
+              key={item.id}
+              className={`food-card p-3.5 flex flex-col sm:flex-row gap-3.5 justify-between ${
+                !isBranchAvailable ? 'opacity-60 bg-stone-50 dark:bg-stone-900/40' : ''
+              }`}
+            >
+              {/* Dish Info */}
+              <div className="flex-1 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="font-bold text-sm text-stone-900 dark:text-stone-100">
+                        {item.name}
+                      </h3>
+                      <p className="text-xs font-semibold text-[#9A2D22] dark:text-[#E5A324] font-urdu">
+                        {item.nameUrdu}
+                      </p>
                     </div>
 
-                    <p className="text-xs text-stone-500 dark:text-stone-400 line-clamp-2 mt-1 leading-relaxed">
-                      {item.description}
-                    </p>
+                    {!isBranchAvailable ? (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300">
+                        Sold Out
+                      </span>
+                    ) : isLowStock ? (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                        {stockQty} Left
+                      </span>
+                    ) : null}
                   </div>
 
-                  {/* Metadata & Price */}
-                  <div className="flex items-center justify-between pt-2.5 border-t border-stone-100 dark:border-stone-800">
-                    <div className="flex items-center gap-3 text-xs text-stone-500">
-                      <span className="font-mono font-black text-base text-stone-900 dark:text-stone-100">
-                        Rs. {item.basePrice.toLocaleString()}
-                      </span>
-                      <span className="flex items-center gap-1 text-[11px] text-stone-400">
-                        <Clock className="w-3.5 h-3.5" />
-                        {item.prepTimeMinutes}m
-                      </span>
-                    </div>
+                  <p className="text-xs text-stone-500 line-clamp-2 mt-1 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
 
-                    <motion.button
-                      whileTap={{ scale: 0.92 }}
-                      whileHover={{ scale: 1.04 }}
-                      disabled={!isBranchAvailable}
-                      onClick={() => handleOpenCustomizer(item)}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] disabled:bg-stone-300 dark:disabled:bg-stone-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed"
-                    >
-                      <Plus className="w-3.5 h-3.5 text-[#FEE248]" />
-                      <span>Add</span>
-                    </motion.button>
+                {/* Price & Action Button */}
+                <div className="flex items-center justify-between pt-2 border-t border-stone-100 dark:border-stone-800">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-sm text-stone-900 dark:text-stone-100">
+                      Rs. {item.basePrice.toLocaleString()}
+                    </span>
+                    <span className="text-[10px] text-stone-400">• {item.prepTimeMinutes}m</span>
                   </div>
-                </div>
 
-                {/* Item Thumbnail */}
-                <div className="relative w-full sm:w-28 h-28 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-800 shrink-0 border border-stone-200 dark:border-stone-700">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  {item.isPopular && (
-                    <span className="absolute top-1.5 left-1.5 bg-[#E5A324] text-stone-900 text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-xs">
-                      MUST TRY
-                    </span>
-                  )}
-                  {item.isSpicy && (
-                    <span className="absolute bottom-1.5 right-1.5 bg-[#9A2D22]/90 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md backdrop-blur-xs">
-                      🌶️ SPICY
-                    </span>
-                  )}
+                  <button
+                    disabled={!isBranchAvailable}
+                    onClick={() => handleOpenCustomizer(item)}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] disabled:bg-stone-300 dark:disabled:bg-stone-700 text-white text-xs font-bold transition-colors cursor-pointer disabled:cursor-not-allowed shadow-2xs"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-[#FEE248]" />
+                    <span>{inCartCount > 0 ? `${inCartCount} Added` : 'Add'}</span>
+                  </button>
                 </div>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
-      </motion.div>
+              </div>
 
-      {/* Item Customizer Modal */}
+              {/* Photo */}
+              <div className="relative w-full sm:w-28 h-28 rounded-lg overflow-hidden bg-stone-100 dark:bg-stone-800 shrink-0 border border-stone-200 dark:border-stone-700">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                {item.isPopular && (
+                  <span className="absolute top-1 left-1 bg-[#E5A324] text-stone-900 text-[9px] font-extrabold px-1.5 py-0.2 rounded">
+                    Popular
+                  </span>
+                )}
+                {item.isSpicy && (
+                  <span className="absolute bottom-1 right-1 bg-[#9A2D22] text-white text-[9px] font-bold px-1.5 py-0.2 rounded">
+                    🌶️ Spicy
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 4. Item Customization Modal */}
       <AnimatePresence>
         {activeItem && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.2 }}
-              className="bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-stone-200 dark:border-stone-800 max-h-[90vh] flex flex-col"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.15 }}
+              className="bg-white dark:bg-[#18181B] text-stone-900 dark:text-stone-100 rounded-xl shadow-2xl max-w-md w-full overflow-hidden border border-stone-200 dark:border-stone-800 max-h-[90vh] flex flex-col"
             >
-              {/* Modal Header */}
-              <div className="relative h-40 bg-stone-900 shrink-0">
-                <img
-                  src={activeItem.image}
-                  alt={activeItem.name}
-                  className="w-full h-full object-cover opacity-80"
-                />
+              {/* Header */}
+              <div className="p-4 border-b border-stone-100 dark:border-stone-800 flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                    Customize {activeItem.name}
+                  </h3>
+                  <p className="text-xs text-[#9A2D22] dark:text-[#E5A324] font-urdu">
+                    {activeItem.nameUrdu}
+                  </p>
+                </div>
                 <button
                   onClick={() => setActiveItem(null)}
-                  className="absolute top-3 right-3 p-1.5 rounded-full bg-black/60 text-white hover:bg-black cursor-pointer transition-colors"
+                  className="p-1 rounded-md text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
-                <div className="absolute bottom-3 left-4 right-4">
-                  <h3 className="text-lg font-extrabold text-white drop-shadow">{activeItem.name}</h3>
-                  <p className="text-xs text-[#FEE248] font-serif drop-shadow">{activeItem.nameUrdu}</p>
-                </div>
               </div>
 
-              {/* Modal Body */}
-              <div className="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+              {/* Body */}
+              <div className="p-4 space-y-4 overflow-y-auto flex-1 text-xs">
                 {/* Variations (e.g. Half / Full) */}
                 {activeItem.variations && activeItem.variations.length > 0 && (
                   <div className="space-y-2">
-                    <label className="font-extrabold text-stone-800 dark:text-stone-200 uppercase tracking-wider block text-[11px]">
+                    <label className="font-bold text-stone-800 dark:text-stone-200 text-xs block">
                       Portion / Serving Size
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -423,15 +415,17 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                         <button
                           key={v.id}
                           onClick={() => setSelectedVariation(v)}
-                          className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
+                          className={`p-2.5 rounded-lg border text-left cursor-pointer transition-colors ${
                             selectedVariation?.id === v.id
                               ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 font-bold text-[#9A2D22] dark:text-[#FEE248]'
                               : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
                           }`}
                         >
-                          <div className="flex justify-between">
+                          <div className="flex justify-between items-center">
                             <span>{v.name}</span>
-                            {v.priceModifier > 0 && <span>+Rs. {v.priceModifier}</span>}
+                            {v.priceModifier > 0 && (
+                              <span className="font-mono text-[11px]">+Rs. {v.priceModifier}</span>
+                            )}
                           </div>
                         </button>
                       ))}
@@ -442,8 +436,8 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                 {/* Add-ons */}
                 {activeItem.addons && activeItem.addons.length > 0 && (
                   <div className="space-y-2">
-                    <label className="font-extrabold text-stone-800 dark:text-stone-200 uppercase tracking-wider block text-[11px]">
-                      Customize Add-ons
+                    <label className="font-bold text-stone-800 dark:text-stone-200 text-xs block">
+                      Choose Add-ons
                     </label>
                     <div className="space-y-1.5">
                       {activeItem.addons.map((a) => {
@@ -452,7 +446,7 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                           <div
                             key={a.id}
                             onClick={() => handleToggleAddon(a)}
-                            className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                            className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition-colors ${
                               isSelected
                                 ? 'border-[#9A2D22] bg-amber-50 dark:bg-amber-950/50 text-[#9A2D22] dark:text-[#FEE248]'
                                 : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800'
@@ -461,12 +455,14 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                             <div className="flex items-center gap-2">
                               <div
                                 className={`w-4 h-4 rounded flex items-center justify-center border ${
-                                  isSelected ? 'bg-[#9A2D22] border-[#9A2D22] text-white' : 'border-stone-400'
+                                  isSelected
+                                    ? 'bg-[#9A2D22] border-[#9A2D22] text-white'
+                                    : 'border-stone-400'
                                 }`}
                               >
                                 {isSelected && <Check className="w-3 h-3" />}
                               </div>
-                              <span className="font-semibold">{a.name}</span>
+                              <span className="font-medium">{a.name}</span>
                             </div>
                             <span className="font-bold font-mono">+Rs. {a.price}</span>
                           </div>
@@ -476,103 +472,85 @@ export const LiveMenuView: React.FC<LiveMenuViewProps> = ({ onOpenCart }) => {
                   </div>
                 )}
 
-                {/* Cooking Instructions */}
+                {/* Instructions */}
                 <div className="space-y-1.5">
-                  <label className="font-extrabold text-stone-800 dark:text-stone-200 uppercase tracking-wider block text-[11px]">
-                    Special Cooking Instructions / Allergies
+                  <label className="font-bold text-stone-800 dark:text-stone-200 text-xs block">
+                    Special Cooking Note
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Less spicy, extra lemon, crispier naan..."
+                    placeholder="e.g. Less spice, extra raita, crispier..."
                     value={specialInstructions}
                     onChange={(e) => setSpecialInstructions(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 outline-none focus:border-[#9A2D22]"
+                    className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 outline-none focus:border-[#9A2D22]"
                   />
                 </div>
 
-                {/* Quantity Counter */}
-                <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-stone-800">
-                  <span className="font-extrabold text-sm">Quantity</span>
-                  <div className="flex items-center gap-3 bg-stone-100 dark:bg-stone-800 px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700">
-                    <motion.button
-                      whileTap={{ scale: 0.85 }}
+                {/* Quantity */}
+                <div className="flex items-center justify-between pt-2 border-t border-stone-100 dark:border-stone-800">
+                  <span className="font-bold text-xs">Quantity</span>
+                  <div className="flex items-center gap-3 bg-stone-100 dark:bg-stone-800 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700">
+                    <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#9A2D22] cursor-pointer"
                     >
                       <Minus className="w-3.5 h-3.5" />
-                    </motion.button>
-                    <span className="font-black text-sm w-4 text-center">{quantity}</span>
-                    <motion.button
-                      whileTap={{ scale: 0.85 }}
+                    </button>
+                    <span className="font-mono font-bold text-xs w-4 text-center">{quantity}</span>
+                    <button
                       onClick={() => setQuantity(quantity + 1)}
                       className="p-1 text-stone-600 dark:text-stone-300 hover:text-[#9A2D22] cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* Modal Footer CTA */}
-              <div className="p-4 bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between shrink-0">
+              {/* Footer */}
+              <div className="p-3.5 bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between shrink-0">
                 <div>
-                  <span className="text-[10px] text-stone-500 block font-semibold">Calculated Total</span>
-                  <span className="font-mono font-black text-lg text-[#9A2D22] dark:text-[#FEE248]">
+                  <span className="text-[10px] text-stone-500 block">Total</span>
+                  <span className="font-mono font-bold text-sm text-[#9A2D22] dark:text-[#FEE248]">
                     Rs. {calculateCustomizerTotal().toLocaleString()}
                   </span>
                 </div>
 
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.02 }}
+                <button
                   onClick={handleAddToCartSubmit}
-                  className="px-5 py-2 rounded-xl bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-extrabold shadow-sm cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-[#9A2D22] hover:bg-[#83241A] text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
                 >
                   Add to Cart
-                </motion.button>
+                </button>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
-      {/* Floating Bottom Cart Bar for Mobile View */}
-      <AnimatePresence>
-        {cart.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 30 }}
-            className="sm:hidden fixed bottom-4 inset-x-3 z-40"
-          >
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              onClick={onOpenCart}
-              className="w-full bg-gradient-to-r from-[#83241A] to-[#9A2D22] text-white p-3.5 rounded-2xl shadow-2xl flex items-center justify-between border border-amber-400/40 cursor-pointer"
-            >
-              <div className="flex items-center gap-3">
-                <DastnayLogo variant="tile" size="xs" rounded="lg" />
-                <div className="text-left">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-black text-[#FEE248]">
-                      {cart.reduce((s, i) => s + i.quantity, 0)} Items
-                    </span>
-                    <span className="text-[10px] text-amber-200/80">•</span>
-                    <span className="text-xs font-bold text-white">
-                      Rs. {cart.reduce((s, i) => s + i.itemTotal, 0).toLocaleString()}
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-amber-100/90 font-medium">Tap to review & order to table</p>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-1 bg-[#FEE248] text-stone-900 px-3 py-1.5 rounded-xl font-black text-xs shadow-xs">
-                <span>Cart</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+      {/* 5. Mobile Floating Cart Bar */}
+      {cart.length > 0 && (
+        <div className="sm:hidden fixed bottom-4 inset-x-3 z-40">
+          <button
+            onClick={onOpenCart}
+            className="w-full bg-[#9A2D22] text-white p-3 rounded-xl shadow-xl flex items-center justify-between cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <ShoppingBag className="w-4 h-4 text-[#FEE248]" />
+              <div className="text-left text-xs">
+                <span className="font-bold">{cartTotalItems} items</span>
+                <span className="mx-1">•</span>
+                <span className="font-mono font-bold">Rs. {cartTotalAmount.toLocaleString()}</span>
               </div>
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+
+            <div className="flex items-center gap-1 bg-[#FEE248] text-stone-900 px-2.5 py-1 rounded-md font-bold text-xs">
+              <span>View Cart</span>
+              <ChevronRight className="w-3 h-3" />
+            </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
